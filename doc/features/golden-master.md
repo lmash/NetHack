@@ -84,7 +84,14 @@ into each run's playground, where `#wizloadlua` and `#wizloaddes` look for
 files. Wizard mode asks two extra questions: "keep the save file?" on
 restore and "Dump core?" on quit.
 
-**Scenarios must never use the F1/F2 commands**, so the transcripts stay
+`!same-map NAME` compares the map rows (screen rows 1–21) on display now
+with those at the first `!same-map NAME`. The transcript says `recorded`,
+`same`, or `!!` with the differing rows. **Any `!!` line makes `check` FAIL**,
+even if the transcript matches `expected/`. `update` prints these lines as
+warnings. Keep messages on screen short: a `--More--` that wraps onto row 1
+counts as a map difference.
+
+**Normal-mode scenarios (`basic`) must never use the F1/F2 commands**, so the transcripts stay
 comparable with vanilla.
 
 Build a scenario a few lines at a time with `show`, reading the screen before
@@ -138,6 +145,12 @@ Findings:
   shop. Likely cause: the level's `mapseen` record (which Ctrl-O and F1 use)
   isn't updated for a level replaced by `#wizloaddes`. Not investigated yet.
   Keep it in mind before using `#wizloaddes` levels to test F1.
+
+## What `levelmap` covers
+
+Wizard mode. Stores the remembered maps of Dlvl 1 and 2 and compares them with
+`#terrain`, across a level teleport and a save/restore. See
+`doc/features/levelmap.md`.
 
 ## Known limits
 
