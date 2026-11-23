@@ -148,9 +148,13 @@ Findings:
 
 ## What `levelmap` covers
 
-Wizard mode. Stores the remembered maps of Dlvl 1 and 2 and compares them with
-`#terrain`, across a level teleport and a save/restore. See
-`doc/features/levelmap.md`.
+Wizard mode. The level map viewer: compares the remembered maps of Dlvl 1 and
+2 with `#terrain`, across a level teleport and a save/restore. Also covers
+`<`/`>`, picking from Ctrl-O and `#levelmap`, and an `m` Ctrl-O note in the
+header. See `doc/features/levelmap.md`.
+
+`basic`'s Ctrl-O screen has menu letters since the viewer (agreed change; the
+only difference from the vanilla recording).
 
 ## Known limits
 

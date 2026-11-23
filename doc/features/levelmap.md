@@ -1,7 +1,27 @@
 # F1 level map viewer
 
-Status: **Phase 1 (storage) done.** The viewer itself (Phase 2) is not built
-yet. Until then, wizard-mode `#wizlevelmap` shows what is stored.
+Status: **Phases 1 (storage) and 2 (viewer) done.**
+
+## How to use it
+
+- **Ctrl-O** (`#overview`) lists the interesting levels you have visited, each
+  with a letter. Pick one to see its map full-screen.
+- **`#levelmap`** shows the same list with *every* visited level. Pick one.
+- In the viewer:
+  - **`>`** goes to the next level down, **`<`** to the next level up. Levels
+    are in overview order: by dungeon, then depth. Going down past the last
+    level of the Dungeons of Doom continues into the next branch (e.g. the
+    Gnomish Mines).
+  - **Esc** (or `q`) goes back to the game.
+- The line above the map names the level, with the same text as Ctrl-O:
+  features ("A fountain."), your `#annotate` note in quotes, and
+  "<- You are here." for the current level.
+- **`m` Ctrl-O** still annotates: pick a level and type a note. The note then
+  shows in Ctrl-O and above that level's map.
+- The map is your hero's memory: the current level as you remember it right
+  now, any other level as it was when you last left it. No monsters, except
+  remembered `I` markers, and nothing you never saw.
+- Viewing takes no game time.
 
 ## What is stored
 
@@ -70,27 +90,66 @@ Everything a hero remembers about other levels' maps is in
 `mapseen.levelmap`. A second hero would need either a `levelmap` per hero in
 `mapseen` or a per-hero `mapseen` chain. No other global holds this data.
 
-## Drawing (so far)
+## The viewer
 
-`show_levelmap(mapseen *)` in `src/detect.c`, next to `reveal_terrain()`, draws
-either the snapshot or the live memory with `show_glyph()` on the map window.
-It waits for a key, then redraws the real map with `map_redisplay()`. It
-deliberately does **not** use `browse_map()`/`getpos()` autodescribe: that
-describes the *current* level's actual contents, which would be wrong for
-another level and could leak information. Phase 2 needs its own cursor
-descriptions, if any.
+- `view_levelmap(mapseen *)` in `src/detect.c`, next to `reveal_terrain()`,
+  draws the snapshot (or the live memory for the current level) with
+  `show_glyph()`. It then reads keys with `readchar()` until Esc or `q`, and
+  redraws the real map with `map_redisplay()`.
+- It deliberately does **not** use `browse_map()`/`getpos()` autodescribe.
+  That describes the *current* level's actual contents, which would be wrong
+  for another level and could leak information.
+- The header is one message line, cut to fit (with a `[<>, ESC]` hint when
+  there's room). A longer line would trigger a tty `--More--`, which would
+  swallow the next key. It is not added to message history (`^P`).
+- Helpers in `src/dungeon.c`:
+  - `levelmap_viewable()` skips levels that `#overview` hides (unreachable,
+    forgotten, the main dungeon once in the endgame) and levels with no stored
+    map.
+  - `levelmap_step()` finds the next or previous viewable level in the
+    `mapseen` chain (overview order).
+  - `levelmap_header()` reuses `overview_levelline()` and
+    `overview_interests()`, which a no-change refactor split out of
+    `print_mapseen()`.
+- Entry points:
+  - `show_overview()`'s `why` 0 (Ctrl-O) and the new `why` -2 (`#levelmap`)
+    are pick-one menus that open the viewer.
+  - `why` -1 (`m` Ctrl-O) still annotates.
+  - The end-of-game overview (`why` 1, 2) is unchanged.
+  - `print_mapseen()` gives every level line a menu identifier while
+    playing, and indents with `TAB` only at the end of the game, so letters
+    line up.
+- **Only Ctrl-O's look changed** (agreed with Laura): level lines now carry
+  menu letters. `basic`'s re-recorded baseline differs from the vanilla one in
+  exactly those two lines.
 
-`#wizlevelmap` (wizard mode only, `src/wizcmds.c`) lists the levels you can
-show (any with a snapshot, plus the current one) and calls `show_levelmap()`.
+### No game time, no random numbers
+
+- `#levelmap` and Ctrl-O return `ECMD_OK`, which takes no time. Drawing uses
+  `show_glyph()`, `docrt()` and `map_redisplay()`. These touch only the
+  display RNG, which only hallucination uses, never the core RNG.
+- Checked by hand in normal mode (2026-11-23): replay `basic` to Dlvl 2, then
+  `#levelmap`, view Dlvl 1, `>`, `<`, Esc, then search 6 times and press `^R`.
+  The whole screen, including monster positions and `T:`, is identical to
+  searching 6 times without viewing.
+- Gotcha: right after an action, the tty status line can show a stale `T:`
+  until something redraws it. Compare turn counts after `^R`.
+- Not checked: the curses interface. The harness drives tty only.
 
 ## Test
 
-`test/golden/scenarios/levelmap.keys` (wizard mode). It records Dlvl 1 with
-`#terrain` "known map without monsters" (the hero's memory), level-teleports to
-Dlvl 2, and checks with `!same-map` that `#wizlevelmap` shows the same map rows.
-Then it records Dlvl 2, saves and restores, checks Dlvl 1 again, goes back to
-Dlvl 1, and checks Dlvl 2's snapshot. Finally it checks that the live view of
-the current level equals `#terrain`.
+`test/golden/scenarios/levelmap.keys` (wizard mode):
+
+1. Records Dlvl 1 with `#terrain` "known map without monsters" (the hero's
+   memory) and level-teleports to Dlvl 2.
+2. Checks with `!same-map` that `#levelmap` shows the same map rows for Dlvl 1.
+3. Records Dlvl 2, saves and restores, and checks Dlvl 1 again.
+4. In the viewer, steps `>` to Dlvl 2, `<` back, then `>` twice (staying put at
+   the deepest level).
+5. Goes back to Dlvl 1 and checks Dlvl 2's snapshot.
+6. Checks that the live view of the current level equals `#terrain`.
+7. Picks a level from Ctrl-O.
+8. Annotates Dlvl 1 with `m` Ctrl-O and checks the note in the viewer's header.
 
 - No snapshot shows a monster (the kitten and an orc were in view) or a square
   the hero never saw.
