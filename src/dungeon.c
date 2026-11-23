@@ -77,6 +77,9 @@ staticfn void free_levelmap(mapseen *);
 staticfn mapseen *find_mapseen(d_level *);
 staticfn mapseen *find_mapseen_by_str(const char *);
 staticfn void print_mapseen(winid, mapseen *, int, int, boolean);
+staticfn int overview_depthstart(mapseen *);
+staticfn char *overview_levelline(mapseen *, int, int, char *);
+staticfn boolean overview_interests(mapseen *, char *);
 staticfn boolean interest_mapseen(mapseen *);
 staticfn void count_feat_lastseentyp(mapseen *, coordxy, coordxy);
 staticfn void traverse_mapseenchn(int, winid, int, int, int *);
@@ -3582,6 +3585,116 @@ tunesuffix(
         }                                                               \
     } while (0)
 
+/* depth of the first level of mptr's dungeon, as the overview counts */
+staticfn int
+overview_depthstart(mapseen *mptr)
+{
+    int dnum = mptr->lev.dnum;
+
+    /* Damnable special cases */
+    /* The quest and knox should appear to be level 1 to match
+     * other text.
+     */
+    if (dnum == quest_dnum || dnum == knox_level.dnum)
+        return 1;
+    return svd.dungeons[dnum].depth_start;
+}
+
+/* the overview's line for one level, without indentation:
+   "Level 3:", the special level's name in wizard mode, the #annotate
+   note and "<- You are here." */
+staticfn char *
+overview_levelline(
+    mapseen *mptr,
+    int final, /* as for print_mapseen() */
+    int how,   /* as for print_mapseen() */
+    char *buf) /* BUFSZ */
+{
+    char tmpbuf[BUFSZ];
+    int i;
+
+    /* calculate level number */
+    i = overview_depthstart(mptr) + mptr->lev.dlevel - 1;
+    if (In_endgame(&mptr->lev))
+        Sprintf(buf, "%s:", endgamelevelname(tmpbuf, i));
+    else
+        Sprintf(buf, "Level %d:", i);
+
+    /* wizmode prints out proto dungeon names for clarity */
+    if (wizard) {
+        s_level *slev;
+
+        if ((slev = Is_special(&mptr->lev)) != 0)
+            Sprintf(eos(buf), " [%s]", slev->proto);
+    }
+    /* [perhaps print custom annotation on its own line when it's long] */
+    if (mptr->custom)
+        Sprintf(eos(buf), " \"%s\"", mptr->custom);
+    if (on_level(&u.uz, &mptr->lev))
+        Sprintf(eos(buf), " <- You %s here.",
+                (final <= 0 || (final == 1 && how == ASCENDED)) ? "are"
+                  : (final == 1 && how == ESCAPED) ? "left from"
+                    : "were");
+    return buf;
+}
+
+/* the overview's sentence about a level's features ("A fountain."),
+   indented by PREFIX; returns FALSE if there's nothing to say */
+staticfn boolean
+overview_interests(mapseen *mptr, char *buf) /* BUFSZ */
+{
+    int i;
+
+    if (!OF_INTEREST(mptr->feat))
+        return FALSE;
+    buf[0] = 0;
+
+    i = 0; /* interest counter */
+    /* List interests in an order vaguely corresponding to
+     * how important they are.
+     */
+    if (mptr->feat.nshop > 0) {
+        if (mptr->feat.nshop > 1)
+            ADDNTOBUF("shop", mptr->feat.nshop);
+        else
+            Sprintf(eos(buf), "%s%s", COMMA,
+                    an(shop_string(mptr->feat.shoptype)));
+    }
+    if (mptr->feat.naltar > 0 || mptr->feat.ntemple > 0) {
+        unsigned atmp;
+
+        /* being aware of a temple doesn't guarantee being aware of its
+           altar (via entrance message when entering while blinded, or
+           possibly it being out of view in an irregularly shaped room);
+           FIXME: if all temples present have been desecrated, we ought
+           to say so */
+        ADD2NTOBUF("temple", mptr->feat.ntemple,
+                   "altar", mptr->feat.naltar);
+
+        /* only print out altar's god if they are all to your god */
+        atmp = mptr->feat.msalign;              /*    0,  1,  2,  3 */
+        atmp = Msa2amask(atmp);                 /*    0,  1,  2,  4 */
+        if (Amask2align(atmp) == u.ualign.type) /* -128, -1,  0, +1 */
+            Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
+    }
+    ADDNTOBUF("throne", mptr->feat.nthrone);
+    ADDNTOBUF("fountain", mptr->feat.nfount);
+    ADDNTOBUF("sink", mptr->feat.nsink);
+    ADDNTOBUF("grave", mptr->feat.ngrave);
+    ADDNTOBUF("tree", mptr->feat.ntree);
+#if 0
+    ADDTOBUF("water", mptr->feat.water);
+    ADDTOBUF("lava", mptr->feat.lava);
+    ADDTOBUF("ice", mptr->feat.ice);
+#endif
+    /* capitalize afterwards */
+    i = strlen(PREFIX);
+    buf[i] = highc(buf[i]);
+    /* capitalizing it makes it a sentence; terminate with '.' */
+    Strcat(buf, ".");
+    return TRUE;
+}
+
 staticfn void
 print_mapseen(
     winid win, mapseen *mptr,
@@ -3591,19 +3704,12 @@ print_mapseen(
     boolean printdun)
 {
     char buf[BUFSZ], tmpbuf[BUFSZ];
-    int i, depthstart, dnum;
+    int depthstart, dnum;
     boolean died_here = (final == 2 && on_level(&u.uz, &mptr->lev));
     anything any;
 
-    /* Damnable special cases */
-    /* The quest and knox should appear to be level 1 to match
-     * other text.
-     */
     dnum = mptr->lev.dnum;
-    if (dnum == quest_dnum || dnum == knox_level.dnum)
-        depthstart = 1;
-    else
-        depthstart = svd.dungeons[dnum].depth_start;
+    depthstart = overview_depthstart(mptr);
 
     if (printdun) {
         if (svd.dungeons[dnum].dunlev_ureached == svd.dungeons[dnum].entry_lev
@@ -3623,29 +3729,8 @@ print_mapseen(
         add_menu_heading(win, buf);
     }
 
-    /* calculate level number */
-    i = depthstart + mptr->lev.dlevel - 1;
-    if (In_endgame(&mptr->lev))
-        Sprintf(buf, "%s%s:", (final != -1) ? TAB : "",
-                endgamelevelname(tmpbuf, i));
-    else
-        Sprintf(buf, "%sLevel %d:", (final != -1) ? TAB : "", i);
-
-    /* wizmode prints out proto dungeon names for clarity */
-    if (wizard) {
-        s_level *slev;
-
-        if ((slev = Is_special(&mptr->lev)) != 0)
-            Sprintf(eos(buf), " [%s]", slev->proto);
-    }
-    /* [perhaps print custom annotation on its own line when it's long] */
-    if (mptr->custom)
-        Sprintf(eos(buf), " \"%s\"", mptr->custom);
-    if (on_level(&u.uz, &mptr->lev))
-        Sprintf(eos(buf), " <- You %s here.",
-                (final <= 0 || (final == 1 && how == ASCENDED)) ? "are"
-                  : (final == 1 && how == ESCAPED) ? "left from"
-                    : "were");
+    Sprintf(buf, "%s%s", (final != -1) ? TAB : "",
+            overview_levelline(mptr, final, how, tmpbuf));
 
     any = cg.zeroany;
     if (final == -1)
@@ -3656,54 +3741,8 @@ print_mapseen(
     if (mptr->flags.forgot)
         return;
 
-    if (OF_INTEREST(mptr->feat)) {
-        buf[0] = 0;
-
-        i = 0; /* interest counter */
-        /* List interests in an order vaguely corresponding to
-         * how important they are.
-         */
-        if (mptr->feat.nshop > 0) {
-            if (mptr->feat.nshop > 1)
-                ADDNTOBUF("shop", mptr->feat.nshop);
-            else
-                Sprintf(eos(buf), "%s%s", COMMA,
-                        an(shop_string(mptr->feat.shoptype)));
-        }
-        if (mptr->feat.naltar > 0 || mptr->feat.ntemple > 0) {
-            unsigned atmp;
-
-            /* being aware of a temple doesn't guarantee being aware of its
-               altar (via entrance message when entering while blinded, or
-               possibly it being out of view in an irregularly shaped room);
-               FIXME: if all temples present have been desecrated, we ought
-               to say so */
-            ADD2NTOBUF("temple", mptr->feat.ntemple,
-                       "altar", mptr->feat.naltar);
-
-            /* only print out altar's god if they are all to your god */
-            atmp = mptr->feat.msalign;              /*    0,  1,  2,  3 */
-            atmp = Msa2amask(atmp);                 /*    0,  1,  2,  4 */
-            if (Amask2align(atmp) == u.ualign.type) /* -128, -1,  0, +1 */
-                Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
-        }
-        ADDNTOBUF("throne", mptr->feat.nthrone);
-        ADDNTOBUF("fountain", mptr->feat.nfount);
-        ADDNTOBUF("sink", mptr->feat.nsink);
-        ADDNTOBUF("grave", mptr->feat.ngrave);
-        ADDNTOBUF("tree", mptr->feat.ntree);
-#if 0
-        ADDTOBUF("water", mptr->feat.water);
-        ADDTOBUF("lava", mptr->feat.lava);
-        ADDTOBUF("ice", mptr->feat.ice);
-#endif
-        /* capitalize afterwards */
-        i = strlen(PREFIX);
-        buf[i] = highc(buf[i]);
-        /* capitalizing it makes it a sentence; terminate with '.' */
-        Strcat(buf, ".");
+    if (overview_interests(mptr, buf))
         add_menu_str(win, buf);
-    }
 
     /* we assume that these are mutually exclusive */
     *buf = '\0';
