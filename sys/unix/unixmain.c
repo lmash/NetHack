@@ -809,6 +809,31 @@ port_insert_pastebuf(char *buf)
 }
 #endif /* __APPLE__ */
 
+#ifdef NH_DETERMINISTIC
+/* Test builds only (see doc/features/golden-master.md): when
+   NETHACK_INPUT_SYNC names a file, append one byte to it each time the
+   game is about to wait for a key, after flushing the screen.  The test
+   harness waits for that instead of guessing from a pause in output. */
+void
+nhtest_input_wait(void)
+{
+    static boolean looked = FALSE;
+    static FILE *syncfp = (FILE *) 0;
+
+    if (!looked) {
+        const char *path = nh_getenv("NETHACK_INPUT_SYNC");
+
+        looked = TRUE;
+        if (path && *path)
+            syncfp = fopen(path, "a");
+    }
+    if (syncfp) {
+        (void) fputc('.', syncfp);
+        (void) fflush(syncfp);
+    }
+}
+#endif
+
 unsigned long
 sys_random_seed(void)
 {

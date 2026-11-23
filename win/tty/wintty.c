@@ -4057,6 +4057,9 @@ tty_nhgetch(void)
     print_vt_code1(AVTC_INLINE_SYNC);
     term_curs_set(1);
     (void) fflush(stdout);
+#if defined(NH_DETERMINISTIC) && defined(UNIX)
+    nhtest_input_wait(); /* test harness sync point */
+#endif
     /* Note: if raw_print() and wait_synch() get called to report terminal
      * initialization problems, then wins[] and ttyDisplay might not be
      * available yet.  Such problems will probably be fatal before we get

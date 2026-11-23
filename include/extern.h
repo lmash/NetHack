@@ -3487,6 +3487,9 @@ extern void append_slash(char *) NONNULLARG1;
 extern boolean check_user_string(const char *) NONNULLARG1;
 extern char *get_login_name(void);
 extern unsigned long sys_random_seed(void);
+#ifdef NH_DETERMINISTIC
+extern void nhtest_input_wait(void);
+#endif
 #endif /* UNIX */
 ATTRNORETURN extern void after_opt_showpaths(const char *) NORETURN;
 
