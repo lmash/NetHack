@@ -17,7 +17,8 @@
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
  */
-#define EDITLEVEL 1 /* 1: mapseen has a levelmap (level map viewer) */
+#define EDITLEVEL 2 /* 1: mapseen has a levelmap (level map viewer);
+                         * 2: mapseen has an itemmem list (item finder) */
 
 /*
  * Development status possibilities.

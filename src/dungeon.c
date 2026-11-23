@@ -74,6 +74,8 @@ staticfn void query_annotation(d_level *);
 staticfn mapseen *load_mapseen(NHFILE *);
 staticfn void save_mapseen(NHFILE *, mapseen *);
 staticfn void free_levelmap(mapseen *);
+staticfn void free_itemmem_entry(struct itemmem *);
+staticfn void free_itemmem(mapseen *);
 staticfn mapseen *find_mapseen(d_level *);
 staticfn mapseen *find_mapseen_by_str(const char *);
 staticfn void print_mapseen(winid, mapseen *, int, int, boolean);
@@ -204,6 +206,7 @@ save_dungeon(
             if (curr_ms->final_resting_place)
                 savecemetery(nhfp, &curr_ms->final_resting_place);
             free_levelmap(curr_ms);
+            free_itemmem(curr_ms);
             free((genericptr_t) curr_ms);
         }
         svm.mapseenchn = 0;
@@ -2682,6 +2685,7 @@ rm_mapseen(int ledger_num)
     if (mptr->custom)
         free((genericptr_t) mptr->custom), mptr->custom = (char *) NULL;
     free_levelmap(mptr);
+    free_itemmem(mptr);
 
     bpnext = mptr->final_resting_place;
     while ((bp = bpnext) != NULL) {
@@ -2702,6 +2706,26 @@ free_levelmap(mapseen *mptr)
 {
     if (mptr->levelmap)
         free((genericptr_t) mptr->levelmap), mptr->levelmap = 0;
+}
+
+staticfn void
+free_itemmem_entry(struct itemmem *im)
+{
+    if (im->oname)
+        free((genericptr_t) im->oname);
+    free((genericptr_t) im->obj);
+    free((genericptr_t) im);
+}
+
+staticfn void
+free_itemmem(mapseen *mptr)
+{
+    struct itemmem *im;
+
+    while ((im = mptr->itemmem) != 0) {
+        mptr->itemmem = im->next;
+        free_itemmem_entry(im);
+    }
 }
 
 /* level map viewer: the hero is leaving the current level; copy what they
@@ -2733,6 +2757,7 @@ save_mapseen(NHFILE *nhfp, mapseen *mptr)
     branch *curr;
     int i, brindx;
     boolean have_map;
+    struct itemmem *im;
 
     for (brindx = 0, curr = svb.branches; curr; curr = curr->next, ++brindx)
         if (curr == mptr->br)
@@ -2762,16 +2787,34 @@ save_mapseen(NHFILE *nhfp, mapseen *mptr)
                 Sfo_int(nhfp, &mptr->levelmap->glyph[x][y],
                         "mapseen-levelmap-glyph");
     }
+    /* item finder: objects seen on this level */
+    for (i = 0, im = mptr->itemmem; im; im = im->next)
+        ++i;
+    Sfo_int(nhfp, &i, "mapseen-itemmem_count");
+    for (im = mptr->itemmem; im; im = im->next) {
+        int namelth = im->oname ? (int) strlen(im->oname) : 0;
+
+        Sfo_obj(nhfp, im->obj, "mapseen-itemmem-obj");
+        Sfo_int(nhfp, &namelth, "mapseen-itemmem-oname_length");
+        if (namelth)
+            Sfo_char(nhfp, im->oname, "mapseen-itemmem-oname", namelth);
+        Sfo_unsigned(nhfp, &im->cont_id, "mapseen-itemmem-cont_id");
+        Sfo_long(nhfp, &im->seen, "mapseen-itemmem-seen");
+        Sfo_long(nhfp, &im->price, "mapseen-itemmem-price");
+        Sfo_boolean(nhfp, &im->price_contents,
+                    "mapseen-itemmem-price_contents");
+    }
 }
 #endif /* !SFCTOOL */
 
 staticfn mapseen *
 load_mapseen(NHFILE *nhfp)
 {
-    int i, branchnum = 0, brindx;
+    int i, branchnum = 0, brindx, count = 0;
     boolean have_map = FALSE;
     mapseen *load;
     branch *curr;
+    struct itemmem **imtail;
 
     load = (mapseen *) alloc(sizeof *load);
 
@@ -2812,6 +2855,35 @@ load_mapseen(NHFILE *nhfp)
     } else {
         load->levelmap = (struct levelmap *) 0;
     }
+    /* item finder: objects seen on this level */
+    load->itemmem = (struct itemmem *) 0;
+    Sfi_int(nhfp, &count, "mapseen-itemmem_count");
+    for (imtail = &load->itemmem; count > 0; --count) {
+        struct itemmem *im = (struct itemmem *) alloc(sizeof *im);
+        int namelth = 0;
+
+        im->obj = (struct obj *) alloc(sizeof *im->obj);
+        Sfi_obj(nhfp, im->obj, "mapseen-itemmem-obj");
+        /* the pointers saved with it are meaningless now */
+        im->obj->nobj = im->obj->nexthere = im->obj->cobj = (struct obj *) 0;
+        im->obj->oextra = (struct oextra *) 0;
+        Sfi_int(nhfp, &namelth, "mapseen-itemmem-oname_length");
+        if (namelth > 0) {
+            im->oname = (char *) alloc(namelth + 1);
+            Sfi_char(nhfp, im->oname, "mapseen-itemmem-oname", namelth);
+            im->oname[namelth] = '\0';
+        } else {
+            im->oname = (char *) 0;
+        }
+        Sfi_unsigned(nhfp, &im->cont_id, "mapseen-itemmem-cont_id");
+        Sfi_long(nhfp, &im->seen, "mapseen-itemmem-seen");
+        Sfi_long(nhfp, &im->price, "mapseen-itemmem-price");
+        Sfi_boolean(nhfp, &im->price_contents,
+                    "mapseen-itemmem-price_contents");
+        im->next = (struct itemmem *) 0;
+        *imtail = im;
+        imtail = &im->next;
+    }
     return load;
 }
 #ifndef SFCTOOL
@@ -2826,11 +2898,14 @@ overview_stats(
     long *total_count, long *total_size) /* args for the format */
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
-    long ocount, osize, bcount, bsize, acount, asize, mcount, msize;
+    long ocount, osize, bcount, bsize, acount, asize, mcount, msize,
+         icount, isize;
+    struct itemmem *im;
     struct cemetery *ce;
     mapseen *mptr;
 
-    ocount = bcount = acount = mcount = osize = bsize = asize = msize = 0L;
+    ocount = bcount = acount = mcount = icount = 0L;
+    osize = bsize = asize = msize = isize = 0L;
     for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
         ++ocount;
         osize += (long) sizeof *mptr;
@@ -2845,6 +2920,12 @@ overview_stats(
         if (mptr->levelmap) {
             ++mcount;
             msize += (long) sizeof *mptr->levelmap;
+        }
+        for (im = mptr->itemmem; im; im = im->next) {
+            ++icount;
+            isize += (long) (sizeof *im + sizeof *im->obj);
+            if (im->oname)
+                isize += (long) strlen(im->oname) + 1;
         }
     }
 
@@ -2868,8 +2949,14 @@ overview_stats(
         Sprintf(buf, statsfmt, hdrbuf, mcount, msize);
         putstr(win, 0, buf);
     }
-    *total_count += ocount + bcount + acount + mcount;
-    *total_size += osize + bsize + asize + msize;
+    if (icount) {
+        Sprintf(hdrbuf, "seen items, size %ld",
+                (long) (sizeof (struct itemmem) + sizeof (struct obj)));
+        Sprintf(buf, statsfmt, hdrbuf, icount, isize);
+        putstr(win, 0, buf);
+    }
+    *total_count += ocount + bcount + acount + mcount + icount;
+    *total_size += osize + bsize + asize + msize + isize;
 }
 
 RESTORE_WARNING_FORMAT_NONLITERAL
@@ -2918,6 +3005,7 @@ init_mapseen(d_level *lev)
     init->next = 0, init->br = 0, init->custom = 0;
     init->final_resting_place = 0;
     init->levelmap = 0;
+    init->itemmem = 0;
     /* svl.lastseentyp[][] is reused for each level, so get rid of
        previous level's data */
     (void) memset((genericptr_t) svl.lastseentyp, 0, sizeof svl.lastseentyp);
