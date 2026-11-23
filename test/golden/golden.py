@@ -76,8 +76,10 @@ class Scenario:
     <ret> <esc> <sp> <tab> <bs> <C-x> name special keys.  Lines starting
     with '//' are comments.  '!restart' starts the game again (after a save).
     '!same-map NAME' checks that the map rows on screen now equal those
-    at the first '!same-map NAME'.  Any '!!' line in a transcript fails
-    'check', even if the transcript matches expected/.
+    at the first '!same-map NAME'.  '!screen-has TEXT' and
+    '!screen-lacks TEXT' check that the screen now does (not) contain TEXT.
+    Any '!!' line in a transcript fails 'check', even if the transcript
+    matches expected/.
     """
 
     def __init__(self, path):
@@ -277,6 +279,17 @@ def run(scen, seed=None):
                     out.append(f"!! line {lineno}: same-map {name}: differs")
                     out += [f"!!   want |{a}|\n!!   got  |{b}|"
                             for a, b in zip(maps[name], rows) if a != b]
+                continue
+            if step.startswith(("!screen-has ", "!screen-lacks ")):
+                # the screen on display now must (not) contain TEXT
+                directive, text = step.split(None, 1)
+                found = text in "\n".join(game.screen.display)
+                want = directive == "!screen-has"
+                if found == want:
+                    out.append(f"[{directive[1:]} {text!r}: ok]")
+                else:
+                    out.append(f"!! line {lineno}: {directive[1:]} {text!r}:"
+                               f" {'missing' if want else 'present'}")
                 continue
             if step == "!restart":
                 if game.alive():
