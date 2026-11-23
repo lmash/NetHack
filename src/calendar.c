@@ -32,6 +32,15 @@ time_t
 getnow(void)
 {
     time_t datetime = 0;
+#ifdef NH_DETERMINISTIC
+    /* Test builds only (see doc/features/determinism.md):
+       NETHACK_FAKETIME=<seconds since the epoch> freezes the clock, which
+       fixes moon phase, night, Friday 13th and the hero's birthday. */
+    const char *faketime = getenv("NETHACK_FAKETIME");
+
+    if (faketime && *faketime)
+        return (time_t) strtoll(faketime, (char **) 0, 10);
+#endif
 
     (void) time((TIME_type) &datetime);
     return datetime;

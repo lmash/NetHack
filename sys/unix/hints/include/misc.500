@@ -33,6 +33,13 @@ ifdef WANT_WIN_TTY
 USE_CURSESLIB=1
 endif
 
+# Golden-master test hooks NETHACK_SEED and NETHACK_FAKETIME
+# (see doc/features/determinism.md); inert unless those are set at run time.
+# Toggling this needs 'make clean' since make doesn't track flags.
+ifdef WANT_DETERMINISTIC
+NHCFLAGS+=-DNH_DETERMINISTIC
+endif
+
 ifdef WANT_WIN_CURSES
 ifneq "$(USE_CURSESLIB)" "1"
 USE_CURSESLIB=1

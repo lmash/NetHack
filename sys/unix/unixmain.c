@@ -817,7 +817,32 @@ sys_random_seed(void)
     boolean no_seed = TRUE;
 #ifdef DEV_RANDOM
     FILE *fptr;
+#endif
 
+#ifdef NH_DETERMINISTIC
+    /* Test builds only (see doc/features/determinism.md): NETHACK_SEED=<n>
+       derives each RNG's startup seed from n and a call counter
+       (splitmix64), so a scripted game replays identically.
+       has_strong_rngseed is left FALSE, which turns reseed_random() into
+       a no-op: each run is one continuous random stream, so a single
+       extra or missing rn2() anywhere shows up in everything after it
+       instead of being wiped out by the next level change. */
+    {
+        static unsigned long long seed_count = 0;
+        const char *envseed = nh_getenv("NETHACK_SEED");
+
+        if (envseed && *envseed) {
+            unsigned long long z = strtoull(envseed, (char **) 0, 10)
+                                   + ++seed_count * 0x9E3779B97F4A7C15ULL;
+
+            z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
+            z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
+            return (unsigned long) (z ^ (z >> 31));
+        }
+    }
+#endif
+
+#ifdef DEV_RANDOM
     fptr = fopen(DEV_RANDOM, "r");
     if (fptr) {
         fread(&seed, sizeof (long), 1, fptr);
