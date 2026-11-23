@@ -86,6 +86,10 @@ writing the next keys. Gotchas:
   so set the character with options.
 - The faketime should avoid full or new moon, Friday 13th and night (`basic`
   uses Tuesday 2026-03-10 12:00 UTC).
+- **Wizard mode (`-D`) plays a different game for the same seed.** It forces
+  the name "wizard", and the starting stats differ. A seed or key sequence
+  found in wizard mode does not carry over to normal play, so you can't use
+  wizard mode to search for seeds (e.g. one with an early shop).
 - Changing the seed, the options or any game code that touches the RNG means
   the script no longer fits the dungeon. Expect to rewrite it, not just
   re-record it.

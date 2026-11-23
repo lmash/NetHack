@@ -39,6 +39,8 @@ branch.
 
 Wizard mode (`-D`, needed for `test/*.lua` via `#wizloadlua`) needs your
 username in `WIZARDS=` in `playground/sysconf` (default `root games`).
+**Every build reinstalls `sysconf` and resets this edit**, so redo it after
+each build (`sed -i '' 's/^WIZARDS=root games$/& <you>/' playground/sysconf`).
 
 ## Smoke test (scripted, isolated)
 
