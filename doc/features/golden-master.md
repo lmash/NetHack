@@ -148,6 +148,16 @@ Findings:
   empty. `wiz_load_splua()` now calls `init_mapseen()` after the reset
   (wizard mode only). Since then `shop`'s overview lists the general store.
 
+## What `itemmem` covers
+
+Wizard mode, on `test/golden/lua/golden_items.lua`. The item finder's memory:
+distance vs. standing, piles, pickup and drop, looting, tipping, a locked
+chest, a dark room, shop prices, save/restore and object detection. See
+`doc/features/itemfinder.md`.
+
+`!screen-has TEXT` / `!screen-lacks TEXT` check the screen on display; a
+failure is a `!!` line.
+
 ## Known limits
 
 - Wizard-mode scenarios (`shop`) are only comparable with themselves, not
