@@ -19,7 +19,7 @@ c
 #wizlevelmap<ret>
 a
 !same-map dlvl1
-<ret>
+<esc>
 // what the hero remembers of Dlvl 2
 #terrain<ret>
 c
@@ -36,19 +36,28 @@ n
 #wizlevelmap<ret>
 a
 !same-map dlvl1
-<ret>
+// '>' steps down to Dlvl 2 (this level, live memory), '<' back up;
+// a second '>' at the deepest level stays there
+>
+!same-map dlvl2
+<
+!same-map dlvl1
+>
+>
+!same-map dlvl2
+<esc>
 // back to Dlvl 1: Dlvl 2's map is stored on leaving it
 <C-v>
 1<ret>
 #wizlevelmap<ret>
 b
 !same-map dlvl2
-<ret>
+<esc>
 // the current level is shown from live memory, as #terrain shows it
 #wizlevelmap<ret>
 a
 !same-map dlvl1-now
-<ret>
+<esc>
 #terrain<ret>
 c
 !same-map dlvl1-now

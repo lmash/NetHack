@@ -543,7 +543,7 @@ extern void premap_detect(void);
 extern void dump_map(void);
 #endif
 extern void reveal_terrain(unsigned);
-extern void show_levelmap(mapseen *) NONNULLARG1;
+extern void view_levelmap(mapseen *) NONNULLARG1;
 extern int wiz_mgender(void);
 
 /* ### dig.c ### */
@@ -922,6 +922,9 @@ extern int dooverview(void);
 extern void show_overview(int, int);
 extern void rm_mapseen(int);
 extern void levelmap_snapshot(void);
+extern boolean levelmap_viewable(mapseen *) NONNULLARG1;
+extern mapseen *levelmap_step(mapseen *, int) NONNULLARG1;
+extern char *levelmap_header(mapseen *, char *) NONNULLARG12;
 extern void init_mapseen(d_level *) NONNULLARG1;
 extern void update_lastseentyp(coordxy, coordxy);
 extern int update_mapseen_for(coordxy, coordxy);

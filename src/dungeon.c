@@ -3835,6 +3835,54 @@ print_mapseen(
         }
     }
 }
+
+/* level map viewer: can the hero look at this level's map?  The levels
+   #overview hides (unreachable, forgotten, the main dungeon once in the
+   endgame) are skipped, and so are levels with no remembered map. */
+boolean
+levelmap_viewable(mapseen *mptr)
+{
+    if (mptr->flags.notreachable || mptr->flags.forgot)
+        return FALSE;
+    if (In_endgame(&u.uz) && !In_endgame(&mptr->lev))
+        return FALSE;
+    return (on_level(&mptr->lev, &u.uz) || mptr->levelmap != 0);
+}
+
+/* level map viewer: the next (dir > 0) or previous (dir < 0) viewable
+   level after mptr in #overview order (by dungeon, then level); null if
+   there is none */
+mapseen *
+levelmap_step(mapseen *mptr, int dir)
+{
+    mapseen *m, *found = (mapseen *) 0;
+
+    if (dir > 0) {
+        for (m = mptr->next; m; m = m->next)
+            if (levelmap_viewable(m))
+                return m;
+    } else {
+        for (m = svm.mapseenchn; m && m != mptr; m = m->next)
+            if (levelmap_viewable(m))
+                found = m;
+    }
+    return found;
+}
+
+/* level map viewer: the line shown above a level's map, with the same
+   text as #overview: "The Dungeons of Doom, Level 3: "note" <- You are
+   here. A fountain." */
+char *
+levelmap_header(mapseen *mptr, char *buf) /* BUFSZ */
+{
+    char line[BUFSZ], feat[BUFSZ];
+
+    Snprintf(buf, BUFSZ, "%s, %s", svd.dungeons[mptr->lev.dnum].dname,
+             overview_levelline(mptr, 0, 0, line));
+    if (!mptr->flags.forgot && overview_interests(mptr, feat))
+        Snprintf(eos(buf), BUFSZ - strlen(buf), " %s", feat + strlen(PREFIX));
+    return buf;
+}
 #endif /* !SFCTOOL */
 #undef OF_INTEREST
 #undef ADDNTOBUF

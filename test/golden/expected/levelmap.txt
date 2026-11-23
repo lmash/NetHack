@@ -218,7 +218,7 @@ Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 38,4]
 
 === line 20: a
-Your remembered map of The Dungeons of Doom, level 1.--More--
+The Dungeons of Doom, Level 1:  [<>, ESC]
 
 
 
@@ -242,10 +242,10 @@ Your remembered map of The Dungeons of Doom, level 1.--More--
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
-[cursor 61,0]
+[cursor 41,0]
 [same-map dlvl1: same]
 
-=== line 22: <ret>
+=== line 22: <esc>
 
 
 
@@ -522,7 +522,7 @@ Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 38,4]
 
 === line 37: a
-Your remembered map of The Dungeons of Doom, level 1.--More--
+The Dungeons of Doom, Level 1:  [<>, ESC]
 
 
 
@@ -546,10 +546,121 @@ Your remembered map of The Dungeons of Doom, level 1.--More--
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
-[cursor 61,0]
+[cursor 41,0]
 [same-map dlvl1: same]
 
-=== line 39: <ret>
+=== line 41: >
+The Dungeons of Doom, Level 2: <- You are here.  [<>, ESC]
+
+
+                                                -------
+                                                ......|
+                                                |.....|
+                                                |.....|
+                                                |.....|
+                                                |...$.+
+                                                -----|-
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
+[cursor 58,0]
+[same-map dlvl2: same]
+
+=== line 43: <
+The Dungeons of Doom, Level 1:  [<>, ESC]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     --.---.---------
+                                     -...............
+                                     |..<.......$...|
+                                     |..............|
+                                     ----------------
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
+[cursor 41,0]
+[same-map dlvl1: same]
+
+=== line 45: >
+The Dungeons of Doom, Level 2: <- You are here.  [<>, ESC]
+
+
+                                                -------
+                                                ......|
+                                                |.....|
+                                                |.....|
+                                                |.....|
+                                                |...$.+
+                                                -----|-
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
+[cursor 58,0]
+
+=== line 46: >
+The Dungeons of Doom, Level 2: <- You are here.  [<>, ESC]
+
+
+                                                -------
+                                                ......|
+                                                |.....|
+                                                |.....|
+                                                |.....|
+                                                |...$.+
+                                                -----|-
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
+[cursor 58,0]
+[same-map dlvl2: same]
+
+=== line 48: <esc>
 
 
 
@@ -576,7 +687,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 53,4]
 
-=== line 41: <C-v>
+=== line 50: <C-v>
 To what level do you want to teleport?
 
 
@@ -603,7 +714,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:2 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 39,0]
 
-=== line 42: 1<ret>
+=== line 51: 1<ret>
 You materialize on a different level!
 
 
@@ -630,7 +741,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 22,9]
 
-=== line 43: #wizlevelmap<ret>
+=== line 52: #wizlevelmap<ret>
                                 Show the remembered map of which level?
 
                                 a - The Dungeons of Doom, level 1 (this level)
@@ -657,8 +768,8 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 38,4]
 
-=== line 44: b
-Your remembered map of The Dungeons of Doom, level 2.--More--
+=== line 53: b
+The Dungeons of Doom, Level 2:  [<>, ESC]
 
 
                                                 -------
@@ -682,10 +793,10 @@ Your remembered map of The Dungeons of Doom, level 2.--More--
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
-[cursor 61,0]
+[cursor 41,0]
 [same-map dlvl2: same]
 
-=== line 46: <ret>
+=== line 55: <esc>
 
 
 
@@ -712,7 +823,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 22,9]
 
-=== line 48: #wizlevelmap<ret>
+=== line 57: #wizlevelmap<ret>
                                 Show the remembered map of which level?
 
                                 a - The Dungeons of Doom, level 1 (this level)
@@ -739,8 +850,8 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 38,4]
 
-=== line 49: a
-Your remembered map of The Dungeons of Doom, level 1 (this level).--More--
+=== line 58: a
+The Dungeons of Doom, Level 1: <- You are here.  [<>, ESC]
 
 
 
@@ -764,10 +875,10 @@ Your remembered map of The Dungeons of Doom, level 1 (this level).--More--
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
-[cursor 74,0]
+[cursor 58,0]
 [same-map dlvl1-now: recorded]
 
-=== line 51: <ret>
+=== line 60: <esc>
 
 
 
@@ -794,7 +905,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 22,9]
 
-=== line 52: #terrain<ret>
+=== line 61: #terrain<ret>
                             View which?
 
                             a * known map without monsters, objects, and traps
@@ -821,7 +932,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 34,8]
 
-=== line 53: c
+=== line 62: c
 Showing known terrain, traps, and objects only...--More--
 
 
@@ -849,7 +960,7 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 57,0]
 [same-map dlvl1-now: same]
 
-=== line 55: <ret>
+=== line 64: <ret>
 (For instructions type a '?')
 
 
@@ -876,7 +987,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 22,9]
 
-=== line 56: <esc>
+=== line 65: <esc>
 
 
 
@@ -903,7 +1014,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 22,9]
 
-=== line 58: #quit<ret>
+=== line 67: #quit<ret>
 Really quit without saving? [yn] (n)
 
 
@@ -930,7 +1041,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 37,0]
 
-=== line 59: y
+=== line 68: y
 Dump core? [ynq] (q)
 
 
@@ -957,7 +1068,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 21,0]
 
-=== line 61: n
+=== line 70: n
 Do you want your possessions identified? [ynq] (n)
 
 
@@ -984,7 +1095,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
 [cursor 51,0]
 
-=== line 63: q
+=== line 72: q
 
 
 Since you were in wizard mode, the score list will not be checked.

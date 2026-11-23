@@ -246,7 +246,7 @@ wiz_levelmap(void)
     for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
         boolean here = on_level(&mptr->lev, &u.uz);
 
-        if (!here && !mptr->levelmap)
+        if (!levelmap_viewable(mptr))
             continue;
         any.a_void = (genericptr_t) mptr;
         Sprintf(buf, "%s, level %d%s", svd.dungeons[mptr->lev.dnum].dname,
@@ -262,7 +262,7 @@ wiz_levelmap(void)
     }
     destroy_nhwindow(win);
     if (mptr)
-        show_levelmap(mptr);
+        view_levelmap(mptr);
     return ECMD_OK;
 }
 

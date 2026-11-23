@@ -2413,31 +2413,53 @@ reveal_terrain(
     return;
 }
 
-/* level map viewer: show what the hero remembers of a visited level, the
-   current one from live memory and any other from the snapshot taken when
-   the hero left it (levelmap_snapshot()); no monsters apart from
-   remembered 'I's; uses no game time and no random numbers */
+/* level map viewer (#levelmap, or picking a level in #overview): show
+   what the hero remembers of visited levels, starting with mptr.  '<'
+   and '>' step through the visited levels in #overview order; ESC (or
+   'q') returns to the game.  The current level is shown from live
+   memory, others from the snapshot taken when the hero left them
+   (levelmap_snapshot()).  No monsters apart from remembered 'I's.  Uses
+   no game time and no random numbers. */
 void
-show_levelmap(mapseen *mptr)
+view_levelmap(mapseen *mptr)
 {
-    boolean here = on_level(&mptr->lev, &u.uz);
+    static const char keyhint[] = "  [<>, ESC]";
+    char header[BUFSZ];
     coordxy x, y;
+    char ch;
 
-    if (!here && !mptr->levelmap) {
+    if (!levelmap_viewable(mptr)) {
         You("don't remember the map of that level.");
         return;
     }
     if (unconstrain_map())
         docrt();
-    for (x = 1; x < COLNO; x++)
-        for (y = 0; y < ROWNO; y++)
-            show_glyph(x, y, here ? levl[x][y].glyph
-                                  : mptr->levelmap->glyph[x][y]);
-    flush_screen(1);
-    pline("Your remembered map of %s, level %d%s.",
-          svd.dungeons[mptr->lev.dnum].dname, mptr->lev.dlevel,
-          here ? " (this level)" : "");
-    display_nhwindow(WIN_MAP, TRUE);
+    for (;;) {
+        boolean here = on_level(&mptr->lev, &u.uz);
+        mapseen *next;
+
+        for (x = 1; x < COLNO; x++)
+            for (y = 0; y < ROWNO; y++)
+                show_glyph(x, y, here ? levl[x][y].glyph
+                                      : mptr->levelmap->glyph[x][y]);
+        flush_screen(0);
+        /* one line only: a --More-- would swallow the next key */
+        (void) levelmap_header(mptr, header);
+        if (strlen(header) + sizeof keyhint - 1 < COLNO)
+            Strcat(header, keyhint);
+        else if (strlen(header) >= COLNO - 1)
+            Strcpy(&header[COLNO - 4], "...");
+        clear_nhwindow(WIN_MESSAGE);
+        custompline(OVERRIDE_MSGTYPE | SUPPRESS_HISTORY, "%s", header);
+
+        ch = readchar();
+        if (ch == '\033' || ch == 'q')
+            break;
+        if ((ch == '<' || ch == '>')
+            && (next = levelmap_step(mptr, (ch == '>') ? 1 : -1)) != 0)
+            mptr = next;
+    }
+    clear_nhwindow(WIN_MESSAGE);
     map_redisplay();
 }
 
