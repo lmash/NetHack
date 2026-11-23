@@ -386,6 +386,10 @@ wiz_load_splua(void)
             strcat(buf, ".lua");
 
         lspo_reset_level(NULL);
+        /* lspo_reset_level() discarded the level's overview data (via
+           makemap_prepost()); start afresh, as mklev() does, so that the
+           new level has #overview, level map and item finder data */
+        init_mapseen(&u.uz);
         (void) load_special(buf);
         lspo_finalize_level(NULL);
 

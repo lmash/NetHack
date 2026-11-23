@@ -1869,10 +1869,10 @@ Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 51,0]
 
 === line 97: y
+                                         The Dungeons of Doom:
+                                            Level 1: <- You were here.
+                                               A general store.
                                          (end)
-
-
-
 -------------        ---------
 |....*......|        |.(f[??!|
 |..!.....*..-########-..@.*%=|
@@ -1893,7 +1893,7 @@ Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
-[cursor 47,0]
+[cursor 47,3]
 
 === line 98: <ret>
 Farvel wizard the Valkyrie...

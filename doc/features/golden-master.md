@@ -141,20 +141,12 @@ Findings:
 - Prices of goods come from `doname_with_price()` (`src/objnam.c`) and
   `get_cost()`. `price_quote()` is only reached from `#chat` with a
   shopkeeper (`src/sounds.c`), so `shop` doesn't cover it.
-- The end-of-game dungeon overview is **empty**, though the hero visited a
-  shop. Likely cause: the level's `mapseen` record (which Ctrl-O and F1 use)
-  isn't updated for a level replaced by `#wizloaddes`. Not investigated yet.
-  Keep it in mind before using `#wizloaddes` levels to test F1.
-
-## What `levelmap` covers
-
-Wizard mode. The level map viewer: compares the remembered maps of Dlvl 1 and
-2 with `#terrain`, across a level teleport and a save/restore. Also covers
-`<`/`>`, picking from Ctrl-O and `#levelmap`, and an `m` Ctrl-O note in the
-header. See `doc/features/levelmap.md`.
-
-`basic`'s Ctrl-O screen has menu letters since the viewer (agreed change; the
-only difference from the vanilla recording).
+- `#wizloaddes` used to leave the level without a `mapseen`: `lspo_reset_level()`
+  discards it (via `makemap_prepost()`, like `#wizmakemap`), but unlike
+  `#wizmakemap` nothing called `mklev()` to make a new one. So the level had no
+  overview, no level map and no item memory, and the end-of-game overview was
+  empty. `wiz_load_splua()` now calls `init_mapseen()` after the reset
+  (wizard mode only). Since then `shop`'s overview lists the general store.
 
 ## Known limits
 
