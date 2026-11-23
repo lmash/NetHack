@@ -1,0 +1,1930 @@
+scenario shop  seed 42  faketime 2026-03-10T12:00:00Z
+
+=== start
+Velkommen wizard, welcome to NetHack!  You are a lawful human Valkyrie.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     --.---.---------
+                                     -...o...........
+                                     |..@f......$...|
+                                     |..............|
+                                     ----------------
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
+[cursor 40,18]
+
+=== line 10: #wizloaddes<ret>
+Load which des lua file?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     --.---.---------
+                                     -...o...........
+                                     |..@f......$...|
+                                     |..............|
+                                     ----------------
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
+[cursor 25,0]
+
+=== line 11: golden_shop<ret>
+
+
+
+
+-------------
+|....(......|
+|f@(........+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:1
+[cursor 2,6]
+
+=== line 13: l
+You see here a large box.
+
+
+
+-------------
+|....(......|
+|f.@........+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
+[cursor 3,6]
+
+=== line 14: :
+You see here a large box.
+
+
+
+-------------
+|....(......|
+|f.@........+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
+[cursor 3,6]
+
+=== line 15: #loot<ret>
+                                      Do what with the large box?
+
+                                      : - Look inside the large box
+                                      o - take something out
+-------------                         i - put something in
+|....(......|                         b - both; take out, then put in
+|f.@........+                         r - both reversed; put in, then take out
+|......[....|                         s - stash one item into the large box
+-------------
+                                      q * do nothing
+                                      (end)
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
+[cursor 44,10]
+
+=== line 16: o
+                       Take out what type of objects?
+
+                       A - Auto-select every relevant item
+                           (ignored unless some other choices are also picked)
+-------------
+|....(......|          a - All types
+|f.@........+          b - Scrolls
+|......[....|          c - Potions
+-------------
+                       X - Items of unknown Bless/Curse status
+                       (end)
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
+[cursor 29,10]
+
+=== line 17: a<ret>
+                                         Take out what?
+
+                                         Scrolls
+                                         a - a scroll labeled ELBIB YLOH
+-------------                            Potions
+|....(......|                            b - a clear potion
+|f.@........+                            (end)
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
+[cursor 47,6]
+
+=== line 18: a<ret>
+e - a scroll labeled ELBIB YLOH.
+
+
+
+-------------
+|....(......|
+|f.@........+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:3
+[cursor 3,6]
+
+=== line 20: ul
+You see here a chest.
+
+
+
+-------------
+|....@......|
+|..(f.......+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:5
+[cursor 5,5]
+
+=== line 21: #loot<ret>
+Hmmm, the chest turns out to be locked.
+
+
+
+-------------
+|....@......|
+|..(f.......+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:5
+[cursor 5,5]
+
+=== line 22: #force<ret>
+There is a locked chest here; force its lock? [ynq] (q)
+
+
+
+-------------
+|....@......|
+|..(f.......+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:5
+[cursor 56,0]
+
+=== line 23: y
+You start bashing it with your spear.--More--
+
+
+
+-------------
+|....@......|
+|..(........+
+|....f.[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:11
+[cursor 45,0]
+
+=== line 24: <ret>
+You succeed in forcing the lock.--More--
+
+
+
+-------------
+|....@......|
+|..(........+
+|....f.[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:11
+[cursor 40,0]
+
+=== line 25: <ret>
+In fact, you've totally destroyed the chest.
+
+
+
+-------------
+|....@......|
+|..(...f....+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:12
+[cursor 5,5]
+
+=== line 27: #loot<ret>
+You don't find anything here to loot.
+
+
+
+-------------
+|....@......|
+|..(...f....+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:12
+[cursor 5,5]
+
+=== line 28: :
+You see here 2 red gems.
+
+
+
+-------------
+|....@......|
+|..(...f....+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:12
+[cursor 5,5]
+
+=== line 30: nn
+                                         Things that are here:
+                                         a ring mail
+                                         3 apples
+                                         a dagger
+-------------                            --More--
+|....*......|
+|..(.f......+
+|......@....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:13
+[cursor 49,4]
+
+=== line 31: <ret>
+
+
+
+
+-------------
+|....*......|
+|..(........+
+|....f.@....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:14
+[cursor 7,7]
+
+=== line 32: :
+                                         Things that are here:
+                                         a ring mail
+                                         3 apples
+                                         a dagger
+-------------                            --More--
+|....*......|
+|..(........+
+|....f.@....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:14
+[cursor 49,4]
+
+=== line 33: <ret>
+
+
+
+
+-------------
+|....*......|
+|..(........+
+|....f.@....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:14
+[cursor 7,7]
+
+=== line 34: ,
+                                         Pick up what?
+
+                                         Weapons
+                                         a - a dagger
+-------------                            Armor
+|....*......|                            b - a ring mail
+|..(........+                            Comestibles
+|....f.@....|                            c - 3 apples
+-------------                            (end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:14
+[cursor 47,8]
+
+=== line 35: c<ret>
+f - 3 apples.
+
+
+
+-------------
+|....*......|
+|..(........+
+|....f.@....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:15
+[cursor 7,7]
+
+=== line 37: yhhh
+You see here an unlocked large box containing 1 item.
+
+
+
+-------------
+|....f......|
+|..@........+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:19
+[cursor 3,6]
+
+=== line 38: #tip<ret>
+There is an unlocked large box containing 1 item here, tip it? [ynq] (q)
+
+
+
+-------------
+|....f......|
+|..@........+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:19
+[cursor 73,0]
+
+=== line 39: y
+          Where to tip the contents of an unlocked large box containing 1 item
+
+          - * on the floor
+
+--------- (end)
+|....f......|
+|..@........+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:19
+[cursor 16,4]
+
+=== line 40: <ret>
+An object spills out:  a clear potion.
+
+
+
+-------------
+|...f*......|
+|..@........+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:20
+[cursor 3,6]
+
+=== line 42: llllllll
+The kitten drops a red gem.
+
+
+
+-------------
+|....*......|
+|..!.....*f@+
+|......[....|
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:28
+[cursor 11,6]
+
+=== line 43: ol
+The door opens.
+
+
+
+-------------
+|....*...f..|                |
+|..!.....*.@-        -.)?!*%=|
+|......[....|                |
+-------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:29
+[cursor 11,6]
+
+=== line 44: llllllllll
+"Velkommen, wizard!  Welcome to Pakka Pakka's general store!"
+
+
+
+-------------         --------
+|....*......|        |@(([??!|
+|..!.....*..-#######f@.)?!*%=|
+|......[....|        |.%?)?[%|
+-------------         --------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:39
+[cursor 21,6]
+
+=== line 46: l
+
+
+
+
+-------------        ---------
+|....*......|        |@(([??!|
+|..!.....*..-########f@)?!*%=|
+|......[....|        |.%?)?[%|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:40
+[cursor 22,6]
+
+=== line 47: l
+You see here an elven short sword (for sale, 13 zorkmids).
+
+
+
+-------------        ---------
+|....*......|        |@(([??!|
+|..!.....*..-########-.@?!*%=|
+|......[....|        |.f?)?[%|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:41
+[cursor 23,6]
+
+=== line 48: ,
+"For you, honored lady; only 13 zorkmids for this elven short sword."--More--
+
+
+
+-------------        ---------
+|....*......|        |@(([??!|
+|..!.....*..-########-.@?!*%=|
+|......[....|        |.f?)?[%|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:41
+[cursor 77,0]
+
+=== line 49: <ret>
+g - an elven short sword (unpaid, 13 zorkmids).
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-@@?!*%=|
+|......[....|        |.%?f?[%|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:42
+[cursor 23,6]
+
+=== line 50: p
+You have no gold or credit.
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-@@?!*%=|
+|......[....|        |.%?f?[%|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:42
+[cursor 23,6]
+
+=== line 51: dg
+You drop an elven short sword (unpaid, 13 zorkmids).
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@?!*%=|
+|......[....|        |@%?)f[%|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:43
+[cursor 23,6]
+
+=== line 52: l
+You see here a scroll labeled READ ME (for sale, 107 zorkmids).--More--
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!*%=|
+|......[....|        |@%?)f[%|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:43
+[cursor 71,0]
+
+=== line 53: <ret>
+Your kitten steps reluctantly onto a studded leather armor.--More--
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!*%=|
+|......[....|        |@%?)?[f|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:43
+[cursor 67,0]
+
+=== line 54: <ret>
+Your kitten eats a tripe ration.
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!*%=|
+|......[....|        |@%?)?[f|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:44
+[cursor 24,6]
+
+=== line 56: df
+You drop 3 apples.--More--
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!*%=|
+|......[....|        |@%?)?[f|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:44
+[cursor 26,0]
+
+=== line 57: <ret>
+Pakka Pakka offers 11 gold pieces for your apples.  Sell them? [ynaq] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!*%=|
+|......[....|        |@%?)?[f|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:44
+[cursor 74,0]
+
+=== line 58: y
+You sold 3 apples for 11 gold pieces.
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!*%=|
+|......[....|        |@%?)?[f|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:11 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:45
+[cursor 24,6]
+
+=== line 59: de
+You drop a scroll labeled ELBIB YLOH.--More--
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!*%=|
+|......[....|        |@%?)?[f|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:11 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:45
+[cursor 45,0]
+
+=== line 60: <ret>
+Pakka Pakka offers 19 gold pieces for your scroll labeled ELBIB YLOH.  Sell it?
+ [ynaq] (n)
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!*%=|
+|......[....|        |@%?)?[f|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:11 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:45
+[cursor 12,1]
+
+=== line 61: y
+You sold a scroll labeled ELBIB YLOH for 19 gold pieces.
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.)@!f%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:46
+[cursor 24,6]
+
+=== line 63: h
+You see here an elven short sword (for sale, 13 zorkmids).
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@f!*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:47
+[cursor 23,6]
+
+=== line 64: ,
+"For you, esteemed lady; only 13 zorkmids for this elven short sword."--More--
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@f!*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:47
+[cursor 78,0]
+
+=== line 65: <ret>
+g - an elven short sword (unpaid, 13 zorkmids).
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-@@?!f%=|
+|......[....|        |.%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:48
+[cursor 23,6]
+
+=== line 66: p
+                                         Pay for which items?
+
+                                         a - 13 Zm, an elven short sword
+                                         (end)
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-@@?!f%=|
+|......[....|        |.%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:48
+[cursor 47,3]
+
+=== line 67: a<ret>
+You bought an elven short sword for 13 gold pieces.--More--
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-@@?!f%=|
+|......[....|        |.%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:48
+[cursor 59,0]
+
+=== line 68: <ret>
+"Thank you for shopping in Pakka Pakka's general store!"--More--
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@?f*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:48
+[cursor 64,0]
+
+=== line 69: <ret>
+The kitten picks up a ruby potion.
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@?.f%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
+[cursor 23,6]
+
+=== line 71: S
+Really save? [yn] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@?.f%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
+[cursor 22,0]
+
+=== line 72: y
+Be seeing you...
+[cursor 0,1]
+[game exited]
+
+=== line 73: !restart
+Velkommen wizard, the human Valkyrie, welcome back to NetHack!--More--
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@?.f%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
+[cursor 70,0]
+
+=== line 74: <ret>
+Do you want to keep the save file? [yn] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@?.f%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
+[cursor 44,0]
+
+=== line 76: n
+Do you want to keep the save file? [yn] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(([??!|
+|..!.....*..-########-.@?.f%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
+[cursor 23,6]
+
+=== line 78: l
+                            Things that are here:
+                            a scroll labeled ELBIB YLOH (for sale, 89 zorkmids)
+                            3 apples (for sale, 27 zorkmids)
+                            a scroll labeled READ ME (for sale, 107 zorkmids)
+-------------        ------ --More--
+|....*......|        |.(([??!|
+|..!.....*..-########-..@.f%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
+[cursor 36,4]
+
+=== line 79: <ret>
+
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 24,6]
+
+=== line 80: :
+                            Things that are here:
+                            a scroll labeled ELBIB YLOH (for sale, 89 zorkmids)
+                            3 apples (for sale, 27 zorkmids)
+                            a scroll labeled READ ME (for sale, 107 zorkmids)
+-------------        ------ --More--
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 36,4]
+
+=== line 81: <ret>
+
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 24,6]
+
+=== line 83: #quit<ret>
+Really quit without saving? [yn] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 37,0]
+
+=== line 84: y
+Dump core? [ynq] (q)
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 21,0]
+
+=== line 86: n
+Pakka Pakka gratefully inherits all your possessions.--More--
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 61,0]
+
+=== line 87: <ret>
+Do you want to see what you had when you quit? [ynq] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 57,0]
+
+=== line 89: y
+                               Coins
+                               $ - 17 gold pieces
+                               Weapons
+                               a - a +1 spear (weapon in right hand)
+-------------        --------- b - a +0 dagger (alternate weapon; not wielded)
+|....*......|        |.(f[??!| g - a +0 elven short sword
+|..!.....*..-########-..@.*%=| Armor
+|......[....|        |@%?)?[.| c - an uncursed +3 small shield (being worn)
+-------------        --------- Comestibles
+                               d - an uncursed food ration
+                               (end)
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 37,10]
+
+=== line 90: <ret>
+Do you want to see your attributes? [ynq] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 46,0]
+
+=== line 92: n
+Do you want to see your conduct and achievements? [ynq] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 60,0]
+
+=== line 94: y
+                                         Voluntary challenges:
+                                          Character rerolling was not enabled.
+                                          You went without food.
+                                          You were an atheist.
+-------------        ---------            You never hit with a wielded weapon.
+|....*......|        |.(f[??!|            You were a pacifist.
+|..!.....*..-########-..@.*%=|            You were illiterate.
+|......[....|        |@%?)?[.|            You never genocided any monsters.
+-------------        ---------            You never polymorphed an object.
+                                          You never changed form.
+                                          You used no wishes.
+
+                                         Achievement:
+                                          You entered a shop.
+                                         --More--
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 49,14]
+
+=== line 95: <ret>
+Do you want to see the dungeon overview? [ynq] (n)
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 51,0]
+
+=== line 97: y
+                                         (end)
+
+
+
+-------------        ---------
+|....*......|        |.(f[??!|
+|..!.....*..-########-..@.*%=|
+|......[....|        |@%?)?[.|
+-------------        ---------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
+[cursor 47,0]
+
+=== line 98: <ret>
+Farvel wizard the Valkyrie...
+
+You quit in The Dungeons of Doom on dungeon level 1 with 17 points,
+and 17 pieces of gold, after 50 moves.
+You were level 1 with a maximum of 16 hit points when you quit.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--More--
+[cursor 8,23]
+
+=== line 100: <ret>
+
+
+Since you were in wizard mode, the score list will not be checked.
+[cursor 0,3]
+[game exited]

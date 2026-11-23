@@ -1,0 +1,100 @@
+// Golden master, wizard mode: a level built by test/golden/lua/golden_shop.lua
+// with a large box, a locked chest, a pile and a general store.  Covers the
+// code paths the item finder (F2) will hook into.
+seed: 42
+faketime: 2026-03-10T12:00:00Z
+wizard: yes
+options: name:golden,role:valkyrie,race:human,gender:female,align:lawful,!autopickup,!legacy,!splash_screen,!tutorial,time,showexp,!mail,!tips
+---
+// replace Dlvl 1 with the test level
+#wizloaddes<ret>
+golden_shop<ret>
+// step onto the large box; look at it with ':'
+l
+:
+#loot<ret>
+o
+a<ret>
+a<ret>
+// the locked chest: looting fails, then force it open with the sword
+ul
+#loot<ret>
+#force<ret>
+y
+<ret>
+<ret>
+// bashing destroyed the chest: nothing to loot, its rubies are on the floor
+#loot<ret>
+:
+// the pile: walk onto it, look with ':', pick up the apples
+nn
+<ret>
+:
+<ret>
+,
+c<ret>
+// back to the large box and tip out what's left (the potion)
+yhhh
+#tip<ret>
+y
+<ret>
+// to the shop: open the east door and follow the corridor
+llllllll
+ol
+llllllllll
+// inside: stand on goods to see their price, pick one up, try to pay
+l
+l
+,
+<ret>
+p
+dg
+l
+<ret>
+<ret>
+// sell the apples and the unidentified scroll from the box
+df
+<ret>
+y
+de
+<ret>
+y
+// buy the elven short sword with the proceeds
+h
+,
+<ret>
+p
+a<ret>
+<ret>
+<ret>
+// save inside the shop and restore
+S
+y
+!restart
+<ret>
+// wizard mode only: keep the save file?
+n
+// the shop survived the restore: prices are still quoted
+l
+<ret>
+:
+<ret>
+// quit, with all the end-of-game screens
+#quit<ret>
+y
+// wizard mode only
+n
+<ret>
+// inventory at the end, identified
+y
+<ret>
+// attributes
+n
+// conduct
+y
+<ret>
+// dungeon overview: empty, the shop on the #wizloaddes level is not listed
+y
+<ret>
+// farewell, then the top-ten list; the game exits
+<ret>

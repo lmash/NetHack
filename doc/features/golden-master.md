@@ -65,6 +65,9 @@ Background: `determinism.md`. With `NH_DETERMINISTIC` compiled in:
 - Mutation: one extra `(void) rn2(2)` in `u_init_misc()` makes `check` FAIL
   from the first screen. Reverted, it passes again.
 - Load: passes with every CPU busy under `nice -n 15`, in the same 18 s.
+- `shop`: `selftest` passes. An extra `rn2()` in `get_cost()` (`src/shk.c`)
+  makes `shop` FAIL while `basic` still passes. Reverted, both pass. `check`
+  for both takes about 35 s.
 
 ## Writing scenarios
 
@@ -73,6 +76,13 @@ Background: `determinism.md`. With `NH_DETERMINISTIC` compiled in:
 character is a key, and `<ret> <esc> <sp> <tab> <bs> <C-x>` name special keys.
 `//` starts a comment line. `!restart` starts the game again after a save. The
 screen is recorded after each step.
+
+Optional header `wizard: yes` runs the game with `-D`. The harness then adds
+your login name to `WIZARDS` in `playground/sysconf` (which every build
+resets), and prints a note when it does. `test/golden/lua/*.lua` is copied
+into each run's playground, where `#wizloadlua` and `#wizloaddes` look for
+files. Wizard mode asks two extra questions: "keep the save file?" on
+restore and "Dump core?" on quit.
 
 **Scenarios must never use the F1/F2 commands**, so the transcripts stay
 comparable with vanilla.
@@ -103,7 +113,36 @@ level 1 saved to disk); eating; save, exit and restore; going back upstairs (the
 saved level reloaded); `i`, `^X`, `^O`, `\`; and quitting through all the
 end-of-game screens.
 
+## What `shop` covers
+
+Wizard mode, seed 42. `#wizloaddes golden_shop` replaces Dlvl 1 with
+`test/golden/lua/golden_shop.lua`: a lit room with an unlocked large box (an
+unidentified scroll and potion), a locked chest (2 rubies), a 3-item pile, and
+a corridor to a general store with random stock.
+
+It covers: `:` on a square; `#loot` and taking one item out (names shown
+unidentified); `#loot` on a locked chest; `#force` (it destroys the chest, and
+the rubies spill onto the floor); walking onto a pile and `:`; picking up from
+a pile; `#tip` onto the floor; the shopkeeper's greeting; goods priced on
+standing and on pickup; `p` with no gold; dropping an unpaid item; selling two
+items; buying with the proceeds; save and restore inside the shop; the sold
+items for sale in a priced pile after restore; and quitting through the end
+screens.
+
+Findings:
+
+- Prices of goods come from `doname_with_price()` (`src/objnam.c`) and
+  `get_cost()`. `price_quote()` is only reached from `#chat` with a
+  shopkeeper (`src/sounds.c`), so `shop` doesn't cover it.
+- The end-of-game dungeon overview is **empty**, though the hero visited a
+  shop. Likely cause: the level's `mapseen` record (which Ctrl-O and F1 use)
+  isn't updated for a level replaced by `#wizloaddes`. Not investigated yet.
+  Keep it in mind before using `#wizloaddes` levels to test F1.
+
 ## Known limits
+
+- Wizard-mode scenarios (`shop`) are only comparable with themselves, not
+  with a normal-mode game.
 
 - tty only, macOS only so far. The hooks are in shared Unix code, so Linux
   should be easy.
