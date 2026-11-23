@@ -97,3 +97,9 @@ util/*.lib
 util/*.exp
 submodules/CHKSUMS.tmp
 sys/amiga/regex/
+
+# in-tree install from WANT_SOURCE_INSTALL=1
+/playground/
+
+# golden-master test output
+/test/golden/out/
