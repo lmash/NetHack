@@ -3076,7 +3076,7 @@ finditem_describe(mapseen *mptr, struct itemmem *im, char *buf) /* BUFSZ */
         Snprintf(eos(buf), BUFSZ - strlen(buf), ", on the floor");
     }
     if (im->price)
-        Snprintf(eos(buf), BUFSZ - strlen(buf), ", %s %ld %s",
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", %s, %ld %s",
                  im->price_contents ? "contents" : "for sale", im->price,
                  currency(im->price));
     Snprintf(eos(buf), BUFSZ - strlen(buf), ", last seen T:%ld", im->seen);
