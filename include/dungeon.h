@@ -243,6 +243,13 @@ struct mapseen_rooms {
     Bitfield(untended, 1); /* flag for shop without shk */
 };
 
+/* the hero's remembered map of one level, copied from levl[][].glyph when
+   the hero leaves the level; used by the level map viewer to show levels
+   other than the current one (doc/features/levelmap.md) */
+struct levelmap {
+    int glyph[COLNO][ROWNO]; /* what the hero thought was there */
+};
+
 typedef struct mapseen {
     struct mapseen *next; /* next map in the chain */
     branch *br;           /* knows about branch via taking it in goto_level */
@@ -255,6 +262,8 @@ typedef struct mapseen {
     struct mapseen_rooms msrooms[(MAXNROFROOMS + 1) * 2]; /* same size as svr.rooms[] */
     /* dead heroes; might not have graves or ghosts */
     struct cemetery *final_resting_place; /* same as level.bonesinfo */
+    /* remembered map as of leaving the level; null until then */
+    struct levelmap *levelmap;
 } mapseen;
 
 #endif /* !MAKEDEFS_C && !MDLIB_C */

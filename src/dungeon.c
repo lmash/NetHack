@@ -73,6 +73,7 @@ staticfn char *get_annotation(d_level *);
 staticfn void query_annotation(d_level *);
 staticfn mapseen *load_mapseen(NHFILE *);
 staticfn void save_mapseen(NHFILE *, mapseen *);
+staticfn void free_levelmap(mapseen *);
 staticfn mapseen *find_mapseen(d_level *);
 staticfn mapseen *find_mapseen_by_str(const char *);
 staticfn void print_mapseen(winid, mapseen *, int, int, boolean);
@@ -199,6 +200,7 @@ save_dungeon(
                 free((genericptr_t) curr_ms->custom);
             if (curr_ms->final_resting_place)
                 savecemetery(nhfp, &curr_ms->final_resting_place);
+            free_levelmap(curr_ms);
             free((genericptr_t) curr_ms);
         }
         svm.mapseenchn = 0;
@@ -2676,6 +2678,7 @@ rm_mapseen(int ledger_num)
 
     if (mptr->custom)
         free((genericptr_t) mptr->custom), mptr->custom = (char *) NULL;
+    free_levelmap(mptr);
 
     bpnext = mptr->final_resting_place;
     while ((bp = bpnext) != NULL) {
@@ -2692,10 +2695,41 @@ rm_mapseen(int ledger_num)
 }
 
 staticfn void
+free_levelmap(mapseen *mptr)
+{
+    if (mptr->levelmap)
+        free((genericptr_t) mptr->levelmap), mptr->levelmap = 0;
+}
+
+/* level map viewer: the hero is leaving the current level; copy what they
+   remember of it (levl[][].glyph) so that it can be viewed from elsewhere.
+   Uses no game time and no random numbers. */
+void
+levelmap_snapshot(void)
+{
+    mapseen *mptr = find_mapseen(&u.uz);
+    coordxy x, y;
+
+    if (!mptr)
+        return;
+    if (!svl.level.flags.hero_memory) {
+        /* the hero doesn't remember this level's map; show nothing */
+        free_levelmap(mptr);
+        return;
+    }
+    if (!mptr->levelmap)
+        mptr->levelmap = (struct levelmap *) alloc(sizeof *mptr->levelmap);
+    for (x = 0; x < COLNO; ++x)
+        for (y = 0; y < ROWNO; ++y)
+            mptr->levelmap->glyph[x][y] = levl[x][y].glyph;
+}
+
+staticfn void
 save_mapseen(NHFILE *nhfp, mapseen *mptr)
 {
     branch *curr;
     int i, brindx;
+    boolean have_map;
 
     for (brindx = 0, curr = svb.branches; curr; curr = curr->next, ++brindx)
         if (curr == mptr->br)
@@ -2714,6 +2748,17 @@ save_mapseen(NHFILE *nhfp, mapseen *mptr)
         Sfo_mapseen_rooms(nhfp, &mptr->msrooms[i], "mapseen-msrooms");
     }
     savecemetery(nhfp, &mptr->final_resting_place);
+    /* level map viewer: remembered map as of leaving the level */
+    have_map = (mptr->levelmap != 0);
+    Sfo_boolean(nhfp, &have_map, "mapseen-have_levelmap");
+    if (have_map) {
+        coordxy x, y;
+
+        for (x = 0; x < COLNO; ++x)
+            for (y = 0; y < ROWNO; ++y)
+                Sfo_int(nhfp, &mptr->levelmap->glyph[x][y],
+                        "mapseen-levelmap-glyph");
+    }
 }
 #endif /* !SFCTOOL */
 
@@ -2721,6 +2766,7 @@ staticfn mapseen *
 load_mapseen(NHFILE *nhfp)
 {
     int i, branchnum = 0, brindx;
+    boolean have_map = FALSE;
     mapseen *load;
     branch *curr;
 
@@ -2750,6 +2796,19 @@ load_mapseen(NHFILE *nhfp)
         Sfi_mapseen_rooms(nhfp, &load->msrooms[i], "mapseen-msrooms");
     }
     restcemetery(nhfp, &load->final_resting_place);
+    /* level map viewer: remembered map as of leaving the level */
+    Sfi_boolean(nhfp, &have_map, "mapseen-have_levelmap");
+    if (have_map) {
+        coordxy x, y;
+
+        load->levelmap = (struct levelmap *) alloc(sizeof *load->levelmap);
+        for (x = 0; x < COLNO; ++x)
+            for (y = 0; y < ROWNO; ++y)
+                Sfi_int(nhfp, &load->levelmap->glyph[x][y],
+                        "mapseen-levelmap-glyph");
+    } else {
+        load->levelmap = (struct levelmap *) 0;
+    }
     return load;
 }
 #ifndef SFCTOOL
@@ -2764,11 +2823,11 @@ overview_stats(
     long *total_count, long *total_size) /* args for the format */
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
-    long ocount, osize, bcount, bsize, acount, asize;
+    long ocount, osize, bcount, bsize, acount, asize, mcount, msize;
     struct cemetery *ce;
     mapseen *mptr;
 
-    ocount = bcount = acount = osize = bsize = asize = 0L;
+    ocount = bcount = acount = mcount = osize = bsize = asize = msize = 0L;
     for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
         ++ocount;
         osize += (long) sizeof *mptr;
@@ -2779,6 +2838,10 @@ overview_stats(
         if (mptr->custom_lth) {
             ++acount;
             asize += (long) (mptr->custom_lth + 1);
+        }
+        if (mptr->levelmap) {
+            ++mcount;
+            msize += (long) sizeof *mptr->levelmap;
         }
     }
 
@@ -2796,8 +2859,14 @@ overview_stats(
         Sprintf(buf, statsfmt, hdrbuf, acount, asize);
         putstr(win, 0, buf);
     }
-    *total_count += ocount + bcount + acount;
-    *total_size += osize + bsize + asize;
+    if (mcount) {
+        Sprintf(hdrbuf, "level maps, size %ld",
+                (long) sizeof (struct levelmap));
+        Sprintf(buf, statsfmt, hdrbuf, mcount, msize);
+        putstr(win, 0, buf);
+    }
+    *total_count += ocount + bcount + acount + mcount;
+    *total_size += osize + bsize + asize + msize;
 }
 
 RESTORE_WARNING_FORMAT_NONLITERAL
@@ -2845,6 +2914,7 @@ init_mapseen(d_level *lev)
        explicitly initialize pointers to null */
     init->next = 0, init->br = 0, init->custom = 0;
     init->final_resting_place = 0;
+    init->levelmap = 0;
     /* svl.lastseentyp[][] is reused for each level, so get rid of
        previous level's data */
     (void) memset((genericptr_t) svl.lastseentyp, 0, sizeof svl.lastseentyp);

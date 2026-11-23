@@ -1623,6 +1623,7 @@ goto_level(
     if (!iflags.nofollowers)
         keepdogs(FALSE);
     recalc_mapseen(); /* recalculate map overview before we leave the level */
+    levelmap_snapshot(); /* remembered map, for the level map viewer */
     /*
      *  We no longer see anything on the level.  Make sure that this
      *  follows u.uswallow set to null since uswallow overrides all

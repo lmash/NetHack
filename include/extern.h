@@ -920,6 +920,7 @@ extern void load_exclusions(NHFILE *) NONNULLARG1;
 extern int dooverview(void);
 extern void show_overview(int, int);
 extern void rm_mapseen(int);
+extern void levelmap_snapshot(void);
 extern void init_mapseen(d_level *) NONNULLARG1;
 extern void update_lastseentyp(coordxy, coordxy);
 extern int update_mapseen_for(coordxy, coordxy);
