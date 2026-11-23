@@ -1,0 +1,144 @@
+// Golden master: one Valkyrie game, seed 42, frozen on a quiet Tuesday noon
+// (no full/new moon, not Friday 13th, daytime).
+seed: 42
+faketime: 2026-03-10T12:00:00Z
+options: name:golden,role:valkyrie,race:human,gender:female,align:lawful,!autopickup,!legacy,!splash_screen,!tutorial,time,showexp,!mail,!tips
+---
+// look at starting inventory
+i
+<esc>
+// walk to the item pile; pick up from the menu
+nnn
+llll
+// dismiss the pile listing; a dart trap fires (poisoned)
+<ret>
+,
+<ret>
+,
+// take the darts, the bag and the whistle
+acd<ret>
+// a canine at the east door: wait for it
+s
+s
+// fight it (east)
+Fl
+Fl
+// explore east for the downstairs
+u
+ll
+L
+// fountain room: pick up the glass orb, leave east
+l
+n
+l
+,
+u
+L
+// corridor north-west to a closet
+H
+l
+l
+// two potions: take both, drink one
+n
+,
+b
+,
+qi
+// paralysis; the kitten fights a kobold zombie meanwhile
+<ret>
+<ret>
+<ret>
+<ret>
+<ret>
+// travel back to the upstairs, then out through the south-west gap
+_
+<
+.
+jjj
+H
+H
+// gold in the small west room
+hhh
+,
+// out the top doorway, keep exploring
+kk
+k
+K
+// an o to the west: fight
+Fh
+H
+// the goblin's drop: pickup menu, take both
+<ret>
+,
+ab<ret>
+// wear the helm
+Wk
+// north-west around a boulder
+y
+K
+// kobold to the north-east
+Fu
+y
+K
+// open the door to the north, step into the room
+ok
+k
+k
+// west toward the big room
+hhh
+H
+h
+// the item, then travel to the downstairs
+bbb
+h
+,
+_
+>
+.
+// descend: a new level is built and level 1 is saved to disk
+>
+<ret>
+// eat the food ration
+ed
+<ret>
+// newt to the north-east
+Fu
+Fu
+Fu
+// save and exit, then start again: the game must restore exactly
+S
+y
+!restart
+// back up to level 1 (we are on the upstairs): reloads a saved level
+<
+<ret>
+// end-of-run state dump on screen: inventory, attributes, overview, discoveries
+i
+<esc>
+<C-x>
+>
+<esc>
+<C-o>
+<esc>
+\
+<esc>
+// quit, answering the end-of-game questions
+#quit<ret>
+y
+// identify possessions: shows the randomized identities
+y
+<ret>
+// (large box contents)
+<ret>
+// attributes: already shown with ^X
+n
+// creatures vanquished
+y
+<ret>
+// conduct
+y
+<ret>
+// dungeon overview: already shown with ^O
+n
+// farewell, then the top-ten list; the game exits
+<ret>
