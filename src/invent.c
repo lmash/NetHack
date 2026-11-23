@@ -1065,6 +1065,7 @@ addinv_core0(
         panic("addinv: obj not free");
     if (obj->how_lost == LOST_EXPLODING)
         return (struct obj *) NULL;
+    itemmem_gone(obj); /* item finder: inventory isn't listed */
 
     /* normally addtobill() clears no_charge when items in a shop are
        picked up, but won't do so if the shop has become untended */
@@ -4281,6 +4282,7 @@ look_here(
         read_engr_at(u.ux, u.uy); /* Eric Backus */
         You("%s here %s.", verb, doname_with_price(otmp));
         iflags.last_msg = PLNMSG_ONE_ITEM_HERE;
+        itemmem_saw_pile(u.ux, u.uy, (struct obj *) 0); /* item finder */
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);
     } else {
@@ -4307,6 +4309,9 @@ look_here(
         }
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
+        /* item finder: remember what was listed */
+        itemmem_saw_pile(u.ux, u.uy, felt_cockatrice ? otmp->nexthere
+                                                     : (struct obj *) 0);
         if (felt_cockatrice)
             feel_cockatrice(otmp, FALSE);
         read_engr_at(u.ux, u.uy); /* Eric Backus */

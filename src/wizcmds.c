@@ -224,6 +224,51 @@ wiz_where(void)
     return ECMD_OK;
 }
 
+/* the #wizitemmem command - list the item finder's memory of objects seen
+   on each visited level (doc/features/itemfinder.md) */
+int
+wiz_itemmem(void)
+{
+    winid win;
+    mapseen *mptr;
+    struct itemmem *im;
+    char buf[BUFSZ];
+    int count = 0;
+
+    if (!wizard) {
+        pline(unavailcmd, ecname_from_fn(wiz_itemmem));
+        return ECMD_OK;
+    }
+    win = create_nhwindow(NHW_TEXT);
+    for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
+        if (!mptr->itemmem)
+            continue;
+        Sprintf(buf, "%s, level %d:", svd.dungeons[mptr->lev.dnum].dname,
+                mptr->lev.dlevel);
+        putstr(win, 0, buf);
+        for (im = mptr->itemmem; im; im = im->next) {
+            ++count;
+            Sprintf(buf, " <%d,%d> T:%ld ", im->obj->ox, im->obj->oy,
+                    im->seen);
+            if (im->cont_id)
+                Sprintf(eos(buf), "  in #%u: ", im->cont_id);
+            Sprintf(eos(buf), "#%u %s", im->obj->o_id, itemmem_name(im));
+            if (Is_container(im->obj) && !im->obj->cknown)
+                Strcat(buf, " (contents unknown)");
+            if (im->price)
+                Sprintf(eos(buf), " (%s, %ld zm)",
+                        im->price_contents ? "contents" : "for sale",
+                        im->price);
+            putstr(win, 0, buf);
+        }
+    }
+    if (!count)
+        putstr(win, 0, "No items remembered.");
+    display_nhwindow(win, TRUE);
+    destroy_nhwindow(win);
+    return ECMD_OK;
+}
+
 /* the #wizdetect command - detect secret doors, traps, hidden monsters */
 int
 wiz_detect(void)

@@ -3215,6 +3215,9 @@ use_container(
             gc.current_container->cknown = 1;
         update_inventory();
     }
+    /* item finder: the hero has seen inside (if cknown) */
+    if (gc.current_container)
+        itemmem_saw_contents(gc.current_container);
 
     sellobj_state(SELL_NORMAL); /* in case in_container() set it */
     *objp = gc.current_container; /* might have become null */
@@ -3832,6 +3835,10 @@ tipcontainer(struct obj *box) /* or bag */
         box->owt = weight(box); /* mbag_item_gone() doesn't update this */
         if (targetbox)
             targetbox->owt = weight(targetbox);
+        /* item finder: the hero knows what's left in them now */
+        itemmem_saw_contents(box);
+        if (targetbox)
+            itemmem_saw_contents(targetbox);
         if (srcheld || dstheld)
             encumber_msg();
     }

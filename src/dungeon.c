@@ -2751,6 +2751,270 @@ levelmap_snapshot(void)
             mptr->levelmap->glyph[x][y] = levl[x][y].glyph;
 }
 
+/*
+ * Item finder: the hero's memory of the objects seen on each level, kept
+ * in that level's mapseen (doc/features/itemfinder.md).  An entry is a
+ * copy of the object as the hero saw it, so its known flags (dknown,
+ * bknown, known, rknown, cknown, lknown) are what the hero knew then.
+ * Floor entries are keyed by object and square; container contents by
+ * object and container.  None of this uses game time or random numbers.
+ */
+
+/* the current level's mapseen, if its items may be recorded */
+staticfn mapseen *
+itemmem_level(void)
+{
+    if (program_state.restoring || !svl.level.flags.hero_memory)
+        return (mapseen *) 0;
+    return find_mapseen(&u.uz);
+}
+
+staticfn struct itemmem *
+itemmem_find(
+    mapseen *mptr,
+    unsigned o_id,
+    unsigned cont_id,
+    coordxy x, coordxy y) /* only for floor entries (cont_id == 0) */
+{
+    struct itemmem *im;
+
+    for (im = mptr->itemmem; im; im = im->next)
+        if (im->obj->o_id == o_id && im->cont_id == cont_id
+            && (cont_id || (im->obj->ox == x && im->obj->oy == y)))
+            return im;
+    return (struct itemmem *) 0;
+}
+
+/* forget the remembered contents of the container with o_id 'cont_id',
+   and theirs */
+staticfn void
+itemmem_forget_contents(mapseen *mptr, unsigned cont_id)
+{
+    struct itemmem **pp, *im;
+
+    for (pp = &mptr->itemmem; (im = *pp) != 0;) {
+        if (im->cont_id == cont_id) {
+            unsigned id = im->obj->o_id;
+
+            *pp = im->next; /* the recursion keeps *pp up to date */
+            free_itemmem_entry(im);
+            itemmem_forget_contents(mptr, id);
+        } else {
+            pp = &im->next;
+        }
+    }
+}
+
+staticfn void itemmem_record(mapseen *, struct obj *, coordxy, coordxy,
+                             unsigned, boolean);
+
+/* the hero knows what's in 'box' (cknown): replace its remembered contents */
+staticfn void
+itemmem_record_contents(
+    mapseen *mptr,
+    struct obj *box,
+    coordxy x, coordxy y, /* where the outermost container is */
+    boolean in_shop)
+{
+    struct itemmem **pp, *im;
+    struct obj *otmp;
+
+    for (pp = &mptr->itemmem; (im = *pp) != 0;) {
+        if (im->cont_id == box->o_id) {
+            for (otmp = box->cobj; otmp; otmp = otmp->nobj)
+                if (otmp->o_id == im->obj->o_id)
+                    break;
+            if (!otmp) { /* no longer in there */
+                unsigned id = im->obj->o_id;
+
+                *pp = im->next;
+                free_itemmem_entry(im);
+                itemmem_forget_contents(mptr, id);
+                continue;
+            }
+        }
+        pp = &im->next;
+    }
+    for (otmp = box->cobj; otmp; otmp = otmp->nobj)
+        itemmem_record(mptr, otmp, x, y, box->o_id, in_shop);
+}
+
+/* remember obj (at <x,y>, in container 'cont_id' or on the floor) as the
+   hero sees it now; in a shop, with its price, as #look would quote it */
+staticfn void
+itemmem_record(
+    mapseen *mptr,
+    struct obj *obj,
+    coordxy x, coordxy y,
+    unsigned cont_id,
+    boolean in_shop)
+{
+    struct itemmem *im = itemmem_find(mptr, obj->o_id, cont_id, x, y);
+    struct obj *copy;
+
+    if (!im) {
+        struct itemmem **tail;
+
+        im = (struct itemmem *) alloc(sizeof *im);
+        im->obj = (struct obj *) alloc(sizeof *im->obj);
+        im->oname = (char *) 0;
+        im->price = 0L, im->price_contents = FALSE;
+        im->next = (struct itemmem *) 0;
+        for (tail = &mptr->itemmem; *tail; tail = &(*tail)->next)
+            continue;
+        *tail = im;
+    }
+    copy = im->obj;
+    *copy = *obj;
+    /* a detached copy: no list pointers, no attachments */
+    copy->nobj = copy->nexthere = copy->cobj = (struct obj *) 0;
+    copy->oextra = (struct oextra *) 0;
+    copy->where = OBJ_FREE;
+    copy->timed = 0, copy->owornmask = 0L;
+    copy->unpaid = 0, copy->in_use = 0, copy->bypass = 0;
+    copy->ox = x, copy->oy = y;
+    if (im->oname)
+        free((genericptr_t) im->oname), im->oname = (char *) 0;
+    if (has_oname(obj))
+        im->oname = dupstr(ONAME(obj));
+    im->cont_id = cont_id;
+    im->seen = svm.moves;
+    if (in_shop) {
+        int nochrg = 0;
+        long price = get_cost_of_shop_item(obj, &nochrg);
+
+        im->price = (price > 0L) ? price : 0L;
+        im->price_contents = (price > 0L && nochrg > 0);
+    }
+    if (Is_container(obj)) {
+        if (obj->cknown)
+            itemmem_record_contents(mptr, obj, x, y, in_shop);
+        else /* the hero doesn't know what's inside (any more) */
+            itemmem_forget_contents(mptr, obj->o_id);
+    }
+}
+
+/* the hero sees obj, on the floor, from wherever they are (map_object());
+   only the top of a pile can be seen like that; no price is quoted */
+void
+itemmem_saw_top(struct obj *obj)
+{
+    mapseen *mptr;
+
+    if (obj->where != OBJ_FLOOR || !obj->o_id || !(mptr = itemmem_level()))
+        return;
+    itemmem_record(mptr, obj, obj->ox, obj->oy, 0, FALSE);
+}
+
+/* the hero sees (or feels) the pile at <x,y>, from the top down to but not
+   including 'stop' (null: the whole pile): replace what was remembered
+   about that square's floor */
+void
+itemmem_saw_pile(coordxy x, coordxy y, struct obj *stop)
+{
+    mapseen *mptr = itemmem_level();
+    struct itemmem **pp, *im;
+    struct obj *otmp;
+    boolean in_shop;
+
+    if (!mptr)
+        return;
+    for (pp = &mptr->itemmem; (im = *pp) != 0;) {
+        if (!im->cont_id && im->obj->ox == x && im->obj->oy == y) {
+            for (otmp = svl.level.objects[x][y]; otmp;
+                 otmp = otmp->nexthere)
+                if (otmp->o_id == im->obj->o_id)
+                    break;
+            if (!otmp) { /* gone from this square */
+                unsigned id = im->obj->o_id;
+
+                *pp = im->next;
+                free_itemmem_entry(im);
+                itemmem_forget_contents(mptr, id);
+                continue;
+            }
+        }
+        pp = &im->next;
+    }
+    in_shop = (*u.ushops && costly_spot(x, y));
+    for (otmp = svl.level.objects[x][y]; otmp && otmp != stop;
+         otmp = otmp->nexthere)
+        itemmem_record(mptr, otmp, x, y, 0, in_shop);
+}
+
+/* the hero is standing on a square and can see: they know the whole pile
+   (#look would list it at no cost); called after each hero action */
+void
+itemmem_here(void)
+{
+    if (Blind || u.uswallow || Hallucination)
+        return;
+    itemmem_saw_pile(u.ux, u.uy, (struct obj *) 0);
+}
+
+/* the hero has looked into 'box' (looting, tipping): remember what's in it
+   if it's on the floor, possibly inside other containers */
+void
+itemmem_saw_contents(struct obj *box)
+{
+    mapseen *mptr = itemmem_level();
+    struct obj *top;
+
+    if (!mptr || !box->cknown)
+        return;
+    for (top = box; top->where == OBJ_CONTAINED; top = top->ocontainer)
+        continue;
+    if (top->where != OBJ_FLOOR)
+        return; /* carried: the hero's own inventory isn't listed */
+    itemmem_record(mptr, box, top->ox, top->oy,
+                   (box->where == OBJ_CONTAINED) ? box->ocontainer->o_id : 0,
+                   (*u.ushops && costly_spot(top->ox, top->oy)));
+}
+
+/* the name of a remembered object: today's knowledge of object types
+   (discoveries), but the object's own known flags as the hero saw it.
+   Formatted as a distant object so that naming it can't make it better
+   known (xname() would otherwise set dknown).  A container's contents
+   aren't part of the copy, so they are left out of the name. */
+char *
+itemmem_name(struct itemmem *im)
+{
+    struct obj *tmp = newobj();
+    char *res;
+
+    *tmp = *im->obj;
+    tmp->cknown = 0; /* else "empty", since the copy holds no contents */
+    if (im->oname) {
+        new_oname(tmp, (int) strlen(im->oname) + 1);
+        Strcpy(ONAME(tmp), im->oname);
+    }
+    res = distant_name(tmp, doname);
+    if (tmp->oextra)
+        dealloc_oextra(tmp);
+    free((genericptr_t) tmp);
+    return res;
+}
+
+/* obj is going into the hero's inventory: forget it, and its contents */
+void
+itemmem_gone(struct obj *obj)
+{
+    mapseen *mptr = itemmem_level();
+    struct itemmem **pp, *im;
+
+    if (!mptr || !obj->o_id)
+        return;
+    for (pp = &mptr->itemmem; (im = *pp) != 0;) {
+        if (im->obj->o_id == obj->o_id) {
+            *pp = im->next;
+            free_itemmem_entry(im);
+        } else {
+            pp = &im->next;
+        }
+    }
+    itemmem_forget_contents(mptr, obj->o_id);
+}
+
 staticfn void
 save_mapseen(NHFILE *nhfp, mapseen *mptr)
 {
