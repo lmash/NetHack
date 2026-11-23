@@ -3083,6 +3083,88 @@ finditem_describe(mapseen *mptr, struct itemmem *im, char *buf) /* BUFSZ */
     return buf;
 }
 
+/* menu identifiers for #finditem's filters, beyond the object classes */
+#define FIF_BUC    100 /* + 'B', 'U', 'C' or 'X' */
+#define FIF_SALE   300
+#define FIF_INSIDE 301
+
+/* 'm' #finditem: let the player choose filters; FALSE if cancelled */
+staticfn boolean
+finditem_filters(struct finditem_filter *f)
+{
+    static const char bucs[] = "BUCX";
+    static const char *const bucnames[] = {
+        "blessed", "uncursed", "cursed", "unknown blessed/cursed status"
+    };
+    boolean present[MAXOCLASSES];
+    winid win;
+    menu_item *pick = (menu_item *) 0;
+    anything any;
+    mapseen *mptr;
+    struct itemmem *im;
+    int i, n, clr = NO_COLOR;
+
+    (void) memset((genericptr_t) present, 0, sizeof present);
+    for (mptr = svm.mapseenchn; mptr; mptr = mptr->next)
+        if (finditem_level_ok(mptr))
+            for (im = mptr->itemmem; im; im = im->next)
+                present[(int) im->obj->oclass] = TRUE;
+
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win, MENU_BEHAVE_STANDARD);
+    any = cg.zeroany;
+    add_menu_heading(win, "Item classes");
+    for (i = 1; i < MAXOCLASSES; i++) {
+        if (!present[i])
+            continue;
+        any.a_int = i;
+        add_menu(win, &nul_glyphinfo, &any, def_oc_syms[i].sym, 0, ATR_NONE,
+                 clr, let_to_name((char) i, FALSE, FALSE),
+                 MENU_ITEMFLAGS_NONE);
+    }
+    add_menu_heading(win, "Blessed or cursed, as far as you know");
+    for (i = 0; bucs[i]; i++) {
+        any.a_int = FIF_BUC + bucs[i];
+        add_menu(win, &nul_glyphinfo, &any, bucs[i], 0, ATR_NONE, clr,
+                 bucnames[i], MENU_ITEMFLAGS_NONE);
+    }
+    add_menu_heading(win, "Where");
+    any.a_int = FIF_SALE;
+    add_menu(win, &nul_glyphinfo, &any, 'F', 0, ATR_NONE, clr,
+             "for sale in a shop", MENU_ITEMFLAGS_NONE);
+    any.a_int = FIF_INSIDE;
+    add_menu(win, &nul_glyphinfo, &any, 'I', 0, ATR_NONE, clr,
+             "inside a container", MENU_ITEMFLAGS_NONE);
+    end_menu(win, "Find which items? (pick filters, or none for all)");
+    n = select_menu(win, PICK_ANY, &pick);
+    destroy_nhwindow(win);
+    if (n < 0)
+        return FALSE;
+    for (i = 0; i < n; i++) {
+        int id = pick[i].item.a_int;
+
+        if (id > 0 && id < MAXOCLASSES) {
+            f->classes[id] = f->any_class = TRUE;
+        } else if (id == FIF_SALE) {
+            f->for_sale = TRUE;
+        } else if (id == FIF_INSIDE) {
+            f->contained = TRUE;
+        } else if (id > FIF_BUC && strlen(f->buc) < sizeof f->buc - 1) {
+            char b[2];
+
+            b[0] = (char) (id - FIF_BUC), b[1] = '\0';
+            Strcat(f->buc, b);
+        }
+    }
+    if (n > 0)
+        free((genericptr_t) pick);
+    return TRUE;
+}
+
+#undef FIF_BUC
+#undef FIF_SALE
+#undef FIF_INSIDE
+
 /* the #finditem command: search the objects the hero remembers seeing on
    visited levels and show where the picked one is; with the 'm' prefix,
    choose filters first.  Uses no game time and no random numbers. */
@@ -3101,7 +3183,8 @@ dofinditem(void)
 
     iflags.menu_requested = FALSE;
     (void) memset((genericptr_t) &filter, 0, sizeof filter);
-    nhUse(filtering);
+    if (filtering && !finditem_filters(&filter))
+        return ECMD_CANCEL;
 
     text[0] = '\0';
     getlin("Find which remembered items? [text, or Return for all]", text);
