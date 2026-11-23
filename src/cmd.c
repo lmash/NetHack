@@ -1969,6 +1969,8 @@ struct ext_func_tab extcmdlist[] = {
                          | CMD_M_PREFIX | NOFUZZERCMD), NULL },
     { C('v'), "wizlevelport", "teleport to another level",
               wiz_level_tele, IFBURIED | WIZMODECMD | CMD_M_PREFIX, NULL },
+    { '\0',   "wizlevelmap", "show the remembered map kept for a level",
+              wiz_levelmap, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
     { '\0',   "wizloaddes", "load and execute a des-file lua script",
               wiz_load_splua, IFBURIED | WIZMODECMD | NOFUZZERCMD, NULL },
     { '\0',   "wizloadlua", "load and execute a lua script",

@@ -543,6 +543,7 @@ extern void premap_detect(void);
 extern void dump_map(void);
 #endif
 extern void reveal_terrain(unsigned);
+extern void show_levelmap(mapseen *) NONNULLARG1;
 extern int wiz_mgender(void);
 
 /* ### dig.c ### */
@@ -3867,6 +3868,7 @@ extern int wiz_identify(void);
 extern int wiz_intrinsic(void);
 extern int wiz_kill(void);
 extern int wiz_level_change(void);
+extern int wiz_levelmap(void);
 extern int wiz_level_tele(void);
 extern int wiz_load_lua(void);
 extern int wiz_load_splua(void);

@@ -2413,6 +2413,34 @@ reveal_terrain(
     return;
 }
 
+/* level map viewer: show what the hero remembers of a visited level, the
+   current one from live memory and any other from the snapshot taken when
+   the hero left it (levelmap_snapshot()); no monsters apart from
+   remembered 'I's; uses no game time and no random numbers */
+void
+show_levelmap(mapseen *mptr)
+{
+    boolean here = on_level(&mptr->lev, &u.uz);
+    coordxy x, y;
+
+    if (!here && !mptr->levelmap) {
+        You("don't remember the map of that level.");
+        return;
+    }
+    if (unconstrain_map())
+        docrt();
+    for (x = 1; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
+            show_glyph(x, y, here ? levl[x][y].glyph
+                                  : mptr->levelmap->glyph[x][y]);
+    flush_screen(1);
+    pline("Your remembered map of %s, level %d%s.",
+          svd.dungeons[mptr->lev.dnum].dname, mptr->lev.dlevel,
+          here ? " (this level)" : "");
+    display_nhwindow(WIN_MAP, TRUE);
+    map_redisplay();
+}
+
 #undef FOUND_FLASH_COUNT
 
 /*detect.c*/
