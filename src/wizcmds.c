@@ -262,8 +262,8 @@ wiz_itemmem(void)
             putstr(win, 0, buf);
         }
     }
-    if (!count)
-        putstr(win, 0, "No items remembered.");
+    Sprintf(buf, "%d item%s remembered.", count, plur(count));
+    putstr(win, 0, buf);
     display_nhwindow(win, TRUE);
     destroy_nhwindow(win);
     return ECMD_OK;
