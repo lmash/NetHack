@@ -224,48 +224,6 @@ wiz_where(void)
     return ECMD_OK;
 }
 
-/* the #wizlevelmap command - show the remembered map kept for a visited
-   level (storage for the level map viewer; doc/features/levelmap.md) */
-int
-wiz_levelmap(void)
-{
-    winid win;
-    menu_item *pick = (menu_item *) 0;
-    anything any;
-    mapseen *mptr;
-    char buf[BUFSZ];
-    int clr = NO_COLOR;
-
-    if (!wizard) {
-        pline(unavailcmd, ecname_from_fn(wiz_levelmap));
-        return ECMD_OK;
-    }
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win, MENU_BEHAVE_STANDARD);
-    any = cg.zeroany;
-    for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
-        boolean here = on_level(&mptr->lev, &u.uz);
-
-        if (!levelmap_viewable(mptr))
-            continue;
-        any.a_void = (genericptr_t) mptr;
-        Sprintf(buf, "%s, level %d%s", svd.dungeons[mptr->lev.dnum].dname,
-                mptr->lev.dlevel, here ? " (this level)" : "");
-        add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, clr, buf,
-                 MENU_ITEMFLAGS_NONE);
-    }
-    end_menu(win, "Show the remembered map of which level?");
-    mptr = (mapseen *) 0;
-    if (select_menu(win, PICK_ONE, &pick) > 0) {
-        mptr = (mapseen *) pick[0].item.a_void;
-        free((genericptr_t) pick);
-    }
-    destroy_nhwindow(win);
-    if (mptr)
-        view_levelmap(mptr);
-    return ECMD_OK;
-}
-
 /* the #wizdetect command - detect secret doors, traps, hidden monsters */
 int
 wiz_detect(void)

@@ -3373,10 +3373,20 @@ dooverview(void)
     return ECMD_OK;
 }
 
+/* the #levelmap command: pick any visited level from the #overview list
+   and view its remembered map */
+int
+dolevelmap(void)
+{
+    show_overview(-2, 0);
+    return ECMD_OK;
+}
+
 /* called for #overview or for end of game disclosure */
 void
 show_overview(
     int why, /* 0 => normal #overview command, -1 => 'm' prefix #overview;
+              * -2 => #levelmap (every visited level, pick one to view);
               * 1 or 2 => final disclosure (1: hero lived, 2: hero died) */
     int reason) /* how hero died; used when disclosing end-of-game level */
 {
@@ -3398,18 +3408,24 @@ show_overview(
     if (why > 0 || !In_endgame(&u.uz))
         traverse_mapseenchn(0, win, why, reason, &lastdun);
     end_menu(win, (char *) 0);
-    n = select_menu(win, (why != -1) ? PICK_NONE : PICK_ONE, &selected);
+    /* while playing, a level can be picked: with the 'm' prefix to
+       annotate it, otherwise to view its map (level map viewer) */
+    n = select_menu(win, (why > 0) ? PICK_NONE : PICK_ONE, &selected);
+    destroy_nhwindow(win);
     if (n > 0) {
         int ledger;
         d_level lev;
+        mapseen *mptr;
 
         ledger = selected[0].item.a_int - 1;
         lev.dnum = ledger_to_dnum(ledger);
         lev.dlevel = ledger_to_dlev(ledger);
-        query_annotation(&lev);
         free((genericptr_t) selected);
+        if (why == -1)
+            query_annotation(&lev);
+        else if ((mptr = find_mapseen(&lev)) != 0)
+            view_levelmap(mptr);
     }
-    destroy_nhwindow(win);
 }
 
 /* display endgame levels or non-endgame levels, not both */
@@ -3417,7 +3433,8 @@ staticfn void
 traverse_mapseenchn(
     int viewendgame,    /* 0: show endgame branch; 1: show other branches */
     winid win,      /* output window */
-    int why,        /* -1: menu, 0: normal, 1 and 2: end of game disclosure */
+    int why,        /* -2, -1: menu of all levels, 0: normal,
+                     * 1 and 2: end of game disclosure */
     int reason,     /* when 'why'==1 or 2, how the game ended */
     int *lastdun_p) /* where to restart if called twice */
 {
@@ -3698,7 +3715,8 @@ overview_interests(mapseen *mptr, char *buf) /* BUFSZ */
 staticfn void
 print_mapseen(
     winid win, mapseen *mptr,
-    int final, /* -1: as menu; 0: not final;
+    int final, /* -1, -2: as menu (annotate, #levelmap);
+                * 0: as menu (#overview, view a level's map);
                 * 1: game over, alive; 2: game over, dead */
     int how,   /* cause of death; only used if final==2 and mptr->lev==u.uz */
     boolean printdun)
@@ -3729,11 +3747,11 @@ print_mapseen(
         add_menu_heading(win, buf);
     }
 
-    Sprintf(buf, "%s%s", (final != -1) ? TAB : "",
+    Sprintf(buf, "%s%s", (final > 0) ? TAB : "",
             overview_levelline(mptr, final, how, tmpbuf));
 
     any = cg.zeroany;
-    if (final == -1)
+    if (final <= 0) /* pickable while playing */
         any.a_int = ledger_no(&(mptr->lev)) + 1;
     add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR,
              buf, MENU_ITEMFLAGS_NONE);

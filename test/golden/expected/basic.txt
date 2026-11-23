@@ -2317,9 +2317,9 @@ Dlvl:1 $:2 HP:14(16) Pw:2(2) AC:5 Xp:1/14 T:163 Satiated
 
 === line 121: <C-o>
                                          The Dungeons of Doom: levels 1 to 2
-                                            Level 1: <- You are here.
+                                         a - Level 1: <- You are here.
                                                A fountain.
-                                            Level 2:
+                                         b - Level 2:
                                          (end)
                                         |......|                         #|..|
                                         |......|                        ##|..|
