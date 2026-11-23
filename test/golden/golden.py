@@ -19,6 +19,7 @@ one.  Needs a build made with WANT_DETERMINISTIC=1
 
 import difflib
 import faulthandler
+import getpass
 import os
 import re
 import shutil
@@ -37,6 +38,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 PLAYGROUND = ROOT / "playground"
 SCENARIOS = HERE / "scenarios"
+LUA = HERE / "lua"          # copied into each run's playground (#wizloaddes)
 EXPECTED = HERE / "expected"
 OUT = HERE / "out"
 
@@ -65,6 +67,11 @@ class Scenario:
     """Header lines 'key: value' (seed, faketime, options), a line '---',
     then one step per line.
 
+    Optional header 'wizard: yes' runs the game in wizard mode (-D), for
+    scenarios that build their level with '#wizloaddes' from test/golden/lua.
+    Wizard mode plays a different game for the same seed, so such a
+    scenario is only comparable with itself.
+
     Step syntax: every non-space character is a key; spaces are ignored;
     <ret> <esc> <sp> <tab> <bs> <C-x> name special keys.  Lines starting
     with '//' are comments.  '!restart' starts the game again (after a save).
@@ -88,6 +95,10 @@ class Scenario:
             if k not in self.header:
                 sys.exit(f"{path}: missing header '{k}:'")
 
+    @property
+    def wizard(self):
+        return self.header.get("wizard", "no").lower() in ("yes", "1", "true")
+
     def epoch(self):
         dt = datetime.fromisoformat(self.header["faketime"].replace("Z", "+00:00"))
         return int(dt.astimezone(timezone.utc).timestamp())
@@ -105,6 +116,24 @@ def keys_of(step):
     return out
 
 
+def allow_wizard():
+    """Wizard mode needs the login name in WIZARDS in the compiled-in
+    sysconf (playground/sysconf), which every 'make install' resets."""
+    conf = PLAYGROUND / "sysconf"
+    user = getpass.getuser()
+    lines = conf.read_text().splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        if line.startswith("WIZARDS="):
+            names = line[len("WIZARDS="):].split()
+            if user in names or "*" in names:
+                return
+            lines[i] = line.rstrip("\n") + f" {user}\n"
+            conf.write_text("".join(lines))
+            print(f"golden: added {user} to WIZARDS in {conf}", file=sys.stderr)
+            return
+    sys.exit(f"{conf}: no WIZARDS= line; can't enable wizard mode")
+
+
 def make_playground(work):
     pg = work / "playground"
     pg.mkdir()
@@ -117,6 +146,8 @@ def make_playground(work):
         shutil.copy2(src, pg / f)
     for f in EMPTY_FILES:
         (pg / f).touch()
+    for f in LUA.glob("*.lua"):   # the game looks for lua files in its dir
+        shutil.copy2(f, pg / f.name)
     (work / "home").mkdir()
     return pg
 
@@ -136,6 +167,7 @@ class Game:
             # the game appends a byte here each time it waits for a key
             "NETHACK_INPUT_SYNC": str(pg / "inputsync"),
         }
+        self.args = ["-D"] if scen.wizard else []
         self.pg = pg
         self.sync = pg / "inputsync"
         self.waits = 0
@@ -145,7 +177,7 @@ class Game:
 
     def start(self):
         self.waits = self.sync_count()  # a restart appends to the same file
-        self.child = pexpect.spawn(str(self.pg / "nethack"), [], env=self.env,
+        self.child = pexpect.spawn(str(self.pg / "nethack"), self.args, env=self.env,
                                    cwd=str(self.pg), dimensions=(ROWS, COLS),
                                    encoding="utf-8", codec_errors="replace")
         self.screen.reset()
@@ -216,6 +248,8 @@ def run(scen, seed=None):
     """Play the scenario; return the transcript as one string."""
     seed = int(scen.header["seed"]) if seed is None else seed
     out = [f"scenario {scen.name}  seed {seed}  faketime {scen.header['faketime']}"]
+    if scen.wizard:
+        allow_wizard()
     with tempfile.TemporaryDirectory(prefix="nhgolden-") as tmp:
         work = Path(tmp)
         game = Game(scen, make_playground(work), work / "home", seed)
