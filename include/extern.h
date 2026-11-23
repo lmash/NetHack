@@ -920,6 +920,7 @@ extern void save_exclusions(NHFILE *) NONNULLARG1;
 extern void load_exclusions(NHFILE *) NONNULLARG1;
 extern int dooverview(void);
 extern int dolevelmap(void);
+extern int dofinditem(void);
 extern void show_overview(int, int);
 extern void rm_mapseen(int);
 extern void levelmap_snapshot(void);

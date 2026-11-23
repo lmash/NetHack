@@ -2995,6 +2995,188 @@ itemmem_name(struct itemmem *im)
     return res;
 }
 
+/* item finder search: which remembered objects to show (all empty: any) */
+struct finditem_filter {
+    boolean classes[MAXOCLASSES]; /* object classes to show */
+    boolean any_class;            /* any of classes[] set */
+    char buc[5];                  /* any of "BUCX": known B/U/C, or unknown */
+    boolean for_sale;             /* only shop goods with a price */
+    boolean contained;            /* only objects inside containers */
+};
+
+/* the item finder searches the same levels the level map viewer shows */
+staticfn boolean
+finditem_level_ok(mapseen *mptr)
+{
+    if (mptr->flags.notreachable || mptr->flags.forgot)
+        return FALSE;
+    return !(In_endgame(&u.uz) && !In_endgame(&mptr->lev));
+}
+
+staticfn boolean
+finditem_match(
+    struct itemmem *im,
+    const char *text, /* case-insensitive part of the shown name, or "" */
+    struct finditem_filter *f)
+{
+    struct obj *o = im->obj;
+
+    if (f->any_class && !f->classes[(int) o->oclass])
+        return FALSE;
+    if (*f->buc) {
+        /* only what the hero knows: a copy's BUC is hidden unless bknown */
+        char b = !o->bknown ? 'X' : o->blessed ? 'B' : o->cursed ? 'C' : 'U';
+
+        if (!strchr(f->buc, b))
+            return FALSE;
+    }
+    if (f->for_sale && (!im->price || im->price_contents))
+        return FALSE;
+    if (f->contained && !im->cont_id)
+        return FALSE;
+    return (!*text || strstri(itemmem_name(im), text) != 0);
+}
+
+/* the remembered entry for the container that im was in, if any */
+staticfn struct itemmem *
+finditem_container(mapseen *mptr, struct itemmem *im)
+{
+    struct itemmem *c;
+
+    for (c = mptr->itemmem; c; c = c->next)
+        if (c->obj->o_id == im->cont_id && c->obj->ox == im->obj->ox
+            && c->obj->oy == im->obj->oy)
+            return c;
+    return (struct itemmem *) 0;
+}
+
+/* one line of #finditem's results: name, where it is, price, when seen */
+staticfn char *
+finditem_describe(mapseen *mptr, struct itemmem *im, char *buf) /* BUFSZ */
+{
+    struct itemmem *c;
+
+    Snprintf(buf, BUFSZ, "%s", itemmem_name(im));
+    if (Is_container(im->obj)) {
+        if (!im->obj->cknown) {
+            Snprintf(eos(buf), BUFSZ - strlen(buf), " (contents unknown)");
+        } else {
+            for (c = mptr->itemmem; c; c = c->next)
+                if (c->cont_id == im->obj->o_id)
+                    break;
+            if (!c)
+                Snprintf(eos(buf), BUFSZ - strlen(buf), " (empty)");
+        }
+    }
+    if (im->cont_id) {
+        c = finditem_container(mptr, im);
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", in %s",
+                 c ? itemmem_name(c) : "a container");
+    } else {
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", on the floor");
+    }
+    if (im->price)
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", %s %ld %s",
+                 im->price_contents ? "contents" : "for sale", im->price,
+                 currency(im->price));
+    Snprintf(eos(buf), BUFSZ - strlen(buf), ", last seen T:%ld", im->seen);
+    return buf;
+}
+
+/* the #finditem command: search the objects the hero remembers seeing on
+   visited levels and show where the picked one is; with the 'm' prefix,
+   choose filters first.  Uses no game time and no random numbers. */
+int
+dofinditem(void)
+{
+    struct finditem_filter filter;
+    char text[BUFSZ], buf[BUFSZ], tmpbuf[BUFSZ];
+    winid win;
+    menu_item *pick = (menu_item *) 0;
+    anything any;
+    mapseen *mptr;
+    struct itemmem *im;
+    int count = 0;
+    boolean filtering = iflags.menu_requested;
+
+    iflags.menu_requested = FALSE;
+    (void) memset((genericptr_t) &filter, 0, sizeof filter);
+    nhUse(filtering);
+
+    text[0] = '\0';
+    getlin("Find which remembered items? [text, or Return for all]", text);
+    if (text[0] == '\033')
+        return ECMD_CANCEL;
+    (void) mungspaces(text);
+
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win, MENU_BEHAVE_STANDARD);
+    any = cg.zeroany;
+    for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
+        boolean heading = FALSE;
+
+        if (!finditem_level_ok(mptr))
+            continue;
+        for (im = mptr->itemmem; im; im = im->next) {
+            if (!finditem_match(im, text, &filter))
+                continue;
+            if (!heading) {
+                int lvl = overview_depthstart(mptr) + mptr->lev.dlevel - 1;
+
+                if (In_endgame(&mptr->lev))
+                    Snprintf(buf, sizeof buf, "%s: %s",
+                             svd.dungeons[mptr->lev.dnum].dname,
+                             endgamelevelname(tmpbuf, lvl));
+                else
+                    Snprintf(buf, sizeof buf, "%s: level %d",
+                             svd.dungeons[mptr->lev.dnum].dname, lvl);
+                if (on_level(&mptr->lev, &u.uz))
+                    Strcat(buf, " <- You are here.");
+                add_menu_heading(win, buf);
+                heading = TRUE;
+            }
+            any.a_void = (genericptr_t) im;
+            add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR,
+                     finditem_describe(mptr, im, buf), MENU_ITEMFLAGS_NONE);
+            ++count;
+        }
+    }
+    if (!count) {
+        destroy_nhwindow(win);
+        if (*text)
+            You("don't remember seeing anything like \"%s\".", text);
+        else
+            You("don't remember seeing any%s items.",
+                filtering ? " such" : "");
+        return ECMD_OK;
+    }
+    if (*text)
+        Snprintf(buf, sizeof buf,
+                 "Remembered items like \"%s\" (pick one to see where):",
+                 text);
+    else
+        Strcpy(buf, "Remembered items (pick one to see where):");
+    end_menu(win, buf);
+    if (select_menu(win, PICK_ONE, &pick) > 0) {
+        im = (struct itemmem *) pick[0].item.a_void;
+        free((genericptr_t) pick);
+        destroy_nhwindow(win);
+        for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
+            struct itemmem *m;
+
+            for (m = mptr->itemmem; m && m != im; m = m->next)
+                continue;
+            if (m)
+                break;
+        }
+        if (mptr)
+            view_levelmap(mptr, im->obj->ox, im->obj->oy);
+        return ECMD_OK;
+    }
+    destroy_nhwindow(win);
+    return ECMD_OK;
+}
+
 /* obj is going into the hero's inventory: forget it, and its contents */
 void
 itemmem_gone(struct obj *obj)
