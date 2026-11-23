@@ -1,7 +1,37 @@
 # F2 item finder
 
-Status: **Phase 3 (item memory) done.** The search command (Phase 4) isn't
-built yet. Until then, wizard-mode `#wizitemmem` lists what is remembered.
+Status: **Phases 3 (item memory) and 4 (search) done.**
+
+## How to use it
+
+- **`#finditem`**: type part of a name (case doesn't matter), or just press
+  Return to list everything you remember seeing.
+  - Results are grouped by level, with the same level names as Ctrl-O.
+  - Each line shows the name, where it is, and when you last saw it:
+
+        a - a scroll of light, in an unlocked large box, last seen T:3
+        b - 6 rocks, on the floor, for sale, 42 zorkmids, last seen T:23
+
+  - Containers say "(contents unknown)" if you never looked inside, or
+    "(empty)".
+- **Pick a result** to see its level's remembered map, with the cursor on the
+  item's square. `<` / `>` step to other levels, as in the level map viewer;
+  Esc goes back to the game.
+- **`m` then `#finditem`**: choose filters first:
+  - item classes (`!` potions, `?` scrolls, …), only those you've seen;
+  - `B`/`U`/`C`/`X`: blessed, uncursed, cursed, unknown, **as far as you
+    know**;
+  - `F`: for sale in a shop; `I`: inside a container.
+
+  Choices in one group are alternatives ("potions or scrolls"); groups
+  combine ("potions, inside a container").
+- **Names use what you know now.** Once you identify clear potions as water,
+  every remembered clear potion is listed as water.
+- **What you remember can be out of date**: a monster may have taken
+  something since. Hence "last seen".
+- Searching takes no game time.
+
+Wizard mode: `#wizitemmem` lists the raw memory (object ids, coordinates).
 
 ## What is stored
 
@@ -97,6 +127,47 @@ All of it is in `mapseen.itemmem`. A second hero needs its own list per level
 `Sfo_obj`, the name, `cont_id`, `seen`, `price` and `price_contents`.
 **`EDITLEVEL` 1 → 2.** `dungeon.c` compiles cleanly with `-DSFCTOOL`.
 
+## The search (`#finditem`)
+
+`dofinditem()` and its helpers are in `src/dungeon.c`, after the recording
+code:
+
+- `finditem_match()`:
+  - The class filter uses `oclass`. That's always visible: the map glyph
+    shows the class.
+  - The BUC filter uses only what the hero knows: `bknown`, then
+    `blessed`/`cursed`. Anything without `bknown` counts as "unknown" (`X`).
+  - The text must be a case-insensitive substring (`strstri()`) of
+    `itemmem_name()`, the name as shown.
+- `finditem_describe()` builds the result line:
+  - the name;
+  - "(contents unknown)" if `!cknown`, or "(empty)" if no remembered contents;
+  - ", in <container name>" (the remembered container on the same square) or
+    ", on the floor";
+  - ", for sale, N zorkmids" or ", contents, N zorkmids";
+  - ", last seen T:n".
+- `finditem_level_ok()` searches the same levels as the level map viewer: not
+  unreachable, not forgotten, not the main dungeon while in the endgame.
+- `finditem_filters()` (`m` prefix): a pick-any menu. Classes are listed only
+  if some remembered object has them, each on its class symbol; then
+  `B`/`U`/`C`/`X`, `F` and `I`.
+- Picking a result calls `view_levelmap(mptr, x, y)`. On that level, the
+  cursor is put on `<x,y>` after the header, and the header says "[item at
+  cursor; <>, ESC]".
+- The command is `GENERALCMD | CMD_M_PREFIX` and returns `ECMD_OK` (no time).
+  Naming goes through `distant_name()`; nothing touches the core RNG.
+
+### Checked
+
+- `finditem` scenario (wizard mode, 22 assertions, see Tests).
+- By hand in normal mode (2026-11-23): replay `basic` to Dlvl 2. Then
+  `#finditem`, pick a result, `<`, Esc, `m #finditem` with a filter, a
+  search, and six `s` plus `^R`. The screen is identical, `T:` and monsters
+  included, to six `s` plus `^R` alone. The results there show "a potion of
+  paralysis" for a potion seen on the floor, identified later by drinking
+  one.
+- Not checked: the curses interface (the harness drives tty only).
+
 ## `#wizloaddes` fix (found here)
 
 `#wizloaddes` discarded the level's `mapseen` (via `lspo_reset_level()` →
@@ -127,6 +198,23 @@ no item memory, no level map and no overview. `wiz_load_splua()` now calls
 9. Object detection on Dlvl 3: still 14 items.
 
 Mutation check: without the `cansee()` guard in `map_object()`, step 9 fails.
+
+`test/golden/scenarios/finditem.keys` (wizard mode), same level:
+
+1. Look into the box. `#finditem potion` → "a clear potion, in an unlocked
+   large box, last seen T:…". Picking it shows the map with "item at cursor"
+   (the transcript records the cursor on the box's square).
+2. `elbib` finds "a scroll labeled ELBIB YLOH" (case ignored). `wand` (never
+   seen) finds nothing.
+3. Filters: `B` finds nothing (the potion is blessed, but the hero doesn't
+   know). `X!` → only the potion. `?` → only the scroll. `I` → both, no ring
+   mail.
+4. Wish for and read a scroll of light: `light` now finds "a scroll of light,
+   in an unlocked large box", and "ELBIB" is gone.
+5. In the shop: `F` → "6 rocks, on the floor, for sale, 42 zorkmids". No box.
+6. From Dlvl 3: results under "level 1" and "level 3 <- You are here."
+   Picking a Dlvl 1 item shows Dlvl 1's map, marked. Still T:24 (no time).
+7. Save/restore: the same results screen.
 
 Writing test levels, gotchas:
 

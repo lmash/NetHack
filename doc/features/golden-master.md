@@ -155,6 +155,13 @@ distance vs. standing, piles, pickup and drop, looting, tipping, a locked
 chest, a dark room, shop prices, save/restore and object detection. See
 `doc/features/itemfinder.md`.
 
+## What `finditem` covers
+
+Wizard mode, same level. The item finder's search: text, case, never-seen
+items, filters (BUC only as known), today's names after identifying, shop
+prices, picking a result (the map marked with the cursor), results from
+another level, save/restore, no time used.
+
 `!screen-has TEXT` / `!screen-lacks TEXT` check the screen on display; a
 failure is a `!!` line.
 

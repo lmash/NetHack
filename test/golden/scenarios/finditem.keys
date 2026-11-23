@@ -1,0 +1,114 @@
+// Item finder search (Phase 4), on test/golden/lua/golden_items.lua.
+// Wizard mode, for #wizloaddes, ^W (wish) and ^V (level teleport).
+seed: 42
+faketime: 2026-03-10T12:00:00Z
+wizard: yes
+options: name:golden,role:valkyrie,race:human,gender:female,align:lawful,!autopickup,!legacy,!splash_screen,!tutorial,time,showexp,!mail,!tips
+---
+#wizloaddes<ret>
+golden_items<ret>
+// look inside the large box (a scroll and a blessed potion; the hero
+// doesn't know either one, nor that the potion is blessed)
+u
+#loot<ret>
+:
+<ret>
+q
+// search by text; picking a result shows its square on the level map
+#finditem<ret>
+potion<ret>
+!screen-has a clear potion, in an unlocked large box, last seen T:
+a
+!screen-has item at cursor
+<esc>
+// matching ignores case
+#finditem<ret>
+elbib<ret>
+!screen-has a scroll labeled ELBIB YLOH, in an unlocked large box
+<esc>
+// the wand in the dark room hasn't been seen
+#finditem<ret>
+wand<ret>
+!screen-has You don't remember seeing anything like "wand".
+// filters ('m' prefix); BUC only as far as the hero knows
+m#finditem<ret>
+B<ret>
+<ret>
+!screen-has You don't remember seeing any such items.
+m#finditem<ret>
+X!<ret>
+<ret>
+!screen-has a clear potion
+!screen-lacks scroll
+<esc>
+m#finditem<ret>
+?<ret>
+<ret>
+!screen-has a scroll labeled ELBIB YLOH
+!screen-lacks potion
+<esc>
+m#finditem<ret>
+I<ret>
+<ret>
+!screen-has a clear potion
+!screen-has a scroll labeled ELBIB YLOH
+!screen-lacks ring mail
+<esc>
+// names use today's knowledge: once scrolls of light are known, the one in
+// the box is found as one
+<C-w>
+uncursed<sp>scroll<sp>of<sp>light<ret>
+re
+#finditem<ret>
+light<ret>
+!screen-has a scroll of light, in an unlocked large box
+!screen-lacks ELBIB
+<esc>
+// the shop: goods are found with their price; 'F' shows only shop goods
+n
+llllllllll
+ol
+ol
+lllll
+l
+l
+<ret>
+m#finditem<ret>
+F<ret>
+<ret>
+!screen-has , on the floor, for sale, 42 zorkmids, last seen T:
+!screen-lacks large box
+<esc>
+// from another level: results are grouped by level; picking a Dlvl 1 item
+// shows Dlvl 1's remembered map
+<C-v>
+3<ret>
+#finditem<ret>
+<ret>
+!screen-has The Dungeons of Doom: level 1
+!screen-has The Dungeons of Doom: level 3 <- You are here.
+!same-map results
+a
+!screen-has The Dungeons of Doom, Level 1:
+!screen-has item at cursor
+<esc>
+// searching took no time
+!screen-has T:24
+// save and restore: the same results
+S
+y
+!restart
+<ret>
+// wizard mode only: keep the save file?
+n
+#finditem<ret>
+<ret>
+!same-map results
+<esc>
+// quit
+#quit<ret>
+y
+// wizard mode only: dump core?
+n
+// end-of-game questions: skip them all
+q
