@@ -75,6 +75,9 @@ class Scenario:
     Step syntax: every non-space character is a key; spaces are ignored;
     <ret> <esc> <sp> <tab> <bs> <C-x> name special keys.  Lines starting
     with '//' are comments.  '!restart' starts the game again (after a save).
+    '!same-map NAME' checks that the map rows on screen now equal those
+    at the first '!same-map NAME'.  Any '!!' line in a transcript fails
+    'check', even if the transcript matches expected/.
     """
 
     def __init__(self, path):
@@ -233,6 +236,9 @@ class Game:
                   f"{time.monotonic() - t0:.2f}s", file=sys.stderr, flush=True)
         return ok
 
+    def map_rows(self):
+        return [line.rstrip() for line in self.screen.display[1:22]]
+
     def snapshot(self):
         lines = [line.rstrip() for line in self.screen.display]
         while lines and not lines[-1]:
@@ -250,12 +256,28 @@ def run(scen, seed=None):
     out = [f"scenario {scen.name}  seed {seed}  faketime {scen.header['faketime']}"]
     if scen.wizard:
         allow_wizard()
+    maps = {}  # '!same-map NAME': map rows first seen under NAME
     with tempfile.TemporaryDirectory(prefix="nhgolden-") as tmp:
         work = Path(tmp)
         game = Game(scen, make_playground(work), work / "home", seed)
         game.start()
         out += ["", "=== start", game.snapshot()]
         for lineno, step in scen.steps:
+            if step.startswith("!same-map "):
+                # the map rows (1..21) of the screen now on display must
+                # equal those seen at the first '!same-map' with this name
+                name = step.split(None, 1)[1]
+                rows = game.map_rows()
+                if name not in maps:
+                    maps[name] = rows
+                    out.append(f"[same-map {name}: recorded]")
+                elif rows == maps[name]:
+                    out.append(f"[same-map {name}: same]")
+                else:
+                    out.append(f"!! line {lineno}: same-map {name}: differs")
+                    out += [f"!!   want |{a}|\n!!   got  |{b}|"
+                            for a, b in zip(maps[name], rows) if a != b]
+                continue
             if step == "!restart":
                 if game.alive():
                     out.append("!! restart requested but game still running")
@@ -304,8 +326,14 @@ def cmd_check(names):
             failed += 1
             continue
         expected = exp_path.read_text()
-        if actual == expected:
+        problems = [line for line in actual.splitlines() if line.startswith("!!")]
+        if actual == expected and not problems:
             print(f"PASS  {scen.name}")
+            continue
+        if actual == expected:
+            failed += 1
+            print(f"FAIL  {scen.name}  (matches expected/, but has problems)")
+            print("\n".join(problems[:40]))
             continue
         failed += 1
         print(f"FAIL  {scen.name}  (actual in {OUT / (scen.name + '.txt')})")
@@ -320,8 +348,12 @@ def cmd_check(names):
 def cmd_update(names):
     EXPECTED.mkdir(exist_ok=True)
     for scen in scenarios(names):
-        (EXPECTED / f"{scen.name}.txt").write_text(run(scen))
+        transcript = run(scen)
+        (EXPECTED / f"{scen.name}.txt").write_text(transcript)
         print(f"recorded {scen.name}")
+        for line in transcript.splitlines():
+            if line.startswith("!!"):
+                print(f"  warning: {line}")
     return 0
 
 
