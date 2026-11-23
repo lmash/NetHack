@@ -543,7 +543,7 @@ extern void premap_detect(void);
 extern void dump_map(void);
 #endif
 extern void reveal_terrain(unsigned);
-extern void view_levelmap(mapseen *) NONNULLARG1;
+extern void view_levelmap(mapseen *, coordxy, coordxy) NONNULLARG1;
 extern int wiz_mgender(void);
 
 /* ### dig.c ### */

@@ -3776,7 +3776,7 @@ show_overview(
         if (why == -1)
             query_annotation(&lev);
         else if ((mptr = find_mapseen(&lev)) != 0)
-            view_levelmap(mptr);
+            view_levelmap(mptr, 0, 0);
     }
 }
 
