@@ -102,3 +102,9 @@ sys/amiga/regex/
 __pycache__/
 nethack-???-src.tar.gz
 nethack-???-src.zip
+
+# in-tree install from WANT_SOURCE_INSTALL=1
+/playground/
+
+# golden-master test output
+/test/golden/out/

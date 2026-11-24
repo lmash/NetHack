@@ -555,6 +555,7 @@ extern void premap_detect(void);
 extern void dump_map(void);
 #endif
 extern void reveal_terrain(unsigned);
+extern void view_levelmap(mapseen *, coordxy, coordxy) NONNULLARG1;
 extern int wiz_mgender(void);
 
 /* ### dig.c ### */
@@ -938,8 +939,20 @@ extern void free_exclusions(void);
 extern void save_exclusions(NHFILE *) NONNULLARG1;
 extern void load_exclusions(NHFILE *) NONNULLARG1;
 extern int dooverview(void);
+extern int dolevelmap(void);
+extern int dofinditem(void);
 extern void show_overview(int, int);
 extern void rm_mapseen(int);
+extern void levelmap_snapshot(void);
+extern void itemmem_saw_top(struct obj *) NONNULLARG1;
+extern void itemmem_saw_pile(coordxy, coordxy, struct obj *);
+extern void itemmem_here(void);
+extern void itemmem_saw_contents(struct obj *) NONNULLARG1;
+extern void itemmem_gone(struct obj *) NONNULLARG1;
+extern char *itemmem_name(struct itemmem *) NONNULLARG1;
+extern boolean levelmap_viewable(mapseen *) NONNULLARG1;
+extern mapseen *levelmap_step(mapseen *, int) NONNULLARG1;
+extern char *levelmap_header(mapseen *, char *) NONNULLARG12;
 extern void init_mapseen(d_level *) NONNULLARG1;
 extern void update_lastseentyp(coordxy, coordxy);
 extern int update_mapseen_for(coordxy, coordxy);
@@ -3541,6 +3554,9 @@ extern void append_slash(char *) NONNULLARG1;
 extern boolean check_user_string(const char *) NONNULLARG1;
 extern char *get_login_name(void);
 extern unsigned long sys_random_seed(void);
+#ifdef NH_DETERMINISTIC
+extern void nhtest_input_wait(void);
+#endif
 #endif /* UNIX */
 ATTRNORETURN extern void after_opt_showpaths(const char *) NORETURN;
 
@@ -3915,6 +3931,7 @@ extern int wiz_fuzzer(void);
 extern int wiz_genesis(void);
 extern int wiz_identify(void);
 extern int wiz_intrinsic(void);
+extern int wiz_itemmem(void);
 extern int wiz_kill(void);
 extern int wiz_level_change(void);
 extern int wiz_level_tele(void);

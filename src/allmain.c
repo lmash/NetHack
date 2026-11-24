@@ -543,6 +543,7 @@ moveloop_core(void)
 
     if (gv.vision_full_recalc)
         vision_recalc(0); /* vision! */
+    itemmem_here(); /* item finder: the hero knows the pile underfoot */
 #ifdef CLIPPING
     /* after rhack() and vision_recalc() so that the map is redrawn
        once with correct vision data, not twice (overshoot+correct) */

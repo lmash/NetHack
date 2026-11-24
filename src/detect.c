@@ -2413,6 +2413,67 @@ reveal_terrain(
     return;
 }
 
+/* level map viewer (#levelmap, or picking a level in #overview): show
+   what the hero remembers of visited levels, starting with mptr.  '<'
+   and '>' step through the visited levels in #overview order; ESC (or
+   'q') returns to the game.  The current level is shown from live
+   memory, others from the snapshot taken when the hero left them
+   (levelmap_snapshot()).  No monsters apart from remembered 'I's.  If
+   hx is non-zero, the cursor marks <hx,hy> on mptr's level (the item
+   finder's pick).  Uses no game time and no random numbers. */
+void
+view_levelmap(mapseen *mptr, coordxy hx, coordxy hy)
+{
+    static const char keyhint[] = "  [<>, ESC]",
+                      markhint[] = "  [item at cursor; <>, ESC]";
+    mapseen *marked = hx ? mptr : (mapseen *) 0;
+    char header[BUFSZ];
+    coordxy x, y;
+    char ch;
+
+    if (!levelmap_viewable(mptr)) {
+        You("don't remember the map of that level.");
+        return;
+    }
+    if (unconstrain_map())
+        docrt();
+    for (;;) {
+        boolean here = on_level(&mptr->lev, &u.uz);
+        mapseen *next;
+
+        for (x = 1; x < COLNO; x++)
+            for (y = 0; y < ROWNO; y++)
+                show_glyph(x, y, here ? levl[x][y].glyph
+                                      : mptr->levelmap->glyph[x][y]);
+        flush_screen(0);
+        /* one line only: a --More-- would swallow the next key */
+        (void) levelmap_header(mptr, header);
+        if (mptr == marked) {
+            /* the mark matters more than the rest of the header */
+            if (strlen(header) + sizeof markhint - 1 >= COLNO)
+                Strcpy(&header[COLNO - sizeof markhint - 3], "...");
+            Strcat(header, markhint);
+        } else if (strlen(header) + sizeof keyhint - 1 < COLNO) {
+            Strcat(header, keyhint);
+        } else if (strlen(header) >= COLNO - 1) {
+            Strcpy(&header[COLNO - 4], "...");
+        }
+        clear_nhwindow(WIN_MESSAGE);
+        custompline(OVERRIDE_MSGTYPE | SUPPRESS_HISTORY, "%s", header);
+        if (mptr == marked)
+            curs(WIN_MAP, hx, hy);
+
+        ch = readchar();
+        if (ch == '\033' || ch == 'q')
+            break;
+        if ((ch == '<' || ch == '>')
+            && (next = levelmap_step(mptr, (ch == '>') ? 1 : -1)) != 0)
+            mptr = next;
+    }
+    clear_nhwindow(WIN_MESSAGE);
+    map_redisplay();
+}
+
 #undef FOUND_FLASH_COUNT
 
 /*detect.c*/

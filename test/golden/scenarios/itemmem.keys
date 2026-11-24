@@ -1,0 +1,144 @@
+// Item finder memory (Phase 3), on test/golden/lua/golden_items.lua.
+// Wizard mode, for #wizloaddes, #wizitemmem (lists what is remembered)
+// and ^V (level teleport).
+seed: 42
+faketime: 2026-03-10T12:00:00Z
+wizard: yes
+options: name:golden,role:valkyrie,race:human,gender:female,align:lawful,!autopickup,!legacy,!splash_screen,!tutorial,time,showexp,!mail,!tips
+---
+#wizloaddes<ret>
+golden_items<ret>
+#wizitemmem<ret>
+// from a distance: containers' contents unknown, only the pile's top item,
+// nothing in the dark room or behind the shop's closed door
+!screen-has a large box (contents unknown)
+!screen-has a chest (contents unknown)
+!screen-has a ring mail
+!screen-lacks apple
+!screen-lacks lock pick
+!screen-lacks scroll
+!screen-lacks potion
+!screen-lacks gem
+!screen-lacks wand
+!screen-lacks for sale
+<ret>
+// standing on the pile: the whole pile is remembered
+nlllllll
+<ret>
+#wizitemmem<ret>
+!screen-has 3 apples
+!screen-has a lock pick
+<ret>
+// picking up forgets; dropping one step away remembers them there
+,
+b<ret>
+#wizitemmem<ret>
+!screen-lacks apple
+!screen-has a lock pick
+<ret>
+l
+de
+#wizitemmem<ret>
+!screen-has <12,6>
+!screen-has 3 apples
+<ret>
+// the large box: looking inside records its contents (unidentified names)
+yyhhhhhh
+#loot<ret>
+:
+<ret>
+q
+#wizitemmem<ret>
+!screen-has a clear potion
+!screen-has a scroll labeled ELBIB YLOH
+!screen-has in #39:
+<ret>
+// taking the potion out forgets it (inventory isn't listed)
+#loot<ret>
+o
+c<ret>
+a<ret>
+#wizitemmem<ret>
+!screen-lacks clear potion
+!screen-has in #39:
+!screen-has a scroll labeled ELBIB YLOH
+<ret>
+// tipping the box out: the scroll is now on the floor
+#tip<ret>
+y
+<ret>
+#wizitemmem<ret>
+!screen-has <4,4> T:22 #44 a scroll labeled
+!screen-lacks in #39
+<ret>
+// the locked chest: looting fails, its contents stay unknown
+ll
+#loot<ret>
+#wizitemmem<ret>
+!screen-has a locked chest (contents unknown)
+!screen-lacks gem
+!screen-lacks ruby
+<ret>
+// the dark room: the wand in its far corner isn't seen from two squares
+// away, only from next to it
+nnjj
+#wizitemmem<ret>
+!screen-lacks wand
+<ret>
+l
+#wizitemmem<ret>
+!screen-has a wand
+<ret>
+// the shop: nothing of it is remembered until its door is opened
+hkk
+u
+llllll
+<ret>
+#wizitemmem<ret>
+// seen from outside: shop goods without a price (nothing was quoted)
+!screen-has 6 stones
+!screen-lacks for sale
+<ret>
+// standing on shop goods: remembered with the quoted price
+llllll
+l
+l
+<ret>
+#wizitemmem<ret>
+!screen-has 6 rocks (for sale, 42 zm)
+<ret>
+// leave the level, then save and restore: the memory comes back unchanged
+<C-v>
+3<ret>
+#wizitemmem<ret>
+!screen-has The Dungeons of Doom, level 1:
+!screen-has The Dungeons of Doom, level 3:
+!same-map itemlist
+<ret>
+S
+y
+!restart
+<ret>
+// wizard mode only: keep the save file?
+n
+#wizitemmem<ret>
+!same-map itemlist
+<ret>
+// object detection shows objects the hero can't see: none is recorded
+<C-w>
+blessed<sp>potion<sp>of<sp>object<sp>detection<ret>
+#wizitemmem<ret>
+!screen-has 14 items remembered.
+<ret>
+qe
+<esc>
+#wizitemmem<ret>
+!screen-has 14 items remembered.
+<ret>
+// quit
+#quit<ret>
+y
+// wizard mode only: dump core?
+n
+// end-of-game questions: skip them all
+q

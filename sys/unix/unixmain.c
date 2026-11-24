@@ -795,6 +795,31 @@ port_insert_pastebuf(char *buf)
 }
 #endif /* __APPLE__ */
 
+#ifdef NH_DETERMINISTIC
+/* Test builds only (see doc/features/golden-master.md): when
+   NETHACK_INPUT_SYNC names a file, append one byte to it each time the
+   game is about to wait for a key, after flushing the screen.  The test
+   harness waits for that instead of guessing from a pause in output. */
+void
+nhtest_input_wait(void)
+{
+    static boolean looked = FALSE;
+    static FILE *syncfp = (FILE *) 0;
+
+    if (!looked) {
+        const char *path = nh_getenv("NETHACK_INPUT_SYNC");
+
+        looked = TRUE;
+        if (path && *path)
+            syncfp = fopen(path, "a");
+    }
+    if (syncfp) {
+        (void) fputc('.', syncfp);
+        (void) fflush(syncfp);
+    }
+}
+#endif
+
 unsigned long
 sys_random_seed(void)
 {
@@ -803,7 +828,32 @@ sys_random_seed(void)
     boolean no_seed = TRUE;
 #ifdef DEV_RANDOM
     FILE *fptr;
+#endif
 
+#ifdef NH_DETERMINISTIC
+    /* Test builds only (see doc/features/determinism.md): NETHACK_SEED=<n>
+       derives each RNG's startup seed from n and a call counter
+       (splitmix64), so a scripted game replays identically.
+       has_strong_rngseed is left FALSE, which turns reseed_random() into
+       a no-op: each run is one continuous random stream, so a single
+       extra or missing rn2() anywhere shows up in everything after it
+       instead of being wiped out by the next level change. */
+    {
+        static unsigned long long seed_count = 0;
+        const char *envseed = nh_getenv("NETHACK_SEED");
+
+        if (envseed && *envseed) {
+            unsigned long long z = strtoull(envseed, (char **) 0, 10)
+                                   + ++seed_count * 0x9E3779B97F4A7C15ULL;
+
+            z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
+            z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
+            return (unsigned long) (z ^ (z >> 31));
+        }
+    }
+#endif
+
+#ifdef DEV_RANDOM
     fptr = fopen(DEV_RANDOM, "r");
     if (fptr) {
         fread(&seed, sizeof (long), 1, fptr);

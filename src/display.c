@@ -361,6 +361,9 @@ map_object(struct obj *obj, int show)
             levl[x][y].glyph = glyph;
         }
     }
+    /* item finder: the hero can see this object (top of its pile) */
+    if (cansee(x, y) && !Hallucination)
+        itemmem_saw_top(obj);
     if (show)
         show_glyph(x, y, glyph);
 }

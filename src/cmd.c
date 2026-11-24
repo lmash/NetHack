@@ -1728,6 +1728,10 @@ struct ext_func_tab extcmdlist[] = {
               enter_explore_mode, IFBURIED | GENERALCMD | NOFUZZERCMD, NULL },
     { 'F',    "fight", "prefix: force fight even if you don't see a monster",
               do_fight, PREFIXCMD, NULL },
+    { '\0',   "finditem",
+              "search the items you remember seeing; 'm' prefix: filters",
+              dofinditem,
+              IFBURIED | AUTOCOMPLETE | GENERALCMD | CMD_M_PREFIX, NULL },
     { 'f',    "fire", "fire ammunition from quiver",
               dofire, 0, NULL },
     { M('f'), "force", "force a lock",
@@ -1760,6 +1764,8 @@ struct ext_func_tab extcmdlist[] = {
               doclassdisco, IFBURIED | GENERALCMD | CMD_M_PREFIX, NULL },
     { '\0',   "levelchange", "change experience level",
               wiz_level_change, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
+    { '\0',   "levelmap", "view the remembered map of a visited level",
+              dolevelmap, IFBURIED | AUTOCOMPLETE | GENERALCMD, NULL },
     { '\0',   "lightsources", "show mobile light sources",
               wiz_light_sources, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
     { ':',    "look", "look at what is here",
@@ -1791,8 +1797,8 @@ struct ext_func_tab extcmdlist[] = {
               doset, IFBURIED | GENERALCMD | CMD_M_PREFIX, NULL },
     /* #overview used to need autocomplete and has retained that even
        after being assigned to ^O [old wizard mode ^O is now #wizwhere];
-       'm' prefix displays overview as a menu where player can choose a
-       level to supply with an annotation */
+       picking a level views its remembered map (#levelmap); with the
+       'm' prefix, picking a level supplies it with an annotation */
     { C('o'), "overview", "show a summary of the explored dungeon",
               dooverview,
               IFBURIED | AUTOCOMPLETE | GENERALCMD | CMD_M_PREFIX, NULL },
@@ -1976,6 +1982,8 @@ struct ext_func_tab extcmdlist[] = {
                          | CMD_M_PREFIX | NOFUZZERCMD), NULL },
     { C('v'), "wizlevelport", "teleport to another level",
               wiz_level_tele, IFBURIED | WIZMODECMD | CMD_M_PREFIX, NULL },
+    { '\0',   "wizitemmem", "list the items the hero remembers seeing",
+              wiz_itemmem, IFBURIED | AUTOCOMPLETE | WIZMODECMD, NULL },
     { '\0',   "wizloaddes", "load and execute a des-file lua script",
               wiz_load_splua, IFBURIED | WIZMODECMD | NOFUZZERCMD, NULL },
     { '\0',   "wizloadlua", "load and execute a lua script",

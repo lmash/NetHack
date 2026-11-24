@@ -73,9 +73,15 @@ staticfn char *get_annotation(d_level *);
 staticfn void query_annotation(d_level *);
 staticfn mapseen *load_mapseen(NHFILE *);
 staticfn void save_mapseen(NHFILE *, mapseen *);
+staticfn void free_levelmap(mapseen *);
+staticfn void free_itemmem_entry(struct itemmem *);
+staticfn void free_itemmem(mapseen *);
 staticfn mapseen *find_mapseen(d_level *);
 staticfn mapseen *find_mapseen_by_str(const char *);
 staticfn void print_mapseen(winid, mapseen *, int, int, boolean);
+staticfn int overview_depthstart(mapseen *);
+staticfn char *overview_levelline(mapseen *, int, int, char *);
+staticfn boolean overview_interests(mapseen *, char *);
 staticfn boolean interest_mapseen(mapseen *);
 staticfn void count_feat_lastseentyp(mapseen *, coordxy, coordxy);
 staticfn void traverse_mapseenchn(int, winid, int, int, int *);
@@ -199,6 +205,8 @@ save_dungeon(
                 free((genericptr_t) curr_ms->custom);
             if (curr_ms->final_resting_place)
                 savecemetery(nhfp, &curr_ms->final_resting_place);
+            free_levelmap(curr_ms);
+            free_itemmem(curr_ms);
             free((genericptr_t) curr_ms);
         }
         svm.mapseenchn = 0;
@@ -2711,6 +2719,8 @@ rm_mapseen(int ledger_num)
 
     if (mptr->custom)
         free((genericptr_t) mptr->custom), mptr->custom = (char *) NULL;
+    free_levelmap(mptr);
+    free_itemmem(mptr);
 
     bpnext = mptr->final_resting_place;
     while ((bp = bpnext) != NULL) {
@@ -2727,10 +2737,594 @@ rm_mapseen(int ledger_num)
 }
 
 staticfn void
+free_levelmap(mapseen *mptr)
+{
+    if (mptr->levelmap)
+        free((genericptr_t) mptr->levelmap), mptr->levelmap = 0;
+}
+
+staticfn void
+free_itemmem_entry(struct itemmem *im)
+{
+    if (im->oname)
+        free((genericptr_t) im->oname);
+    free((genericptr_t) im->obj);
+    free((genericptr_t) im);
+}
+
+staticfn void
+free_itemmem(mapseen *mptr)
+{
+    struct itemmem *im;
+
+    while ((im = mptr->itemmem) != 0) {
+        mptr->itemmem = im->next;
+        free_itemmem_entry(im);
+    }
+}
+
+/* level map viewer: the hero is leaving the current level; copy what they
+   remember of it (levl[][].glyph) so that it can be viewed from elsewhere.
+   Uses no game time and no random numbers. */
+void
+levelmap_snapshot(void)
+{
+    mapseen *mptr = find_mapseen(&u.uz);
+    coordxy x, y;
+
+    if (!mptr)
+        return;
+    if (!svl.level.flags.hero_memory) {
+        /* the hero doesn't remember this level's map; show nothing */
+        free_levelmap(mptr);
+        return;
+    }
+    if (!mptr->levelmap)
+        mptr->levelmap = (struct levelmap *) alloc(sizeof *mptr->levelmap);
+    for (x = 0; x < COLNO; ++x)
+        for (y = 0; y < ROWNO; ++y)
+            mptr->levelmap->glyph[x][y] = levl[x][y].glyph;
+}
+
+/*
+ * Item finder: the hero's memory of the objects seen on each level, kept
+ * in that level's mapseen (doc/features/itemfinder.md).  An entry is a
+ * copy of the object as the hero saw it, so its known flags (dknown,
+ * bknown, known, rknown, cknown, lknown) are what the hero knew then.
+ * Floor entries are keyed by object and square; container contents by
+ * object and container.  None of this uses game time or random numbers.
+ */
+
+/* the current level's mapseen, if its items may be recorded */
+staticfn mapseen *
+itemmem_level(void)
+{
+    if (program_state.restoring || !svl.level.flags.hero_memory)
+        return (mapseen *) 0;
+    return find_mapseen(&u.uz);
+}
+
+staticfn struct itemmem *
+itemmem_find(
+    mapseen *mptr,
+    unsigned o_id,
+    unsigned cont_id,
+    coordxy x, coordxy y) /* only for floor entries (cont_id == 0) */
+{
+    struct itemmem *im;
+
+    for (im = mptr->itemmem; im; im = im->next)
+        if (im->obj->o_id == o_id && im->cont_id == cont_id
+            && (cont_id || (im->obj->ox == x && im->obj->oy == y)))
+            return im;
+    return (struct itemmem *) 0;
+}
+
+/* forget the remembered contents of the container with o_id 'cont_id',
+   and theirs */
+staticfn void
+itemmem_forget_contents(mapseen *mptr, unsigned cont_id)
+{
+    struct itemmem **pp, *im;
+
+    for (pp = &mptr->itemmem; (im = *pp) != 0;) {
+        if (im->cont_id == cont_id) {
+            unsigned id = im->obj->o_id;
+
+            *pp = im->next; /* the recursion keeps *pp up to date */
+            free_itemmem_entry(im);
+            itemmem_forget_contents(mptr, id);
+        } else {
+            pp = &im->next;
+        }
+    }
+}
+
+staticfn void itemmem_record(mapseen *, struct obj *, coordxy, coordxy,
+                             unsigned, boolean);
+
+/* the hero knows what's in 'box' (cknown): replace its remembered contents */
+staticfn void
+itemmem_record_contents(
+    mapseen *mptr,
+    struct obj *box,
+    coordxy x, coordxy y, /* where the outermost container is */
+    boolean in_shop)
+{
+    struct itemmem **pp, *im;
+    struct obj *otmp;
+
+    for (pp = &mptr->itemmem; (im = *pp) != 0;) {
+        if (im->cont_id == box->o_id) {
+            for (otmp = box->cobj; otmp; otmp = otmp->nobj)
+                if (otmp->o_id == im->obj->o_id)
+                    break;
+            if (!otmp) { /* no longer in there */
+                unsigned id = im->obj->o_id;
+
+                *pp = im->next;
+                free_itemmem_entry(im);
+                itemmem_forget_contents(mptr, id);
+                continue;
+            }
+        }
+        pp = &im->next;
+    }
+    for (otmp = box->cobj; otmp; otmp = otmp->nobj)
+        itemmem_record(mptr, otmp, x, y, box->o_id, in_shop);
+}
+
+/* remember obj (at <x,y>, in container 'cont_id' or on the floor) as the
+   hero sees it now; in a shop, with its price, as #look would quote it */
+staticfn void
+itemmem_record(
+    mapseen *mptr,
+    struct obj *obj,
+    coordxy x, coordxy y,
+    unsigned cont_id,
+    boolean in_shop)
+{
+    struct itemmem *im = itemmem_find(mptr, obj->o_id, cont_id, x, y);
+    struct obj *copy;
+
+    if (!im) {
+        struct itemmem **tail;
+
+        im = (struct itemmem *) alloc(sizeof *im);
+        im->obj = (struct obj *) alloc(sizeof *im->obj);
+        im->oname = (char *) 0;
+        im->price = 0L, im->price_contents = FALSE;
+        im->next = (struct itemmem *) 0;
+        for (tail = &mptr->itemmem; *tail; tail = &(*tail)->next)
+            continue;
+        *tail = im;
+    }
+    copy = im->obj;
+    *copy = *obj;
+    /* a detached copy: no list pointers, no attachments */
+    copy->nobj = copy->nexthere = copy->cobj = (struct obj *) 0;
+    copy->oextra = (struct oextra *) 0;
+    copy->where = OBJ_FREE;
+    copy->timed = 0, copy->owornmask = 0L;
+    copy->unpaid = 0, copy->in_use = 0, copy->bypass = 0;
+    copy->ox = x, copy->oy = y;
+    if (im->oname)
+        free((genericptr_t) im->oname), im->oname = (char *) 0;
+    if (has_oname(obj))
+        im->oname = dupstr(ONAME(obj));
+    im->cont_id = cont_id;
+    im->seen = svm.moves;
+    if (in_shop) {
+        int nochrg = 0;
+        long price = get_cost_of_shop_item(obj, &nochrg);
+
+        im->price = (price > 0L) ? price : 0L;
+        im->price_contents = (price > 0L && nochrg > 0);
+    }
+    if (Is_container(obj)) {
+        if (obj->cknown)
+            itemmem_record_contents(mptr, obj, x, y, in_shop);
+        else /* the hero doesn't know what's inside (any more) */
+            itemmem_forget_contents(mptr, obj->o_id);
+    }
+}
+
+/* the hero sees obj, on the floor, from wherever they are (map_object());
+   only the top of a pile can be seen like that; no price is quoted */
+void
+itemmem_saw_top(struct obj *obj)
+{
+    mapseen *mptr;
+
+    if (obj->where != OBJ_FLOOR || !obj->o_id || !(mptr = itemmem_level()))
+        return;
+    itemmem_record(mptr, obj, obj->ox, obj->oy, 0, FALSE);
+}
+
+/* the hero sees (or feels) the pile at <x,y>, from the top down to but not
+   including 'stop' (null: the whole pile): replace what was remembered
+   about that square's floor */
+void
+itemmem_saw_pile(coordxy x, coordxy y, struct obj *stop)
+{
+    mapseen *mptr = itemmem_level();
+    struct itemmem **pp, *im;
+    struct obj *otmp;
+    boolean in_shop;
+
+    if (!mptr)
+        return;
+    for (pp = &mptr->itemmem; (im = *pp) != 0;) {
+        if (!im->cont_id && im->obj->ox == x && im->obj->oy == y) {
+            for (otmp = svl.level.objects[x][y]; otmp;
+                 otmp = otmp->nexthere)
+                if (otmp->o_id == im->obj->o_id)
+                    break;
+            if (!otmp) { /* gone from this square */
+                unsigned id = im->obj->o_id;
+
+                *pp = im->next;
+                free_itemmem_entry(im);
+                itemmem_forget_contents(mptr, id);
+                continue;
+            }
+        }
+        pp = &im->next;
+    }
+    in_shop = (*u.ushops && costly_spot(x, y));
+    for (otmp = svl.level.objects[x][y]; otmp && otmp != stop;
+         otmp = otmp->nexthere)
+        itemmem_record(mptr, otmp, x, y, 0, in_shop);
+}
+
+/* the hero is standing on a square and can see: they know the whole pile
+   (#look would list it at no cost); called after each hero action */
+void
+itemmem_here(void)
+{
+    if (Blind || u.uswallow || Hallucination)
+        return;
+    itemmem_saw_pile(u.ux, u.uy, (struct obj *) 0);
+}
+
+/* the hero has looked into 'box' (looting, tipping): remember what's in it
+   if it's on the floor, possibly inside other containers */
+void
+itemmem_saw_contents(struct obj *box)
+{
+    mapseen *mptr = itemmem_level();
+    struct obj *top;
+
+    if (!mptr || !box->cknown)
+        return;
+    for (top = box; top->where == OBJ_CONTAINED; top = top->ocontainer)
+        continue;
+    if (top->where != OBJ_FLOOR)
+        return; /* carried: the hero's own inventory isn't listed */
+    itemmem_record(mptr, box, top->ox, top->oy,
+                   (box->where == OBJ_CONTAINED) ? box->ocontainer->o_id : 0,
+                   (*u.ushops && costly_spot(top->ox, top->oy)));
+}
+
+/* the name of a remembered object: today's knowledge of object types
+   (discoveries), but the object's own known flags as the hero saw it.
+   Formatted as a distant object so that naming it can't make it better
+   known (xname() would otherwise set dknown).  A container's contents
+   aren't part of the copy, so they are left out of the name. */
+char *
+itemmem_name(struct itemmem *im)
+{
+    struct obj *tmp = newobj();
+    char *res;
+
+    *tmp = *im->obj;
+    tmp->cknown = 0; /* else "empty", since the copy holds no contents */
+    if (im->oname) {
+        new_oname(tmp, (int) strlen(im->oname) + 1);
+        Strcpy(ONAME(tmp), im->oname);
+    }
+    res = distant_name(tmp, doname);
+    if (tmp->oextra)
+        dealloc_oextra(tmp);
+    free((genericptr_t) tmp);
+    return res;
+}
+
+/* item finder search: which remembered objects to show (all empty: any) */
+struct finditem_filter {
+    boolean classes[MAXOCLASSES]; /* object classes to show */
+    boolean any_class;            /* any of classes[] set */
+    char buc[5];                  /* any of "BUCX": known B/U/C, or unknown */
+    boolean for_sale;             /* only shop goods with a price */
+    boolean contained;            /* only objects inside containers */
+};
+
+/* the item finder searches the same levels the level map viewer shows */
+staticfn boolean
+finditem_level_ok(mapseen *mptr)
+{
+    if (mptr->flags.notreachable || mptr->flags.forgot)
+        return FALSE;
+    return !(In_endgame(&u.uz) && !In_endgame(&mptr->lev));
+}
+
+staticfn boolean
+finditem_match(
+    struct itemmem *im,
+    const char *text, /* case-insensitive part of the shown name, or "" */
+    struct finditem_filter *f)
+{
+    struct obj *o = im->obj;
+
+    if (o->otyp == CORPSE) /* corpses rot or get eaten: not worth listing */
+        return FALSE;
+    if (f->any_class && !f->classes[(int) o->oclass])
+        return FALSE;
+    if (*f->buc) {
+        /* only what the hero knows: a copy's BUC is hidden unless bknown */
+        char b = !o->bknown ? 'X' : o->blessed ? 'B' : o->cursed ? 'C' : 'U';
+
+        if (!strchr(f->buc, b))
+            return FALSE;
+    }
+    if (f->for_sale && (!im->price || im->price_contents))
+        return FALSE;
+    if (f->contained && !im->cont_id)
+        return FALSE;
+    return (!*text || strstri(itemmem_name(im), text) != 0);
+}
+
+/* the remembered entry for the container that im was in, if any */
+staticfn struct itemmem *
+finditem_container(mapseen *mptr, struct itemmem *im)
+{
+    struct itemmem *c;
+
+    for (c = mptr->itemmem; c; c = c->next)
+        if (c->obj->o_id == im->cont_id && c->obj->ox == im->obj->ox
+            && c->obj->oy == im->obj->oy)
+            return c;
+    return (struct itemmem *) 0;
+}
+
+/* one line of #finditem's results: name, where it is, price, when seen */
+staticfn char *
+finditem_describe(mapseen *mptr, struct itemmem *im, char *buf) /* BUFSZ */
+{
+    struct itemmem *c;
+
+    Snprintf(buf, BUFSZ, "%s", itemmem_name(im));
+    if (Is_container(im->obj)) {
+        if (!im->obj->cknown) {
+            Snprintf(eos(buf), BUFSZ - strlen(buf), " (contents unknown)");
+        } else {
+            for (c = mptr->itemmem; c; c = c->next)
+                if (c->cont_id == im->obj->o_id)
+                    break;
+            if (!c)
+                Snprintf(eos(buf), BUFSZ - strlen(buf), " (empty)");
+        }
+    }
+    if (im->cont_id) {
+        c = finditem_container(mptr, im);
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", in %s",
+                 c ? itemmem_name(c) : "a container");
+    } else {
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", on the floor");
+    }
+    if (im->price)
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", %s, %ld %s",
+                 im->price_contents ? "contents" : "for sale", im->price,
+                 currency(im->price));
+    Snprintf(eos(buf), BUFSZ - strlen(buf), ", last seen T:%ld", im->seen);
+    return buf;
+}
+
+/* menu identifiers for #finditem's filters, beyond the object classes */
+#define FIF_BUC    100 /* + 'B', 'U', 'C' or 'X' */
+#define FIF_SALE   300
+#define FIF_INSIDE 301
+
+/* 'm' #finditem: let the player choose filters; FALSE if cancelled */
+staticfn boolean
+finditem_filters(struct finditem_filter *f)
+{
+    static const char bucs[] = "BUCX";
+    static const char *const bucnames[] = {
+        "blessed", "uncursed", "cursed", "unknown blessed/cursed status"
+    };
+    boolean present[MAXOCLASSES];
+    winid win;
+    menu_item *pick = (menu_item *) 0;
+    anything any;
+    mapseen *mptr;
+    struct itemmem *im;
+    int i, n, clr = NO_COLOR;
+
+    (void) memset((genericptr_t) present, 0, sizeof present);
+    for (mptr = svm.mapseenchn; mptr; mptr = mptr->next)
+        if (finditem_level_ok(mptr))
+            for (im = mptr->itemmem; im; im = im->next)
+                if (im->obj->otyp != CORPSE)
+                    present[(int) im->obj->oclass] = TRUE;
+
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win, MENU_BEHAVE_STANDARD);
+    any = cg.zeroany;
+    add_menu_heading(win, "Item classes");
+    for (i = 1; i < MAXOCLASSES; i++) {
+        if (!present[i])
+            continue;
+        any.a_int = i;
+        add_menu(win, &nul_glyphinfo, &any, def_oc_syms[i].sym, 0, ATR_NONE,
+                 clr, let_to_name((char) i, FALSE, FALSE),
+                 MENU_ITEMFLAGS_NONE);
+    }
+    add_menu_heading(win, "Blessed or cursed, as far as you know");
+    for (i = 0; bucs[i]; i++) {
+        any.a_int = FIF_BUC + bucs[i];
+        add_menu(win, &nul_glyphinfo, &any, bucs[i], 0, ATR_NONE, clr,
+                 bucnames[i], MENU_ITEMFLAGS_NONE);
+    }
+    add_menu_heading(win, "Where");
+    any.a_int = FIF_SALE;
+    add_menu(win, &nul_glyphinfo, &any, 'F', 0, ATR_NONE, clr,
+             "for sale in a shop", MENU_ITEMFLAGS_NONE);
+    any.a_int = FIF_INSIDE;
+    add_menu(win, &nul_glyphinfo, &any, 'I', 0, ATR_NONE, clr,
+             "inside a container", MENU_ITEMFLAGS_NONE);
+    end_menu(win, "Find which items? (pick filters, or none for all)");
+    n = select_menu(win, PICK_ANY, &pick);
+    destroy_nhwindow(win);
+    if (n < 0)
+        return FALSE;
+    for (i = 0; i < n; i++) {
+        int id = pick[i].item.a_int;
+
+        if (id > 0 && id < MAXOCLASSES) {
+            f->classes[id] = f->any_class = TRUE;
+        } else if (id == FIF_SALE) {
+            f->for_sale = TRUE;
+        } else if (id == FIF_INSIDE) {
+            f->contained = TRUE;
+        } else if (id > FIF_BUC && strlen(f->buc) < sizeof f->buc - 1) {
+            char b[2];
+
+            b[0] = (char) (id - FIF_BUC), b[1] = '\0';
+            Strcat(f->buc, b);
+        }
+    }
+    if (n > 0)
+        free((genericptr_t) pick);
+    return TRUE;
+}
+
+#undef FIF_BUC
+#undef FIF_SALE
+#undef FIF_INSIDE
+
+/* the #finditem command: search the objects the hero remembers seeing on
+   visited levels and show where the picked one is; with the 'm' prefix,
+   choose filters first.  Uses no game time and no random numbers. */
+int
+dofinditem(void)
+{
+    struct finditem_filter filter;
+    char text[BUFSZ], buf[BUFSZ], tmpbuf[BUFSZ];
+    winid win;
+    menu_item *pick = (menu_item *) 0;
+    anything any;
+    mapseen *mptr;
+    struct itemmem *im;
+    int count = 0;
+    boolean filtering = iflags.menu_requested;
+
+    iflags.menu_requested = FALSE;
+    (void) memset((genericptr_t) &filter, 0, sizeof filter);
+    if (filtering && !finditem_filters(&filter))
+        return ECMD_CANCEL;
+
+    text[0] = '\0';
+    getlin("Find which remembered items? [text, or Return for all]", text);
+    if (text[0] == '\033')
+        return ECMD_CANCEL;
+    (void) mungspaces(text);
+
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win, MENU_BEHAVE_STANDARD);
+    any = cg.zeroany;
+    for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
+        boolean heading = FALSE;
+
+        if (!finditem_level_ok(mptr))
+            continue;
+        for (im = mptr->itemmem; im; im = im->next) {
+            if (!finditem_match(im, text, &filter))
+                continue;
+            if (!heading) {
+                int lvl = overview_depthstart(mptr) + mptr->lev.dlevel - 1;
+
+                if (In_endgame(&mptr->lev))
+                    Snprintf(buf, sizeof buf, "%s: %s",
+                             svd.dungeons[mptr->lev.dnum].dname,
+                             endgamelevelname(tmpbuf, lvl));
+                else
+                    Snprintf(buf, sizeof buf, "%s: level %d",
+                             svd.dungeons[mptr->lev.dnum].dname, lvl);
+                if (on_level(&mptr->lev, &u.uz))
+                    Strcat(buf, " <- You are here.");
+                add_menu_heading(win, buf);
+                heading = TRUE;
+            }
+            any.a_void = (genericptr_t) im;
+            add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR,
+                     finditem_describe(mptr, im, buf), MENU_ITEMFLAGS_NONE);
+            ++count;
+        }
+    }
+    if (!count) {
+        destroy_nhwindow(win);
+        if (*text)
+            You("don't remember seeing anything like \"%s\".", text);
+        else
+            You("don't remember seeing any%s items.",
+                filtering ? " such" : "");
+        return ECMD_OK;
+    }
+    if (*text)
+        Snprintf(buf, sizeof buf,
+                 "Remembered items like \"%s\" (pick one to see where):",
+                 text);
+    else
+        Strcpy(buf, "Remembered items (pick one to see where):");
+    end_menu(win, buf);
+    if (select_menu(win, PICK_ONE, &pick) > 0) {
+        im = (struct itemmem *) pick[0].item.a_void;
+        free((genericptr_t) pick);
+        destroy_nhwindow(win);
+        for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
+            struct itemmem *m;
+
+            for (m = mptr->itemmem; m && m != im; m = m->next)
+                continue;
+            if (m)
+                break;
+        }
+        if (mptr)
+            view_levelmap(mptr, im->obj->ox, im->obj->oy);
+        return ECMD_OK;
+    }
+    destroy_nhwindow(win);
+    return ECMD_OK;
+}
+
+/* obj is going into the hero's inventory: forget it, and its contents */
+void
+itemmem_gone(struct obj *obj)
+{
+    mapseen *mptr = itemmem_level();
+    struct itemmem **pp, *im;
+
+    if (!mptr || !obj->o_id)
+        return;
+    for (pp = &mptr->itemmem; (im = *pp) != 0;) {
+        if (im->obj->o_id == obj->o_id) {
+            *pp = im->next;
+            free_itemmem_entry(im);
+        } else {
+            pp = &im->next;
+        }
+    }
+    itemmem_forget_contents(mptr, obj->o_id);
+}
+
+staticfn void
 save_mapseen(NHFILE *nhfp, mapseen *mptr)
 {
     branch *curr;
     int i, brindx;
+    boolean have_map;
+    struct itemmem *im;
 
     for (brindx = 0, curr = svb.branches; curr; curr = curr->next, ++brindx)
         if (curr == mptr->br)
@@ -2749,15 +3343,45 @@ save_mapseen(NHFILE *nhfp, mapseen *mptr)
         Sfo_mapseen_rooms(nhfp, &mptr->msrooms[i], "mapseen-msrooms");
     }
     savecemetery(nhfp, &mptr->final_resting_place);
+    /* level map viewer: remembered map as of leaving the level */
+    have_map = (mptr->levelmap != 0);
+    Sfo_boolean(nhfp, &have_map, "mapseen-have_levelmap");
+    if (have_map) {
+        coordxy x, y;
+
+        for (x = 0; x < COLNO; ++x)
+            for (y = 0; y < ROWNO; ++y)
+                Sfo_int(nhfp, &mptr->levelmap->glyph[x][y],
+                        "mapseen-levelmap-glyph");
+    }
+    /* item finder: objects seen on this level */
+    for (i = 0, im = mptr->itemmem; im; im = im->next)
+        ++i;
+    Sfo_int(nhfp, &i, "mapseen-itemmem_count");
+    for (im = mptr->itemmem; im; im = im->next) {
+        int namelth = im->oname ? (int) strlen(im->oname) : 0;
+
+        Sfo_obj(nhfp, im->obj, "mapseen-itemmem-obj");
+        Sfo_int(nhfp, &namelth, "mapseen-itemmem-oname_length");
+        if (namelth)
+            Sfo_char(nhfp, im->oname, "mapseen-itemmem-oname", namelth);
+        Sfo_unsigned(nhfp, &im->cont_id, "mapseen-itemmem-cont_id");
+        Sfo_long(nhfp, &im->seen, "mapseen-itemmem-seen");
+        Sfo_long(nhfp, &im->price, "mapseen-itemmem-price");
+        Sfo_boolean(nhfp, &im->price_contents,
+                    "mapseen-itemmem-price_contents");
+    }
 }
 #endif /* !SFCTOOL */
 
 staticfn mapseen *
 load_mapseen(NHFILE *nhfp)
 {
-    int i, branchnum = 0, brindx;
+    int i, branchnum = 0, brindx, count = 0;
+    boolean have_map = FALSE;
     mapseen *load;
     branch *curr;
+    struct itemmem **imtail;
 
     load = (mapseen *) alloc(sizeof *load);
 
@@ -2785,6 +3409,48 @@ load_mapseen(NHFILE *nhfp)
         Sfi_mapseen_rooms(nhfp, &load->msrooms[i], "mapseen-msrooms");
     }
     restcemetery(nhfp, &load->final_resting_place);
+    /* level map viewer: remembered map as of leaving the level */
+    Sfi_boolean(nhfp, &have_map, "mapseen-have_levelmap");
+    if (have_map) {
+        coordxy x, y;
+
+        load->levelmap = (struct levelmap *) alloc(sizeof *load->levelmap);
+        for (x = 0; x < COLNO; ++x)
+            for (y = 0; y < ROWNO; ++y)
+                Sfi_int(nhfp, &load->levelmap->glyph[x][y],
+                        "mapseen-levelmap-glyph");
+    } else {
+        load->levelmap = (struct levelmap *) 0;
+    }
+    /* item finder: objects seen on this level */
+    load->itemmem = (struct itemmem *) 0;
+    Sfi_int(nhfp, &count, "mapseen-itemmem_count");
+    for (imtail = &load->itemmem; count > 0; --count) {
+        struct itemmem *im = (struct itemmem *) alloc(sizeof *im);
+        int namelth = 0;
+
+        im->obj = (struct obj *) alloc(sizeof *im->obj);
+        Sfi_obj(nhfp, im->obj, "mapseen-itemmem-obj");
+        /* the pointers saved with it are meaningless now */
+        im->obj->nobj = im->obj->nexthere = im->obj->cobj = (struct obj *) 0;
+        im->obj->oextra = (struct oextra *) 0;
+        Sfi_int(nhfp, &namelth, "mapseen-itemmem-oname_length");
+        if (namelth > 0) {
+            im->oname = (char *) alloc(namelth + 1);
+            Sfi_char(nhfp, im->oname, "mapseen-itemmem-oname", namelth);
+            im->oname[namelth] = '\0';
+        } else {
+            im->oname = (char *) 0;
+        }
+        Sfi_unsigned(nhfp, &im->cont_id, "mapseen-itemmem-cont_id");
+        Sfi_long(nhfp, &im->seen, "mapseen-itemmem-seen");
+        Sfi_long(nhfp, &im->price, "mapseen-itemmem-price");
+        Sfi_boolean(nhfp, &im->price_contents,
+                    "mapseen-itemmem-price_contents");
+        im->next = (struct itemmem *) 0;
+        *imtail = im;
+        imtail = &im->next;
+    }
     return load;
 }
 #ifndef SFCTOOL
@@ -2799,11 +3465,14 @@ overview_stats(
     long *total_count, long *total_size) /* args for the format */
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
-    long ocount, osize, bcount, bsize, acount, asize;
+    long ocount, osize, bcount, bsize, acount, asize, mcount, msize,
+         icount, isize;
+    struct itemmem *im;
     struct cemetery *ce;
     mapseen *mptr;
 
-    ocount = bcount = acount = osize = bsize = asize = 0L;
+    ocount = bcount = acount = mcount = icount = 0L;
+    osize = bsize = asize = msize = isize = 0L;
     for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
         ++ocount;
         osize += (long) sizeof *mptr;
@@ -2814,6 +3483,16 @@ overview_stats(
         if (mptr->custom_lth) {
             ++acount;
             asize += (long) (mptr->custom_lth + 1);
+        }
+        if (mptr->levelmap) {
+            ++mcount;
+            msize += (long) sizeof *mptr->levelmap;
+        }
+        for (im = mptr->itemmem; im; im = im->next) {
+            ++icount;
+            isize += (long) (sizeof *im + sizeof *im->obj);
+            if (im->oname)
+                isize += (long) strlen(im->oname) + 1;
         }
     }
 
@@ -2831,8 +3510,20 @@ overview_stats(
         Sprintf(buf, statsfmt, hdrbuf, acount, asize);
         putstr(win, 0, buf);
     }
-    *total_count += ocount + bcount + acount;
-    *total_size += osize + bsize + asize;
+    if (mcount) {
+        Sprintf(hdrbuf, "level maps, size %ld",
+                (long) sizeof (struct levelmap));
+        Sprintf(buf, statsfmt, hdrbuf, mcount, msize);
+        putstr(win, 0, buf);
+    }
+    if (icount) {
+        Sprintf(hdrbuf, "seen items, size %ld",
+                (long) (sizeof (struct itemmem) + sizeof (struct obj)));
+        Sprintf(buf, statsfmt, hdrbuf, icount, isize);
+        putstr(win, 0, buf);
+    }
+    *total_count += ocount + bcount + acount + mcount + icount;
+    *total_size += osize + bsize + asize + msize + isize;
 }
 
 RESTORE_WARNING_FORMAT_NONLITERAL
@@ -2880,6 +3571,8 @@ init_mapseen(d_level *lev)
        explicitly initialize pointers to null */
     init->next = 0, init->br = 0, init->custom = 0;
     init->final_resting_place = 0;
+    init->levelmap = 0;
+    init->itemmem = 0;
     /* svl.lastseentyp[][] is reused for each level, so get rid of
        previous level's data */
     (void) memset((genericptr_t) svl.lastseentyp, 0, sizeof svl.lastseentyp);
@@ -3335,10 +4028,20 @@ dooverview(void)
     return ECMD_OK;
 }
 
+/* the #levelmap command: pick any visited level from the #overview list
+   and view its remembered map */
+int
+dolevelmap(void)
+{
+    show_overview(-2, 0);
+    return ECMD_OK;
+}
+
 /* called for #overview or for end of game disclosure */
 void
 show_overview(
     int why, /* 0 => normal #overview command, -1 => 'm' prefix #overview;
+              * -2 => #levelmap (every visited level, pick one to view);
               * 1 or 2 => final disclosure (1: hero lived, 2: hero died) */
     int reason) /* how hero died; used when disclosing end-of-game level */
 {
@@ -3360,18 +4063,24 @@ show_overview(
     if (why > 0 || !In_endgame(&u.uz))
         traverse_mapseenchn(0, win, why, reason, &lastdun);
     end_menu(win, (char *) 0);
-    n = select_menu(win, (why != -1) ? PICK_NONE : PICK_ONE, &selected);
+    /* while playing, a level can be picked: with the 'm' prefix to
+       annotate it, otherwise to view its map (level map viewer) */
+    n = select_menu(win, (why > 0) ? PICK_NONE : PICK_ONE, &selected);
+    destroy_nhwindow(win);
     if (n > 0) {
         int ledger;
         d_level lev;
+        mapseen *mptr;
 
         ledger = selected[0].item.a_int - 1;
         lev.dnum = ledger_to_dnum(ledger);
         lev.dlevel = ledger_to_dlev(ledger);
-        query_annotation(&lev);
         free((genericptr_t) selected);
+        if (why == -1)
+            query_annotation(&lev);
+        else if ((mptr = find_mapseen(&lev)) != 0)
+            view_levelmap(mptr, 0, 0);
     }
-    destroy_nhwindow(win);
 }
 
 /* display endgame levels or non-endgame levels, not both */
@@ -3379,7 +4088,8 @@ staticfn void
 traverse_mapseenchn(
     int viewendgame,    /* 0: show endgame branch; 1: show other branches */
     winid win,      /* output window */
-    int why,        /* -1: menu, 0: normal, 1 and 2: end of game disclosure */
+    int why,        /* -2, -1: menu of all levels, 0: normal,
+                     * 1 and 2: end of game disclosure */
     int reason,     /* when 'why'==1 or 2, how the game ended */
     int *lastdun_p) /* where to restart if called twice */
 {
@@ -3547,28 +4257,132 @@ tunesuffix(
         }                                                               \
     } while (0)
 
-staticfn void
-print_mapseen(
-    winid win, mapseen *mptr,
-    int final, /* -1: as menu; 0: not final;
-                * 1: game over, alive; 2: game over, dead */
-    int how,   /* cause of death; only used if final==2 and mptr->lev==u.uz */
-    boolean printdun)
+/* depth of the first level of mptr's dungeon, as the overview counts */
+staticfn int
+overview_depthstart(mapseen *mptr)
 {
-    char buf[BUFSZ], tmpbuf[BUFSZ];
-    int i, depthstart, dnum;
-    boolean died_here = (final == 2 && on_level(&u.uz, &mptr->lev));
-    anything any;
+    int dnum = mptr->lev.dnum;
 
     /* Damnable special cases */
     /* The quest and knox should appear to be level 1 to match
      * other text.
      */
-    dnum = mptr->lev.dnum;
     if (dnum == quest_dnum || dnum == knox_level.dnum)
-        depthstart = 1;
+        return 1;
+    return svd.dungeons[dnum].depth_start;
+}
+
+/* the overview's line for one level, without indentation:
+   "Level 3:", the special level's name in wizard mode, the #annotate
+   note and "<- You are here." */
+staticfn char *
+overview_levelline(
+    mapseen *mptr,
+    int final, /* as for print_mapseen() */
+    int how,   /* as for print_mapseen() */
+    char *buf) /* BUFSZ */
+{
+    char tmpbuf[BUFSZ];
+    int i;
+
+    /* calculate level number */
+    i = overview_depthstart(mptr) + mptr->lev.dlevel - 1;
+    if (In_endgame(&mptr->lev))
+        Sprintf(buf, "%s:", endgamelevelname(tmpbuf, i));
     else
-        depthstart = svd.dungeons[dnum].depth_start;
+        Sprintf(buf, "Level %d:", i);
+
+    /* wizmode prints out proto dungeon names for clarity */
+    if (wizard) {
+        s_level *slev;
+
+        if ((slev = Is_special(&mptr->lev)) != 0)
+            Sprintf(eos(buf), " [%s]", slev->proto);
+    }
+    /* [perhaps print custom annotation on its own line when it's long] */
+    if (mptr->custom)
+        Sprintf(eos(buf), " \"%s\"", mptr->custom);
+    if (on_level(&u.uz, &mptr->lev))
+        Sprintf(eos(buf), " <- You %s here.",
+                (final <= 0 || (final == 1 && how == ASCENDED)) ? "are"
+                  : (final == 1 && how == ESCAPED) ? "left from"
+                    : "were");
+    return buf;
+}
+
+/* the overview's sentence about a level's features ("A fountain."),
+   indented by PREFIX; returns FALSE if there's nothing to say */
+staticfn boolean
+overview_interests(mapseen *mptr, char *buf) /* BUFSZ */
+{
+    int i;
+
+    if (!OF_INTEREST(mptr->feat))
+        return FALSE;
+    buf[0] = 0;
+
+    i = 0; /* interest counter */
+    /* List interests in an order vaguely corresponding to
+     * how important they are.
+     */
+    if (mptr->feat.nshop > 0) {
+        if (mptr->feat.nshop > 1)
+            ADDNTOBUF("shop", mptr->feat.nshop);
+        else
+            Sprintf(eos(buf), "%s%s", COMMA,
+                    an(shop_string(mptr->feat.shoptype)));
+    }
+    if (mptr->feat.naltar > 0 || mptr->feat.ntemple > 0) {
+        unsigned atmp;
+
+        /* being aware of a temple doesn't guarantee being aware of its
+           altar (via entrance message when entering while blinded, or
+           possibly it being out of view in an irregularly shaped room);
+           FIXME: if all temples present have been desecrated, we ought
+           to say so */
+        ADD2NTOBUF("temple", mptr->feat.ntemple,
+                   "altar", mptr->feat.naltar);
+
+        /* only print out altar's god if they are all to your god */
+        atmp = mptr->feat.msalign;              /*    0,  1,  2,  3 */
+        atmp = Msa2amask(atmp);                 /*    0,  1,  2,  4 */
+        if (Amask2align(atmp) == u.ualign.type) /* -128, -1,  0, +1 */
+            Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
+    }
+    ADDNTOBUF("throne", mptr->feat.nthrone);
+    ADDNTOBUF("fountain", mptr->feat.nfount);
+    ADDNTOBUF("sink", mptr->feat.nsink);
+    ADDNTOBUF("grave", mptr->feat.ngrave);
+    ADDNTOBUF("tree", mptr->feat.ntree);
+#if 0
+    ADDTOBUF("water", mptr->feat.water);
+    ADDTOBUF("lava", mptr->feat.lava);
+    ADDTOBUF("ice", mptr->feat.ice);
+#endif
+    /* capitalize afterwards */
+    i = strlen(PREFIX);
+    buf[i] = highc(buf[i]);
+    /* capitalizing it makes it a sentence; terminate with '.' */
+    Strcat(buf, ".");
+    return TRUE;
+}
+
+staticfn void
+print_mapseen(
+    winid win, mapseen *mptr,
+    int final, /* -1, -2: as menu (annotate, #levelmap);
+                * 0: as menu (#overview, view a level's map);
+                * 1: game over, alive; 2: game over, dead */
+    int how,   /* cause of death; only used if final==2 and mptr->lev==u.uz */
+    boolean printdun)
+{
+    char buf[BUFSZ], tmpbuf[BUFSZ];
+    int depthstart, dnum;
+    boolean died_here = (final == 2 && on_level(&u.uz, &mptr->lev));
+    anything any;
+
+    dnum = mptr->lev.dnum;
+    depthstart = overview_depthstart(mptr);
 
     if (printdun) {
         if (svd.dungeons[dnum].dunlev_ureached == svd.dungeons[dnum].entry_lev
@@ -3588,32 +4402,11 @@ print_mapseen(
         add_menu_heading(win, buf);
     }
 
-    /* calculate level number */
-    i = depthstart + mptr->lev.dlevel - 1;
-    if (In_endgame(&mptr->lev))
-        Sprintf(buf, "%s%s:", (final != -1) ? TAB : "",
-                endgamelevelname(tmpbuf, i));
-    else
-        Sprintf(buf, "%sLevel %d:", (final != -1) ? TAB : "", i);
-
-    /* wizmode prints out proto dungeon names for clarity */
-    if (wizard) {
-        s_level *slev;
-
-        if ((slev = Is_special(&mptr->lev)) != 0)
-            Sprintf(eos(buf), " [%s]", slev->proto);
-    }
-    /* [perhaps print custom annotation on its own line when it's long] */
-    if (mptr->custom)
-        Sprintf(eos(buf), " \"%s\"", mptr->custom);
-    if (on_level(&u.uz, &mptr->lev))
-        Sprintf(eos(buf), " <- You %s here.",
-                (final <= 0 || (final == 1 && how == ASCENDED)) ? "are"
-                  : (final == 1 && how == ESCAPED) ? "left from"
-                    : "were");
+    Sprintf(buf, "%s%s", (final > 0) ? TAB : "",
+            overview_levelline(mptr, final, how, tmpbuf));
 
     any = cg.zeroany;
-    if (final == -1)
+    if (final <= 0) /* pickable while playing */
         any.a_int = ledger_no(&(mptr->lev)) + 1;
     add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR,
              buf, MENU_ITEMFLAGS_NONE);
@@ -3621,54 +4414,8 @@ print_mapseen(
     if (mptr->flags.forgot)
         return;
 
-    if (OF_INTEREST(mptr->feat)) {
-        buf[0] = 0;
-
-        i = 0; /* interest counter */
-        /* List interests in an order vaguely corresponding to
-         * how important they are.
-         */
-        if (mptr->feat.nshop > 0) {
-            if (mptr->feat.nshop > 1)
-                ADDNTOBUF("shop", mptr->feat.nshop);
-            else
-                Sprintf(eos(buf), "%s%s", COMMA,
-                        an(shop_string(mptr->feat.shoptype)));
-        }
-        if (mptr->feat.naltar > 0 || mptr->feat.ntemple > 0) {
-            unsigned atmp;
-
-            /* being aware of a temple doesn't guarantee being aware of its
-               altar (via entrance message when entering while blinded, or
-               possibly it being out of view in an irregularly shaped room);
-               FIXME: if all temples present have been desecrated, we ought
-               to say so */
-            ADD2NTOBUF("temple", mptr->feat.ntemple,
-                       "altar", mptr->feat.naltar);
-
-            /* only print out altar's god if they are all to your god */
-            atmp = mptr->feat.msalign;              /*    0,  1,  2,  3 */
-            atmp = Msa2amask(atmp);                 /*    0,  1,  2,  4 */
-            if (Amask2align(atmp) == u.ualign.type) /* -128, -1,  0, +1 */
-                Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
-        }
-        ADDNTOBUF("throne", mptr->feat.nthrone);
-        ADDNTOBUF("fountain", mptr->feat.nfount);
-        ADDNTOBUF("sink", mptr->feat.nsink);
-        ADDNTOBUF("grave", mptr->feat.ngrave);
-        ADDNTOBUF("tree", mptr->feat.ntree);
-#if 0
-        ADDTOBUF("water", mptr->feat.water);
-        ADDTOBUF("lava", mptr->feat.lava);
-        ADDTOBUF("ice", mptr->feat.ice);
-#endif
-        /* capitalize afterwards */
-        i = strlen(PREFIX);
-        buf[i] = highc(buf[i]);
-        /* capitalizing it makes it a sentence; terminate with '.' */
-        Strcat(buf, ".");
+    if (overview_interests(mptr, buf))
         add_menu_str(win, buf);
-    }
 
     /* we assume that these are mutually exclusive */
     *buf = '\0';
@@ -3760,6 +4507,54 @@ print_mapseen(
             }
         }
     }
+}
+
+/* level map viewer: can the hero look at this level's map?  The levels
+   #overview hides (unreachable, forgotten, the main dungeon once in the
+   endgame) are skipped, and so are levels with no remembered map. */
+boolean
+levelmap_viewable(mapseen *mptr)
+{
+    if (mptr->flags.notreachable || mptr->flags.forgot)
+        return FALSE;
+    if (In_endgame(&u.uz) && !In_endgame(&mptr->lev))
+        return FALSE;
+    return (on_level(&mptr->lev, &u.uz) || mptr->levelmap != 0);
+}
+
+/* level map viewer: the next (dir > 0) or previous (dir < 0) viewable
+   level after mptr in #overview order (by dungeon, then level); null if
+   there is none */
+mapseen *
+levelmap_step(mapseen *mptr, int dir)
+{
+    mapseen *m, *found = (mapseen *) 0;
+
+    if (dir > 0) {
+        for (m = mptr->next; m; m = m->next)
+            if (levelmap_viewable(m))
+                return m;
+    } else {
+        for (m = svm.mapseenchn; m && m != mptr; m = m->next)
+            if (levelmap_viewable(m))
+                found = m;
+    }
+    return found;
+}
+
+/* level map viewer: the line shown above a level's map, with the same
+   text as #overview: "The Dungeons of Doom, Level 3: "note" <- You are
+   here. A fountain." */
+char *
+levelmap_header(mapseen *mptr, char *buf) /* BUFSZ */
+{
+    char line[BUFSZ], feat[BUFSZ];
+
+    Snprintf(buf, BUFSZ, "%s, %s", svd.dungeons[mptr->lev.dnum].dname,
+             overview_levelline(mptr, 0, 0, line));
+    if (!mptr->flags.forgot && overview_interests(mptr, feat))
+        Snprintf(eos(buf), BUFSZ - strlen(buf), " %s", feat + strlen(PREFIX));
+    return buf;
 }
 #endif /* !SFCTOOL */
 #undef OF_INTEREST

@@ -1,0 +1,87 @@
+// Level map viewer storage (Phase 1): the map remembered when leaving a
+// level is kept, and survives save/restore.  Wizard mode, for
+// #levelmap and ^V (level teleport).
+seed: 42
+faketime: 2026-03-10T12:00:00Z
+wizard: yes
+options: name:golden,role:valkyrie,race:human,gender:female,align:lawful,!autopickup,!legacy,!splash_screen,!tutorial,time,showexp,!mail,!tips
+---
+// what the hero remembers of Dlvl 1, without monsters
+#terrain<ret>
+c
+!same-map dlvl1
+<ret>
+<esc>
+// level teleport to Dlvl 2: leaving Dlvl 1 takes the snapshot
+<C-v>
+2<ret>
+// show the stored map of Dlvl 1 from Dlvl 2
+#levelmap<ret>
+a
+!same-map dlvl1
+<esc>
+// what the hero remembers of Dlvl 2
+#terrain<ret>
+c
+!same-map dlvl2
+<ret>
+<esc>
+// save and restore on Dlvl 2: the stored map of Dlvl 1 is unchanged
+S
+y
+!restart
+<ret>
+// wizard mode only: keep the save file?
+n
+#levelmap<ret>
+a
+!same-map dlvl1
+// '>' steps down to Dlvl 2 (this level, live memory), '<' back up;
+// a second '>' at the deepest level stays there
+>
+!same-map dlvl2
+<
+!same-map dlvl1
+>
+>
+!same-map dlvl2
+<esc>
+// back to Dlvl 1: Dlvl 2's map is stored on leaving it
+<C-v>
+1<ret>
+#levelmap<ret>
+b
+!same-map dlvl2
+<esc>
+// the current level is shown from live memory, as #terrain shows it
+#levelmap<ret>
+a
+!same-map dlvl1-now
+<esc>
+#terrain<ret>
+c
+!same-map dlvl1-now
+<ret>
+<esc>
+// Ctrl-O: pick a level to view its map
+<C-o>
+b
+!same-map dlvl2
+<
+!same-map dlvl1-now
+<esc>
+// 'm' Ctrl-O still annotates a level; the note shows above its map
+m<C-o>
+a
+stash<sp>here<ret>
+#levelmap<ret>
+b
+<
+<esc>
+// quit
+#quit<ret>
+y
+// wizard mode only: dump core?
+n
+// end-of-game questions: skip them all
+q

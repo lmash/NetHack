@@ -1006,7 +1006,9 @@ u_init_misc(void)
     u.ualignbase[A_CURRENT] = u.ualignbase[A_ORIGINAL] = u.ualign.type =
         aligns[flags.initalign].value;
 
-#if defined(BSD) && !defined(POSIX_TYPES)
+#if defined(NH_DETERMINISTIC)
+    ubirthday = getnow(); /* honors NETHACK_FAKETIME */
+#elif defined(BSD) && !defined(POSIX_TYPES)
     (void) time((long *) &ubirthday);
 #else
     (void) time(&ubirthday);
