@@ -3021,6 +3021,8 @@ finditem_match(
 {
     struct obj *o = im->obj;
 
+    if (o->otyp == CORPSE) /* corpses rot or get eaten: not worth listing */
+        return FALSE;
     if (f->any_class && !f->classes[(int) o->oclass])
         return FALSE;
     if (*f->buc) {
@@ -3108,7 +3110,8 @@ finditem_filters(struct finditem_filter *f)
     for (mptr = svm.mapseenchn; mptr; mptr = mptr->next)
         if (finditem_level_ok(mptr))
             for (im = mptr->itemmem; im; im = im->next)
-                present[(int) im->obj->oclass] = TRUE;
+                if (im->obj->otyp != CORPSE)
+                    present[(int) im->obj->oclass] = TRUE;
 
     win = create_nhwindow(NHW_MENU);
     start_menu(win, MENU_BEHAVE_STANDARD);

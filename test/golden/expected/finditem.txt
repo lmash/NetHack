@@ -1729,7 +1729,531 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 73,17]
 
-=== line 109: #quit<ret>
+=== line 110: <C-w>
+For what do you wish?
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
+[cursor 22,0]
+
+=== line 111: newt<sp>corpse<ret>
+e - a newt corpse.
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
+[cursor 73,17]
+[screen-has 'e - a newt corpse.': ok]
+
+=== line 113: <C-w>
+For what do you wish?
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
+[cursor 22,0]
+
+=== line 114: apple<ret>
+f - an apple.
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
+[cursor 73,17]
+[screen-has 'f - an apple.': ok]
+
+=== line 116: de
+You drop a newt corpse.
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:25
+[cursor 73,17]
+
+=== line 117: df
+You drop an apple.
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 73,17]
+
+=== line 118: :
+                                         Things that are here:
+                                         an apple
+                                         a newt corpse
+                                         --More--
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 49,3]
+[screen-has 'newt corpse': ok]
+[screen-has 'apple': ok]
+
+=== line 121: <ret>
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 73,17]
+
+=== line 122: #wizitemmem<ret>
+The Dungeons of Doom, level 1:
+ <4,4> T:4 #39 an unlocked large box
+ <6,4> T:6 #48 a chest (contents unknown)
+ <11,6> T:13 #61 a ring mail
+ <4,4> T:4   in #39: #46 a clear potion
+ <4,4> T:4   in #39: #44 a scroll of light
+ <22,5> T:24 #74 6 rocks (for sale, 42 zm)
+ <22,4> T:23 #73 a scroll labeled DAIYEN FOOELS
+ <22,6> T:23 #75 a white gem
+The Dungeons of Doom, level 3:
+ <71,16> T:24 #107 a large box (contents unknown)
+ <74,16> T:26 #182 a newt corpse
+ <74,16> T:26 #183 an apple
+11 items remembered.
+
+
+
+
+
+
+
+
+
+--More--
+[cursor 8,23]
+[screen-has 'newt corpse': ok]
+
+=== line 124: <esc>
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 73,17]
+
+=== line 125: #finditem<ret>
+Find which remembered items? [text, or Return for all]
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 55,0]
+
+=== line 126: corpse<ret>
+You don't remember seeing anything like "corpse".
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 73,17]
+[screen-has 'You don\'t remember seeing anything like "corpse".': ok]
+
+=== line 128: #finditem<ret>
+Find which remembered items? [text, or Return for all]
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 55,0]
+
+=== line 129: <ret>
+              Remembered items (pick one to see where):
+
+              The Dungeons of Doom: level 1
+              a - an unlocked large box, on the floor, last seen T:4
+              b - a chest (contents unknown), on the floor, last seen T:6
+              c - a ring mail, on the floor, last seen T:13
+              d - a clear potion, in an unlocked large box, last seen T:4
+              e - a scroll of light, in an unlocked large box, last seen T:4
+              f - 6 rocks, on the floor, for sale, 42 zorkmids, last seen T:24
+              g - a scroll labeled DAIYEN FOOELS, on the floor, last seen T:23
+              h - a white gem, on the floor, last seen T:23
+              The Dungeons of Doom: level 3 <- You are here.
+              i - a large box (contents unknown), on the floor, last seen T:26
+              j - an apple, on the floor, last seen T:26
+              (end)
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 20,14]
+[screen-has 'an apple, on the floor, last seen T:': ok]
+[screen-lacks 'corpse': ok]
+
+=== line 132: <esc>
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 73,17]
+
+=== line 133: m#finditem<ret>
+                             Find which items? (pick filters, or none for all)
+
+                             Item classes
+                             [ - Armor
+                             ( - Tools
+                             % - Comestibles
+                             ! - Potions
+                             ? - Scrolls
+                             * - Gems/Stones
+                             Blessed or cursed, as far as you know
+                             B - blessed
+                             U - uncursed
+                             C - cursed
+                             X - unknown blessed/cursed status
+                             Where
+                             F - for sale in a shop
+                             I - inside a container
+                             (end)
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 35,17]
+
+=== line 134: %<ret>
+Find which remembered items? [text, or Return for all]
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 55,0]
+
+=== line 135: <ret>
+                                Remembered items (pick one to see where):
+
+                                The Dungeons of Doom: level 3 <- You are here.
+                                a - an apple, on the floor, last seen T:26
+                                (end)
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 38,4]
+[screen-has 'an apple, on the floor': ok]
+[screen-lacks 'corpse': ok]
+[screen-lacks 'large box': ok]
+
+=== line 139: <esc>
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                 -------.----
+                                                                 |..........|
+                                                                 -..........|
+                                                                 |..........|
+                                                                 ...........|
+                                                                 |....(..@.>|
+                                                                 ------------
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
+[cursor 73,17]
+
+=== line 141: #quit<ret>
 Really quit without saving? [yn] (n)
 
 
@@ -1753,10 +2277,10 @@ Really quit without saving? [yn] (n)
 
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 37,0]
 
-=== line 110: y
+=== line 142: y
 Dump core? [ynq] (q)
 
 
@@ -1780,10 +2304,10 @@ Dump core? [ynq] (q)
 
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 21,0]
 
-=== line 112: n
+=== line 144: n
 Do you want your possessions identified? [ynq] (n)
 
 
@@ -1807,10 +2331,10 @@ Do you want your possessions identified? [ynq] (n)
 
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
+Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 51,0]
 
-=== line 114: q
+=== line 146: q
 
 
 Since you were in wizard mode, the score list will not be checked.

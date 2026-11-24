@@ -105,6 +105,38 @@ n
 <ret>
 !same-map results
 <esc>
+// corpses are remembered but not listed (they rot); other food is listed.
+// Wish for a corpse and an apple, drop them, look at the pile.
+<C-w>
+newt<sp>corpse<ret>
+!screen-has e - a newt corpse.
+<C-w>
+apple<ret>
+!screen-has f - an apple.
+de
+df
+:
+!screen-has newt corpse
+!screen-has apple
+<ret>
+#wizitemmem<ret>
+!screen-has newt corpse
+<esc>
+#finditem<ret>
+corpse<ret>
+!screen-has You don't remember seeing anything like "corpse".
+#finditem<ret>
+<ret>
+!screen-has an apple, on the floor, last seen T:
+!screen-lacks corpse
+<esc>
+m#finditem<ret>
+%<ret>
+<ret>
+!screen-has an apple, on the floor
+!screen-lacks corpse
+!screen-lacks large box
+<esc>
 // quit
 #quit<ret>
 y

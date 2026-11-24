@@ -14,6 +14,8 @@ Status: **Phases 3 (item memory) and 4 (search) done.**
 
   - Containers say "(contents unknown)" if you never looked inside, or
     "(empty)".
+  - Corpses are never listed: they rot or get eaten, so an old sighting is
+    useless. Other food is listed.
 - **Pick a result** to see its level's remembered map, with the cursor on the
   item's square. `<` / `>` step to other levels, as in the level map viewer;
   Esc goes back to the game.
@@ -133,6 +135,10 @@ All of it is in `mapseen.itemmem`. A second hero needs its own list per level
 code:
 
 - `finditem_match()`:
+  - Corpses (`otyp == CORPSE`) never match. They stay in the item memory
+    (`#wizitemmem` shows them, and they still keep a container from counting
+    as "(empty)"); only the search leaves them out. `finditem_filters()` skips
+    them too, so `%` isn't offered when the only food seen was corpses.
   - The class filter uses `oclass`. That's always visible: the map glyph
     shows the class.
   - The BUC filter uses only what the hero knows: `bknown`, then
@@ -159,7 +165,7 @@ code:
 
 ### Checked
 
-- `finditem` scenario (wizard mode, 22 assertions, see Tests).
+- `finditem` scenario (wizard mode, 33 assertions, see Tests).
 - By hand in normal mode (2026-11-23): replay `basic` to Dlvl 2. Then
   `#finditem`, pick a result, `<`, Esc, `m #finditem` with a filter, a
   search, and six `s` plus `^R`. The screen is identical, `T:` and monsters
