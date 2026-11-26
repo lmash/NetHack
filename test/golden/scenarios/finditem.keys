@@ -86,7 +86,6 @@ F<ret>
 #finditem<ret>
 <ret>
 !screen-has The Dungeons of Doom: level 1
-!screen-has The Dungeons of Doom: level 3 <- You are here.
 !same-map results
 a
 !screen-has The Dungeons of Doom, Level 1:
@@ -127,6 +126,7 @@ corpse<ret>
 !screen-has You don't remember seeing anything like "corpse".
 #finditem<ret>
 <ret>
+!screen-has The Dungeons of Doom: level 3 <- You are here.
 !screen-has an apple, on the floor, last seen T:
 !screen-lacks corpse
 <esc>

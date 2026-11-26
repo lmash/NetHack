@@ -695,17 +695,17 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:21
 [cursor 44,10]
 
 === line 58: o
-                       Take out what type of objects?
+    Take what type of objects out of an unlocked large box containing 2 items?
 
-                       A - Auto-select every relevant item
-                           (ignored unless some other choices are also picked)
-----------------
-|..@.(.........|       a - All types
-|..............+       b - Scrolls
-|.........f%...|       c - Potions
--------.--------
-                       X - Items of unknown Bless/Curse status
-                       (end)
+    A - Auto-select every relevant item
+        (ignored unless some other choices are also picked)
+---
+|.. a - All types
+|.. b - Scrolls
+|.. c - Potions
+---
+    X - Items of unknown Bless/Curse status
+    (end)
 
 
 
@@ -719,14 +719,14 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:21
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:21
-[cursor 29,10]
+[cursor 10,10]
 
 === line 59: c<ret>
-                                         Take out what?
+                    Take what out of an unlocked large box containing 2 items?
 
-                                         Potions
-                                         a - a clear potion
-----------------                         (end)
+                    Potions
+                    a - a clear potion
+----------------    (end)
 |..@.(.........|
 |..............+
 |.........f%...|
@@ -746,7 +746,7 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:21
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:21
-[cursor 47,4]
+[cursor 26,4]
 
 === line 60: a<ret>
 f - a clear potion.
@@ -833,8 +833,8 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:22
 [cursor 3,5]
 
 === line 67: #tip<ret>
-There is an unlocked large box containing 1 item here, tip it? [ynq] (q)
-
+There is an unlocked large box containing 1 item here, tip it onto the floor? [
+ynq] (q)
 
 
 ----------------
@@ -857,36 +857,9 @@ There is an unlocked large box containing 1 item here, tip it? [ynq] (q)
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:22
-[cursor 73,0]
+[cursor 9,1]
 
 === line 68: y
-          Where to tip the contents of an unlocked large box containing 1 item
-
-          - * on the floor
-
---------- (end)
-|..@.(.........|
-|..............+
-|.......f.[%...|
--------.--------
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:22
-[cursor 16,4]
-
-=== line 69: <ret>
 An object spills out:  a scroll labeled ELBIB YLOH.
 
 
@@ -913,7 +886,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:23
 [cursor 3,5]
 
-=== line 70: #wizitemmem<ret>
+=== line 69: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:22 #39 an unlocked large box
  <6,4> T:22 #48 a chest (contents unknown)
@@ -942,7 +915,7 @@ The Dungeons of Doom, level 1:
 [screen-has '<4,4> T:22 #44 a scroll labeled': ok]
 [screen-lacks 'in #39': ok]
 
-=== line 73: <ret>
+=== line 72: <ret>
 
 
 
@@ -969,7 +942,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:23
 [cursor 3,5]
 
-=== line 75: ll
+=== line 74: ll
 You see here a chest.
 
 
@@ -996,7 +969,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:25
 [cursor 5,5]
 
-=== line 76: #loot<ret>
+=== line 75: #loot<ret>
 Hmmm, the chest turns out to be locked.
 
 
@@ -1023,7 +996,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:25
 [cursor 5,5]
 
-=== line 77: #wizitemmem<ret>
+=== line 76: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:25 #48 a locked chest (contents unknown)
@@ -1053,7 +1026,7 @@ The Dungeons of Doom, level 1:
 [screen-lacks 'gem': ok]
 [screen-lacks 'ruby': ok]
 
-=== line 81: <ret>
+=== line 80: <ret>
 
 
 
@@ -1080,7 +1053,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:25
 [cursor 5,5]
 
-=== line 84: nnjj
+=== line 83: nnjj
 
 
 
@@ -1107,7 +1080,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:29
 [cursor 7,9]
 
-=== line 85: #wizitemmem<ret>
+=== line 84: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:25 #48 a locked chest (contents unknown)
@@ -1135,7 +1108,7 @@ The Dungeons of Doom, level 1:
 [cursor 8,23]
 [screen-lacks 'wand': ok]
 
-=== line 87: <ret>
+=== line 86: <ret>
 
 
 
@@ -1162,7 +1135,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:29
 [cursor 7,9]
 
-=== line 88: l
+=== line 87: l
 
 
 
@@ -1189,7 +1162,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:30
 [cursor 8,9]
 
-=== line 89: #wizitemmem<ret>
+=== line 88: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:29 #48 a locked chest (contents unknown)
@@ -1217,7 +1190,7 @@ The Dungeons of Doom, level 1:
 [cursor 8,23]
 [screen-has 'a wand': ok]
 
-=== line 91: <ret>
+=== line 90: <ret>
 
 
 
@@ -1244,7 +1217,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:30
 [cursor 8,9]
 
-=== line 93: hkk
+=== line 92: hkk
 The kobold opens a door.
 
 
@@ -1271,7 +1244,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:33
 [cursor 7,7]
 
-=== line 94: u
+=== line 93: u
 The kobold throws a dart!  You are hit by a dart.
 
 
@@ -1298,7 +1271,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:15(16) Pw:2(2) AC:6 Xp:1/0 T:34
 [cursor 8,6]
 
-=== line 95: llllll
+=== line 94: llllll
                                          Things that are here:
                                          a kobold corpse
                                          a sapphire ring
@@ -1325,7 +1298,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:12(16) Pw:2(2) AC:6 Xp:1/6 T:39
 [cursor 49,4]
 
-=== line 96: <ret>
+=== line 95: <ret>
 The kitten picks up an apple.
 
 
@@ -1352,7 +1325,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:12(16) Pw:2(2) AC:6 Xp:1/6 T:40
 [cursor 13,6]
 
-=== line 97: #wizitemmem<ret>
+=== line 96: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:31 #48 a locked chest (contents unknown)
@@ -1381,7 +1354,7 @@ The Dungeons of Doom, level 1:
 [screen-has '6 stones': ok]
 [screen-lacks 'for sale': ok]
 
-=== line 101: <ret>
+=== line 100: <ret>
 
 
 
@@ -1408,7 +1381,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:12(16) Pw:2(2) AC:6 Xp:1/6 T:40
 [cursor 13,6]
 
-=== line 103: llllll
+=== line 102: llllll
 "Velkommen, wizard!  Welcome to Annootok's general store!"
 
 
@@ -1435,7 +1408,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:46
 [cursor 19,6]
 
-=== line 104: l
+=== line 103: l
 
 
 
@@ -1462,7 +1435,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:47
 [cursor 20,6]
 
-=== line 105: l
+=== line 104: l
 There is a staircase up here.--More--
 
 
@@ -1489,7 +1462,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:47
 [cursor 37,0]
 
-=== line 106: <ret>
+=== line 105: <ret>
 You see here 6 rocks (for sale, 42 zorkmids).
 
 
@@ -1516,7 +1489,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 21,6]
 
-=== line 107: #wizitemmem<ret>
+=== line 106: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:40 #48 a locked chest (contents unknown)
@@ -1544,7 +1517,7 @@ The Dungeons of Doom, level 1:
 [cursor 8,23]
 [screen-has '6 rocks (for sale, 42 zm)': ok]
 
-=== line 109: <ret>
+=== line 108: <ret>
 
 
 
@@ -1571,7 +1544,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 21,6]
 
-=== line 111: <C-v>
+=== line 110: <C-v>
 To what level do you want to teleport?
 
 
@@ -1598,7 +1571,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 39,0]
 
-=== line 112: 3<ret>
+=== line 111: 3<ret>
 You materialize on a different level!
 
 
@@ -1625,7 +1598,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 2,6]
 
-=== line 113: #wizitemmem<ret>
+=== line 112: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:48 #48 a locked chest (contents unknown)
@@ -1655,7 +1628,7 @@ The Dungeons of Doom, level 3:
 [screen-has 'The Dungeons of Doom, level 3:': ok]
 [same-map itemlist: recorded]
 
-=== line 117: <ret>
+=== line 116: <ret>
 
 
 
@@ -1682,7 +1655,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 2,6]
 
-=== line 118: S
+=== line 117: S
 Really save? [yn] (n)
 
 
@@ -1709,12 +1682,12 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 22,0]
 
-=== line 119: y
+=== line 118: y
 Be seeing you...
 [cursor 0,1]
 [game exited]
 
-=== line 120: !restart
+=== line 119: !restart
 Velkommen wizard, the human Valkyrie, welcome back to NetHack!--More--
 
 
@@ -1741,7 +1714,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 70,0]
 
-=== line 121: <ret>
+=== line 120: <ret>
 Do you want to keep the save file? [yn] (n)
 
 
@@ -1768,7 +1741,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 44,0]
 
-=== line 123: n
+=== line 122: n
 Do you want to keep the save file? [yn] (n)
 
 
@@ -1795,7 +1768,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 2,6]
 
-=== line 124: #wizitemmem<ret>
+=== line 123: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:48 #48 a locked chest (contents unknown)
@@ -1823,7 +1796,7 @@ The Dungeons of Doom, level 3:
 [cursor 8,23]
 [same-map itemlist: same]
 
-=== line 126: <ret>
+=== line 125: <ret>
 
 
 
@@ -1850,7 +1823,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 2,6]
 
-=== line 128: <C-w>
+=== line 127: <C-w>
 For what do you wish?
 
 
@@ -1877,7 +1850,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 22,0]
 
-=== line 129: blessed<sp>potion<sp>of<sp>object<sp>detection<ret>
+=== line 128: blessed<sp>potion<sp>of<sp>object<sp>detection<ret>
 e - a brown potion.
 
 
@@ -1904,7 +1877,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 2,6]
 
-=== line 130: #wizitemmem<ret>
+=== line 129: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:48 #48 a locked chest (contents unknown)
@@ -1932,7 +1905,7 @@ The Dungeons of Doom, level 3:
 [cursor 8,23]
 [screen-has '14 items remembered.': ok]
 
-=== line 132: <ret>
+=== line 131: <ret>
 
 
 
@@ -1959,7 +1932,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 2,6]
 
-=== line 133: qe
+=== line 132: qe
 You detect the presence of objects.  (For instructions type a '?')
 
 
@@ -1986,7 +1959,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:48
 [cursor 2,6]
 
-=== line 134: <esc>
+=== line 133: <esc>
 
 
 
@@ -2013,7 +1986,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:49
 [cursor 2,6]
 
-=== line 135: #wizitemmem<ret>
+=== line 134: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
  <4,4> T:23 #39 an unlocked large box
  <6,4> T:48 #48 a locked chest (contents unknown)
@@ -2041,7 +2014,7 @@ The Dungeons of Doom, level 3:
 [cursor 8,23]
 [screen-has '14 items remembered.': ok]
 
-=== line 137: <ret>
+=== line 136: <ret>
 
 
 
@@ -2068,7 +2041,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:49
 [cursor 2,6]
 
-=== line 139: #quit<ret>
+=== line 138: #quit<ret>
 Really quit without saving? [yn] (n)
 
 
@@ -2095,7 +2068,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:49
 [cursor 37,0]
 
-=== line 140: y
+=== line 139: y
 Dump core? [ynq] (q)
 
 
@@ -2122,7 +2095,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:49
 [cursor 21,0]
 
-=== line 142: n
+=== line 141: n
 Do you want your possessions identified? [ynq] (n)
 
 
@@ -2149,7 +2122,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:13(16) Pw:2(2) AC:6 Xp:1/6 T:49
 [cursor 51,0]
 
-=== line 144: q
+=== line 143: q
 
 
 Since you were in wizard mode, the score list will not be checked.

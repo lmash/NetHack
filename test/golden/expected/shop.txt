@@ -163,7 +163,7 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
 [cursor 44,10]
 
 === line 16: o
-                       Take out what type of objects?
+                       Take what type of objects out of an unlocked large box?
 
                        A - Auto-select every relevant item
                            (ignored unless some other choices are also picked)
@@ -190,13 +190,13 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
 [cursor 29,10]
 
 === line 17: a<ret>
-                                         Take out what?
+                    Take what out of an unlocked large box containing 2 items?
 
-                                         Scrolls
-                                         a - a scroll labeled ELBIB YLOH
--------------                            Potions
-|....(......|                            b - a clear potion
-|f.@........+                            (end)
+                    Scrolls
+                    a - a scroll labeled ELBIB YLOH
+-------------       Potions
+|....(......|       b - a clear potion
+|f.@........+       (end)
 |......[....|
 -------------
 
@@ -214,7 +214,7 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:2
-[cursor 47,6]
+[cursor 26,6]
 
 === line 18: a<ret>
 e - a scroll labeled ELBIB YLOH.
@@ -649,8 +649,8 @@ Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:19
 [cursor 3,6]
 
 === line 38: #tip<ret>
-There is an unlocked large box containing 1 item here, tip it? [ynq] (q)
-
+There is an unlocked large box containing 1 item here, tip it onto the floor? [
+ynq] (q)
 
 
 -------------
@@ -673,36 +673,9 @@ There is an unlocked large box containing 1 item here, tip it? [ynq] (q)
 
 Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:19
-[cursor 73,0]
+[cursor 9,1]
 
 === line 39: y
-          Where to tip the contents of an unlocked large box containing 1 item
-
-          - * on the floor
-
---------- (end)
-|....f......|
-|..@........+
-|......[....|
--------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:19
-[cursor 16,4]
-
-=== line 40: <ret>
 An object spills out:  a clear potion.
 
 
@@ -729,7 +702,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:20
 [cursor 3,6]
 
-=== line 42: llllllll
+=== line 41: llllllll
 The kitten drops a red gem.
 
 
@@ -756,7 +729,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:28
 [cursor 11,6]
 
-=== line 43: ol
+=== line 42: ol
 The door opens.
 
 
@@ -783,7 +756,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:29
 [cursor 11,6]
 
-=== line 44: llllllllll
+=== line 43: llllllllll
 "Velkommen, wizard!  Welcome to Pakka Pakka's general store!"
 
 
@@ -810,7 +783,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:39
 [cursor 21,6]
 
-=== line 46: l
+=== line 45: l
 
 
 
@@ -837,7 +810,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:40
 [cursor 22,6]
 
-=== line 47: l
+=== line 46: l
 You see here an elven short sword (for sale, 13 zorkmids).
 
 
@@ -864,7 +837,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:41
 [cursor 23,6]
 
-=== line 48: ,
+=== line 47: ,
 "For you, honored lady; only 13 zorkmids for this elven short sword."--More--
 
 
@@ -891,7 +864,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:41
 [cursor 77,0]
 
-=== line 49: <ret>
+=== line 48: <ret>
 g - an elven short sword (unpaid, 13 zorkmids).
 
 
@@ -918,7 +891,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:42
 [cursor 23,6]
 
-=== line 50: p
+=== line 49: p
 You have no gold or credit.
 
 
@@ -945,7 +918,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:42
 [cursor 23,6]
 
-=== line 51: dg
+=== line 50: dg
 You drop an elven short sword (unpaid, 13 zorkmids).
 
 
@@ -972,7 +945,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:43
 [cursor 23,6]
 
-=== line 52: l
+=== line 51: l
 You see here a scroll labeled READ ME (for sale, 107 zorkmids).--More--
 
 
@@ -999,7 +972,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:43
 [cursor 71,0]
 
-=== line 53: <ret>
+=== line 52: <ret>
 Your kitten steps reluctantly onto a studded leather armor.--More--
 
 
@@ -1026,7 +999,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:43
 [cursor 67,0]
 
-=== line 54: <ret>
+=== line 53: <ret>
 Your kitten eats a tripe ration.
 
 
@@ -1053,7 +1026,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:44
 [cursor 24,6]
 
-=== line 56: df
+=== line 55: df
 You drop 3 apples.--More--
 
 
@@ -1080,7 +1053,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:44
 [cursor 26,0]
 
-=== line 57: <ret>
+=== line 56: <ret>
 Pakka Pakka offers 11 gold pieces for your apples.  Sell them? [ynaq] (n)
 
 
@@ -1107,7 +1080,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:44
 [cursor 74,0]
 
-=== line 58: y
+=== line 57: y
 You sold 3 apples for 11 gold pieces.
 
 
@@ -1134,7 +1107,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:11 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:45
 [cursor 24,6]
 
-=== line 59: de
+=== line 58: de
 You drop a scroll labeled ELBIB YLOH.--More--
 
 
@@ -1161,7 +1134,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:11 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:45
 [cursor 45,0]
 
-=== line 60: <ret>
+=== line 59: <ret>
 Pakka Pakka offers 19 gold pieces for your scroll labeled ELBIB YLOH.  Sell it?
  [ynaq] (n)
 
@@ -1188,7 +1161,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:11 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:45
 [cursor 12,1]
 
-=== line 61: y
+=== line 60: y
 You sold a scroll labeled ELBIB YLOH for 19 gold pieces.
 
 
@@ -1215,7 +1188,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:46
 [cursor 24,6]
 
-=== line 63: h
+=== line 62: h
 You see here an elven short sword (for sale, 13 zorkmids).
 
 
@@ -1242,7 +1215,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:47
 [cursor 23,6]
 
-=== line 64: ,
+=== line 63: ,
 "For you, esteemed lady; only 13 zorkmids for this elven short sword."--More--
 
 
@@ -1269,7 +1242,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:47
 [cursor 78,0]
 
-=== line 65: <ret>
+=== line 64: <ret>
 g - an elven short sword (unpaid, 13 zorkmids).
 
 
@@ -1296,7 +1269,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:48
 [cursor 23,6]
 
-=== line 66: p
+=== line 65: p
                                          Pay for which items?
 
                                          a - 13 Zm, an elven short sword
@@ -1323,7 +1296,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:30 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:48
 [cursor 47,3]
 
-=== line 67: a<ret>
+=== line 66: a<ret>
 You bought an elven short sword for 13 gold pieces.--More--
 
 
@@ -1350,7 +1323,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:48
 [cursor 59,0]
 
-=== line 68: <ret>
+=== line 67: <ret>
 "Thank you for shopping in Pakka Pakka's general store!"--More--
 
 
@@ -1377,7 +1350,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:48
 [cursor 64,0]
 
-=== line 69: <ret>
+=== line 68: <ret>
 The kitten picks up a ruby potion.
 
 
@@ -1404,7 +1377,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
 [cursor 23,6]
 
-=== line 71: S
+=== line 70: S
 Really save? [yn] (n)
 
 
@@ -1431,12 +1404,12 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
 [cursor 22,0]
 
-=== line 72: y
+=== line 71: y
 Be seeing you...
 [cursor 0,1]
 [game exited]
 
-=== line 73: !restart
+=== line 72: !restart
 Velkommen wizard, the human Valkyrie, welcome back to NetHack!--More--
 
 
@@ -1463,7 +1436,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
 [cursor 70,0]
 
-=== line 74: <ret>
+=== line 73: <ret>
 Do you want to keep the save file? [yn] (n)
 
 
@@ -1490,7 +1463,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
 [cursor 44,0]
 
-=== line 76: n
+=== line 75: n
 Do you want to keep the save file? [yn] (n)
 
 
@@ -1517,7 +1490,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
 [cursor 23,6]
 
-=== line 78: l
+=== line 77: l
                             Things that are here:
                             a scroll labeled ELBIB YLOH (for sale, 89 zorkmids)
                             3 apples (for sale, 27 zorkmids)
@@ -1544,7 +1517,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:49
 [cursor 36,4]
 
-=== line 79: <ret>
+=== line 78: <ret>
 
 
 
@@ -1571,7 +1544,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 24,6]
 
-=== line 80: :
+=== line 79: :
                             Things that are here:
                             a scroll labeled ELBIB YLOH (for sale, 89 zorkmids)
                             3 apples (for sale, 27 zorkmids)
@@ -1598,7 +1571,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 36,4]
 
-=== line 81: <ret>
+=== line 80: <ret>
 
 
 
@@ -1625,7 +1598,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 24,6]
 
-=== line 83: #quit<ret>
+=== line 82: #quit<ret>
 Really quit without saving? [yn] (n)
 
 
@@ -1652,7 +1625,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 37,0]
 
-=== line 84: y
+=== line 83: y
 Dump core? [ynq] (q)
 
 
@@ -1679,7 +1652,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 21,0]
 
-=== line 86: n
+=== line 85: n
 Pakka Pakka gratefully inherits all your possessions.--More--
 
 
@@ -1706,7 +1679,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 61,0]
 
-=== line 87: <ret>
+=== line 86: <ret>
 Do you want to see what you had when you quit? [ynq] (n)
 
 
@@ -1733,7 +1706,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 57,0]
 
-=== line 89: y
+=== line 88: y
                                Coins
                                $ - 17 gold pieces
                                Weapons
@@ -1760,7 +1733,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 37,10]
 
-=== line 90: <ret>
+=== line 89: <ret>
 Do you want to see your attributes? [ynq] (n)
 
 
@@ -1787,7 +1760,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 46,0]
 
-=== line 92: n
+=== line 91: n
 Do you want to see your conduct and achievements? [ynq] (n)
 
 
@@ -1814,7 +1787,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 60,0]
 
-=== line 94: y
+=== line 93: y
                                          Voluntary challenges:
                                           Character rerolling was not enabled.
                                           You went without food.
@@ -1841,7 +1814,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 49,14]
 
-=== line 95: <ret>
+=== line 94: <ret>
 Do you want to see the dungeon overview? [ynq] (n)
 
 
@@ -1868,7 +1841,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 51,0]
 
-=== line 97: y
+=== line 96: y
                                          The Dungeons of Doom:
                                             Level 1: <- You were here.
                                                A general store.
@@ -1895,7 +1868,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:17 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:50
 [cursor 47,3]
 
-=== line 98: <ret>
+=== line 97: <ret>
 Farvel wizard the Valkyrie...
 
 You quit in The Dungeons of Doom on dungeon level 1 with 17 points,
@@ -1922,7 +1895,7 @@ You were level 1 with a maximum of 16 hit points when you quit.
 --More--
 [cursor 8,23]
 
-=== line 100: <ret>
+=== line 99: <ret>
 
 
 Since you were in wizard mode, the score list will not be checked.

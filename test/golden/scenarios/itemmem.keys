@@ -66,7 +66,6 @@ a<ret>
 // tipping the box out: the scroll is now on the floor
 #tip<ret>
 y
-<ret>
 #wizitemmem<ret>
 !screen-has <4,4> T:22 #44 a scroll labeled
 !screen-lacks in #39
