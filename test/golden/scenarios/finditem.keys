@@ -17,14 +17,16 @@ q
 // search by text; picking a result shows its square on the level map
 #finditem<ret>
 potion<ret>
-!screen-has a clear potion, in an unlocked large box, last seen T:
+!screen-has  On the floor
+!screen-has     an unlocked large box, last seen T:
+!screen-has a -   a clear potion, last seen T:
 a
 !screen-has item at cursor
 <esc>
 // matching ignores case
 #finditem<ret>
 elbib<ret>
-!screen-has a scroll labeled ELBIB YLOH, in an unlocked large box
+!screen-has a -   a scroll labeled ELBIB YLOH, last seen T:
 <esc>
 // the wand in the dark room hasn't been seen
 #finditem<ret>
@@ -61,7 +63,7 @@ uncursed<sp>scroll<sp>of<sp>light<ret>
 re
 #finditem<ret>
 light<ret>
-!screen-has a scroll of light, in an unlocked large box
+!screen-has a -   a scroll of light, last seen T:
 !screen-lacks ELBIB
 <esc>
 // the shop: goods are found with their price; 'F' shows only shop goods
@@ -76,16 +78,23 @@ l
 m#finditem<ret>
 F<ret>
 <ret>
-!screen-has , on the floor, for sale, 42 zorkmids, last seen T:
+!screen-has  For sale
+!screen-has a - 6 rocks, 42 zorkmids, last seen T:
+!screen-lacks On the floor
 !screen-lacks large box
 <esc>
-// from another level: results are grouped by level; picking a Dlvl 1 item
-// shows Dlvl 1's remembered map
+// from another level: results are grouped by level, then the floor
+// (a container's contents indented under it) and shop goods; picking a
+// Dlvl 1 item shows Dlvl 1's remembered map
 <C-v>
 3<ret>
 #finditem<ret>
 <ret>
 !screen-has The Dungeons of Doom: level 1
+!screen-has a - an unlocked large box, last seen T:
+!screen-has b -   a clear potion, last seen T:
+!screen-has c -   a scroll of light, last seen T:
+!screen-has  For sale
 !same-map results
 a
 !screen-has The Dungeons of Doom, Level 1:
@@ -127,13 +136,13 @@ corpse<ret>
 #finditem<ret>
 <ret>
 !screen-has The Dungeons of Doom: level 3 <- You are here.
-!screen-has an apple, on the floor, last seen T:
+!screen-has an apple, last seen T:
 !screen-lacks corpse
 <esc>
 m#finditem<ret>
 %<ret>
 <ret>
-!screen-has an apple, on the floor
+!screen-has an apple, last seen T:
 !screen-lacks corpse
 !screen-lacks large box
 <esc>

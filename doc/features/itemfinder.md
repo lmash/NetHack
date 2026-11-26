@@ -7,11 +7,22 @@ Status: **Phases 3 (item memory) and 4 (search) done.**
 - **`#finditem`**: type part of a name (case doesn't matter), or just press
   Return to list everything you remember seeing.
   - Results are grouped by level, with the same level names as Ctrl-O.
-  - Each line shows the name, where it is, and when you last saw it:
+    Each level has up to two sections: **On the floor**, then **For sale**
+    (shop goods whose price you were quoted). A container's contents are
+    listed indented under it:
 
-        a - a scroll of light, in an unlocked large box, last seen T:3
-        b - 6 rocks, on the floor, for sale, 42 zorkmids, last seen T:23
+        The Dungeons of Doom: level 1
+         On the floor
+        a - an unlocked large box, last seen T:4
+        b -   a clear potion, last seen T:4
+        c - a ring mail, last seen T:13
+         For sale
+        d - 6 rocks, 42 zorkmids, last seen T:24
 
+  - If a search matches only something inside a container, the container is
+    still shown (without a letter) so you can see where it is.
+  - Shop goods you only saw from a distance were never quoted a price, so
+    they are listed under "On the floor".
   - Containers say "(contents unknown)" if you never looked inside, or
     "(empty)".
   - Corpses are never listed: they rot or get eaten, so an old sighting is
@@ -145,12 +156,22 @@ code:
     `blessed`/`cursed`. Anything without `bknown` counts as "unknown" (`X`).
   - The text must be a case-insensitive substring (`strstri()`) of
     `itemmem_name()`, the name as shown.
+- Layout (`dofinditem()`): for each level, two passes over the top-level
+  entries (floor items, and contents whose container isn't remembered):
+  first those without a price ("On the floor"), then those with one ("For
+  sale"). `finditem_add()` adds an entry and then, recursively and indented
+  two spaces per level, the entries whose container it is
+  (`finditem_container()`: same `o_id` and square).
+- `finditem_shown()`: an entry is shown if it matches, or if something
+  inside it does. A container shown only for its contents gets no menu
+  identifier (unselectable) and four extra spaces, to line up past "a - ".
 - `finditem_describe()` builds the result line:
   - the name;
   - "(contents unknown)" if `!cknown`, or "(empty)" if no remembered contents;
-  - ", in <container name>" (the remembered container on the same square) or
-    ", on the floor";
-  - ", for sale, N zorkmids" or ", contents, N zorkmids";
+  - ", in a container" only for contents whose container isn't remembered;
+  - the price: ", N zorkmids" in the "For sale" section, ", for sale, N
+    zorkmids" elsewhere (a priced item inside an unpriced container), or
+    ", contents, N zorkmids";
   - ", last seen T:n".
 - `finditem_level_ok()` searches the same levels as the level map viewer: not
   unreachable, not forgotten, not the main dungeon while in the endgame.
@@ -165,7 +186,7 @@ code:
 
 ### Checked
 
-- `finditem` scenario (wizard mode, 33 assertions, see Tests).
+- `finditem` scenario (wizard mode, 40 assertions, see Tests).
 - By hand in normal mode (2026-11-23): replay `basic` to Dlvl 2. Then
   `#finditem`, pick a result, `<`, Esc, `m #finditem` with a filter, a
   search, and six `s` plus `^R`. The screen is identical, `T:` and monsters
