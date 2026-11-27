@@ -37,6 +37,32 @@ branch.
     ./playground/nethack            # tty
     ./playground/nethack -wcurses   # curses
 
+## Playing for real: keep your saves out of the playground
+
+**Every build deletes `playground/`**, saves, bones and high scores
+included: the install step runs `rm -rf $(INSTDIR) $(VARDIR)`
+(`Makefile`). So play from a separate copy:
+
+    sys/unix/install-play.sh        # install, or upgrade after a build
+    ~/nethack-play/play             # play (takes the usual nethack options)
+
+- It copies only the program files (`nethack`, `recover`, `nhdat`,
+  `symbols`, `license`) into `~/nethack-play` (or `$NHPLAY`). Saves, bones,
+  `record` and logs there are never touched. The first install carries over
+  the playground's high scores.
+- `play` sets `NETHACKDIR`, so saves go to `~/nethack-play/save`. Only
+  `sysconf` is still read from `playground/` (its path is compiled in); if
+  that's missing mid-build, the game says so and uses defaults.
+- It refuses to upgrade:
+  - if a game is running there (lock files `*.0`; after a crash it prints
+    the `recover` command);
+  - if `EDITLEVEL` changed and there are saved games, which would no longer
+    load. Finish them first, or pass `--force`.
+- `~/nethack-play/.version` records the commit installed.
+- Checked 2026-11-27 in a scratch folder: first install, upgrade with a
+  save kept, the `EDITLEVEL` and running-game refusals, `--force`, and a
+  real save landing in the copy's `save/` (not the playground's).
+
 Wizard mode (`-D`, needed for `test/*.lua` via `#wizloadlua`) needs your
 username in `WIZARDS=` in `playground/sysconf` (default `root games`).
 **Every build reinstalls `sysconf` and resets this edit**, so redo it after
