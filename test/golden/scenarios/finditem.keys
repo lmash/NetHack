@@ -17,14 +17,16 @@ q
 // search by text; picking a result shows its square on the level map
 #finditem<ret>
 potion<ret>
-!screen-has a clear potion, in an unlocked large box, last seen T:
+!screen-has  On the floor
+!screen-has     an unlocked large box, last seen T:
+!screen-has a -   a clear potion, last seen T:
 a
 !screen-has item at cursor
 <esc>
 // matching ignores case
 #finditem<ret>
 elbib<ret>
-!screen-has a scroll labeled ELBIB YLOH, in an unlocked large box
+!screen-has a -   a scroll labeled ELBIB YLOH, last seen T:
 <esc>
 // the wand in the dark room hasn't been seen
 #finditem<ret>
@@ -61,7 +63,7 @@ uncursed<sp>scroll<sp>of<sp>light<ret>
 re
 #finditem<ret>
 light<ret>
-!screen-has a scroll of light, in an unlocked large box
+!screen-has a -   a scroll of light, last seen T:
 !screen-lacks ELBIB
 <esc>
 // the shop: goods are found with their price; 'F' shows only shop goods
@@ -69,6 +71,14 @@ n
 llllllllll
 ol
 ol
+// rocks seen through the door (too far to tell: "stones"), before
+// entering: the hero doesn't know it's a shop yet, so not for sale
+#finditem<ret>
+stone<ret>
+!screen-has  On the floor
+!screen-has a - 6 stones, last seen T:16
+!screen-lacks for sale
+<esc>
 lllll
 l
 l
@@ -76,17 +86,25 @@ l
 m#finditem<ret>
 F<ret>
 <ret>
-!screen-has , on the floor, for sale, 42 zorkmids, last seen T:
+!screen-has  For sale
+!screen-has a - 6 rocks, for sale, 42 zorkmids, last seen T:
+// goods seen only from a distance, once inside: for sale, no price yet
+!screen-has , for sale, price not known, last seen T:23
+!screen-lacks On the floor
 !screen-lacks large box
 <esc>
-// from another level: results are grouped by level; picking a Dlvl 1 item
-// shows Dlvl 1's remembered map
+// from another level: results are grouped by level, then the floor
+// (a container's contents indented under it) and shop goods; picking a
+// Dlvl 1 item shows Dlvl 1's remembered map
 <C-v>
 3<ret>
 #finditem<ret>
 <ret>
 !screen-has The Dungeons of Doom: level 1
-!screen-has The Dungeons of Doom: level 3 <- You are here.
+!screen-has a - an unlocked large box, last seen T:
+!screen-has b -   a clear potion, last seen T:
+!screen-has c -   a scroll of light, last seen T:
+!screen-has  For sale
 !same-map results
 a
 !screen-has The Dungeons of Doom, Level 1:
@@ -127,13 +145,14 @@ corpse<ret>
 !screen-has You don't remember seeing anything like "corpse".
 #finditem<ret>
 <ret>
-!screen-has an apple, on the floor, last seen T:
+!screen-has The Dungeons of Doom: level 3 <- You are here.
+!screen-has an apple, last seen T:
 !screen-lacks corpse
 <esc>
 m#finditem<ret>
 %<ret>
 <ret>
-!screen-has an apple, on the floor
+!screen-has an apple, last seen T:
 !screen-lacks corpse
 !screen-lacks large box
 <esc>

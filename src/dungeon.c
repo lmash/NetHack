@@ -2894,6 +2894,7 @@ itemmem_record(
         im->obj = (struct obj *) alloc(sizeof *im->obj);
         im->oname = (char *) 0;
         im->price = 0L, im->price_contents = FALSE;
+        im->quoted = FALSE;
         im->next = (struct itemmem *) 0;
         for (tail = &mptr->itemmem; *tail; tail = &(*tail)->next)
             continue;
@@ -2914,10 +2915,15 @@ itemmem_record(
         im->oname = dupstr(ONAME(obj));
     im->cont_id = cont_id;
     im->seen = svm.moves;
+    /* shop goods: whether the hero knows that shows when it's listed */
+    im->shoproom = costly_spot(x, y)
+                       ? (schar) (*in_rooms(x, y, SHOPBASE) - ROOMOFFSET)
+                       : -1;
     if (in_shop) {
         int nochrg = 0;
         long price = get_cost_of_shop_item(obj, &nochrg);
 
+        im->quoted = TRUE;
         im->price = (price > 0L) ? price : 0L;
         im->price_contents = (price > 0L && nochrg > 0);
     }
@@ -3048,8 +3054,23 @@ finditem_level_ok(mapseen *mptr)
     return !(In_endgame(&u.uz) && !In_endgame(&mptr->lev));
 }
 
+/* is im listed as for sale: it was quoted a price, or it was a shop's goods
+   seen from outside the shop (no price quoted) and the hero has since been
+   in that shop, so knows it's one (as #overview does) */
+staticfn boolean
+finditem_for_sale(mapseen *mptr, struct itemmem *im)
+{
+    if (im->price > 0L)
+        return TRUE;
+    return (!im->quoted && im->shoproom >= 0
+            && im->shoproom < (int) SIZE(mptr->msrooms)
+            && mptr->msrooms[im->shoproom].seen
+            && !mptr->msrooms[im->shoproom].untended);
+}
+
 staticfn boolean
 finditem_match(
+    mapseen *mptr,
     struct itemmem *im,
     const char *text, /* case-insensitive part of the shown name, or "" */
     struct finditem_filter *f)
@@ -3067,7 +3088,7 @@ finditem_match(
         if (!strchr(f->buc, b))
             return FALSE;
     }
-    if (f->for_sale && (!im->price || im->price_contents))
+    if (f->for_sale && (!finditem_for_sale(mptr, im) || im->price_contents))
         return FALSE;
     if (f->contained && !im->cont_id)
         return FALSE;
@@ -3087,7 +3108,9 @@ finditem_container(mapseen *mptr, struct itemmem *im)
     return (struct itemmem *) 0;
 }
 
-/* one line of #finditem's results: name, where it is, price, when seen */
+/* one line of #finditem's results: name, price, when seen; where it is
+   comes from the line's section and indentation (contents are listed
+   under their container) */
 staticfn char *
 finditem_describe(mapseen *mptr, struct itemmem *im, char *buf) /* BUFSZ */
 {
@@ -3105,19 +3128,86 @@ finditem_describe(mapseen *mptr, struct itemmem *im, char *buf) /* BUFSZ */
                 Snprintf(eos(buf), BUFSZ - strlen(buf), " (empty)");
         }
     }
-    if (im->cont_id) {
-        c = finditem_container(mptr, im);
-        Snprintf(eos(buf), BUFSZ - strlen(buf), ", in %s",
-                 c ? itemmem_name(c) : "a container");
-    } else {
-        Snprintf(eos(buf), BUFSZ - strlen(buf), ", on the floor");
-    }
+    /* contents whose container isn't remembered: say so */
+    if (im->cont_id && !finditem_container(mptr, im))
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", in a container");
+    /* every for-sale line says "for sale", for MENUCOLOR to match */
     if (im->price)
         Snprintf(eos(buf), BUFSZ - strlen(buf), ", %s, %ld %s",
-                 im->price_contents ? "contents" : "for sale", im->price,
-                 currency(im->price));
+                 im->price_contents ? "contents for sale" : "for sale",
+                 im->price, currency(im->price));
+    else if (finditem_for_sale(mptr, im))
+        Snprintf(eos(buf), BUFSZ - strlen(buf),
+                 ", for sale, price not known");
     Snprintf(eos(buf), BUFSZ - strlen(buf), ", last seen T:%ld", im->seen);
     return buf;
+}
+
+/* is im a remembered container's content, listed under it? */
+staticfn boolean
+finditem_is_inside(mapseen *mptr, struct itemmem *im)
+{
+    return im->cont_id && finditem_container(mptr, im);
+}
+
+/* is im shown in #finditem's results: it matches, or something remembered
+   inside it does (then it's shown, unselectable, to place that) */
+staticfn boolean
+finditem_shown(
+    mapseen *mptr,
+    struct itemmem *im,
+    const char *text,
+    struct finditem_filter *f)
+{
+    struct itemmem *c;
+
+    if (finditem_match(mptr, im, text, f))
+        return TRUE;
+    if (Is_container(im->obj))
+        for (c = mptr->itemmem; c; c = c->next)
+            if (c->cont_id == im->obj->o_id
+                && finditem_container(mptr, c) == im
+                && finditem_shown(mptr, c, text, f))
+                return TRUE;
+    return FALSE;
+}
+
+/* add im to #finditem's results, then (indented) what's inside it;
+   returns how many selectable lines were added */
+staticfn int
+finditem_add(
+    winid win,
+    mapseen *mptr,
+    struct itemmem *im,
+    int depth, /* how deep inside containers: indentation */
+    const char *text,
+    struct finditem_filter *f)
+{
+    char buf[BUFSZ], line[BUFSZ];
+    anything any = cg.zeroany;
+    struct itemmem *c;
+    int count = 0;
+
+    if (!finditem_shown(mptr, im, text, f))
+        return 0;
+    (void) finditem_describe(mptr, im, buf);
+    if (finditem_match(mptr, im, text, f)) {
+        any.a_void = (genericptr_t) im;
+        Snprintf(line, sizeof line, "%*s%s", 2 * depth, "", buf);
+        ++count;
+    } else {
+        /* a container shown only for its contents: line it up with the
+           selectable lines, past their "a - " */
+        Snprintf(line, sizeof line, "    %*s%s", 2 * depth, "", buf);
+    }
+    add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR, line,
+             MENU_ITEMFLAGS_NONE);
+    if (Is_container(im->obj))
+        for (c = mptr->itemmem; c; c = c->next)
+            if (c->cont_id == im->obj->o_id
+                && finditem_container(mptr, c) == im)
+                count += finditem_add(win, mptr, c, depth + 1, text, f);
+    return count;
 }
 
 /* menu identifiers for #finditem's filters, beyond the object classes */
@@ -3213,7 +3303,6 @@ dofinditem(void)
     char text[BUFSZ], buf[BUFSZ], tmpbuf[BUFSZ];
     winid win;
     menu_item *pick = (menu_item *) 0;
-    anything any;
     mapseen *mptr;
     struct itemmem *im;
     int count = 0;
@@ -3232,34 +3321,44 @@ dofinditem(void)
 
     win = create_nhwindow(NHW_MENU);
     start_menu(win, MENU_BEHAVE_STANDARD);
-    any = cg.zeroany;
     for (mptr = svm.mapseenchn; mptr; mptr = mptr->next) {
         boolean heading = FALSE;
+        int section;
 
         if (!finditem_level_ok(mptr))
             continue;
-        for (im = mptr->itemmem; im; im = im->next) {
-            if (!finditem_match(im, text, &filter))
-                continue;
-            if (!heading) {
-                int lvl = overview_depthstart(mptr) + mptr->lev.dlevel - 1;
+        /* the floor first, then shop goods; contents under their container */
+        for (section = 0; section < 2; section++) {
+            boolean subheading = FALSE;
 
-                if (In_endgame(&mptr->lev))
-                    Snprintf(buf, sizeof buf, "%s: %s",
-                             svd.dungeons[mptr->lev.dnum].dname,
-                             endgamelevelname(tmpbuf, lvl));
-                else
-                    Snprintf(buf, sizeof buf, "%s: level %d",
-                             svd.dungeons[mptr->lev.dnum].dname, lvl);
-                if (on_level(&mptr->lev, &u.uz))
-                    Strcat(buf, " <- You are here.");
-                add_menu_heading(win, buf);
-                heading = TRUE;
+            for (im = mptr->itemmem; im; im = im->next) {
+                if (finditem_is_inside(mptr, im)
+                    || finditem_for_sale(mptr, im) != (section == 1)
+                    || !finditem_shown(mptr, im, text, &filter))
+                    continue;
+                if (!heading) {
+                    int lvl = overview_depthstart(mptr)
+                              + mptr->lev.dlevel - 1;
+
+                    if (In_endgame(&mptr->lev))
+                        Snprintf(buf, sizeof buf, "%s: %s",
+                                 svd.dungeons[mptr->lev.dnum].dname,
+                                 endgamelevelname(tmpbuf, lvl));
+                    else
+                        Snprintf(buf, sizeof buf, "%s: level %d",
+                                 svd.dungeons[mptr->lev.dnum].dname, lvl);
+                    if (on_level(&mptr->lev, &u.uz))
+                        Strcat(buf, " <- You are here.");
+                    add_menu_heading(win, buf);
+                    heading = TRUE;
+                }
+                if (!subheading) {
+                    add_menu_heading(win, section ? " For sale"
+                                                  : " On the floor");
+                    subheading = TRUE;
+                }
+                count += finditem_add(win, mptr, im, 0, text, &filter);
             }
-            any.a_void = (genericptr_t) im;
-            add_menu(win, &nul_glyphinfo, &any, 0, 0, ATR_NONE, NO_COLOR,
-                     finditem_describe(mptr, im, buf), MENU_ITEMFLAGS_NONE);
-            ++count;
         }
     }
     if (!count) {
@@ -3370,6 +3469,8 @@ save_mapseen(NHFILE *nhfp, mapseen *mptr)
         Sfo_long(nhfp, &im->price, "mapseen-itemmem-price");
         Sfo_boolean(nhfp, &im->price_contents,
                     "mapseen-itemmem-price_contents");
+        Sfo_boolean(nhfp, &im->quoted, "mapseen-itemmem-quoted");
+        Sfo_schar(nhfp, &im->shoproom, "mapseen-itemmem-shoproom");
     }
 }
 #endif /* !SFCTOOL */
@@ -3447,6 +3548,8 @@ load_mapseen(NHFILE *nhfp)
         Sfi_long(nhfp, &im->price, "mapseen-itemmem-price");
         Sfi_boolean(nhfp, &im->price_contents,
                     "mapseen-itemmem-price_contents");
+        Sfi_boolean(nhfp, &im->quoted, "mapseen-itemmem-quoted");
+        Sfi_schar(nhfp, &im->shoproom, "mapseen-itemmem-shoproom");
         im->next = (struct itemmem *) 0;
         *imtail = im;
         imtail = &im->next;
