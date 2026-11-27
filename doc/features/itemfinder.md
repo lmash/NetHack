@@ -8,8 +8,7 @@ Status: **Phases 3 (item memory) and 4 (search) done.**
   Return to list everything you remember seeing.
   - Results are grouped by level, with the same level names as Ctrl-O.
     Each level has up to two sections: **On the floor**, then **For sale**
-    (shop goods whose price you were quoted). A container's contents are
-    listed indented under it:
+    (shop goods). A container's contents are listed indented under it:
 
         The Dungeons of Doom: level 1
          On the floor
@@ -17,12 +16,27 @@ Status: **Phases 3 (item memory) and 4 (search) done.**
         b -   a clear potion, last seen T:4
         c - a ring mail, last seen T:13
          For sale
-        d - 6 rocks, 42 zorkmids, last seen T:24
+        d - 6 rocks, for sale, 42 zorkmids, last seen T:24
+        e - a white gem, for sale, price not known, last seen T:23
 
   - If a search matches only something inside a container, the container is
     still shown (without a letter) so you can see where it is.
-  - Shop goods you only saw from a distance were never quoted a price, so
-    they are listed under "On the floor".
+  - Shop goods you only saw from a distance say "price not known": the
+    shopkeeper quotes a price only when you stand on an item or look at it.
+    They count as for sale once you have been inside that shop. Goods seen
+    through the door before you've ever gone in are listed under "On the
+    floor", because you don't know yet that it's a shop.
+  - **Colour for "For sale" lines:** every for-sale line contains the words
+    "for sale", so NetHack's menu colours can pick them out. In your
+    `~/.nethackrc`:
+
+        OPTIONS=menucolors
+        MENUCOLOR="for sale.*last seen"=yellow
+
+    Any NetHack colour works (`lightgreen`, `cyan`, `magenta`, …), and an
+    attribute too (`=yellow&bold`). The pattern `"for sale.*last seen"`
+    matches only `#finditem` lines. Plain `"for sale"` also colours shop
+    goods in the game's own menus, such as picking things up in a shop.
   - Containers say "(contents unknown)" if you never looked inside, or
     "(empty)".
   - Corpses are never listed: they rot or get eaten, so an old sighting is
@@ -61,6 +75,12 @@ Each level's `struct mapseen` has a list of `struct itemmem` entries
 - `seen`: the turn it was last seen.
 - `price`, `price_contents`: the shop price quoted, and whether that price
   was for a container's contents.
+- `quoted`: it was recorded from inside the shop, so `price` is the quote
+  (0 means no charge, such as the hero's own goods).
+- `shoproom`: the `rooms[]` index of the shop whose goods it was
+  (`costly_spot()` when recorded; for contents, the outermost container's
+  square), or -1. This is the truth, but it's only shown once the hero
+  knows it: see `finditem_for_sale()`.
 
 Floor entries are keyed by (object, square); contents by (object, container).
 Size: about 200 bytes per entry. Wizard `#stats` lists it as "seen items".
@@ -137,8 +157,9 @@ All of it is in `mapseen.itemmem`. A second hero needs its own list per level
 ### Save file
 
 `save_mapseen()`/`load_mapseen()` write a count, then for each entry:
-`Sfo_obj`, the name, `cont_id`, `seen`, `price` and `price_contents`.
-**`EDITLEVEL` 1 → 2.** `dungeon.c` compiles cleanly with `-DSFCTOOL`.
+`Sfo_obj`, the name, `cont_id`, `seen`, `price`, `price_contents`, `quoted`
+and `shoproom`. **`EDITLEVEL` 1 → 2** (the list), **2 → 3** (`quoted` and
+`shoproom`). `dungeon.c` compiles cleanly with `-DSFCTOOL`.
 
 ## The search (`#finditem`)
 
@@ -156,9 +177,15 @@ code:
     `blessed`/`cursed`. Anything without `bknown` counts as "unknown" (`X`).
   - The text must be a case-insensitive substring (`strstri()`) of
     `itemmem_name()`, the name as shown.
+- `finditem_for_sale()`: an entry is for sale if it has a quoted price, or
+  if it was never quoted (`!quoted`), was a shop's goods (`shoproom >= 0`),
+  and that level's `mapseen.msrooms[shoproom]` is `seen` and not
+  `untended`. That's the same knowledge `#overview` uses to say "A general
+  store", so nothing leaks: goods seen through the door before entering
+  stay "On the floor" until the hero has been in.
 - Layout (`dofinditem()`): for each level, two passes over the top-level
   entries (floor items, and contents whose container isn't remembered):
-  first those without a price ("On the floor"), then those with one ("For
+  first those not for sale ("On the floor"), then those for sale ("For
   sale"). `finditem_add()` adds an entry and then, recursively and indented
   two spaces per level, the entries whose container it is
   (`finditem_container()`: same `o_id` and square).
@@ -169,9 +196,10 @@ code:
   - the name;
   - "(contents unknown)" if `!cknown`, or "(empty)" if no remembered contents;
   - ", in a container" only for contents whose container isn't remembered;
-  - the price: ", N zorkmids" in the "For sale" section, ", for sale, N
-    zorkmids" elsewhere (a priced item inside an unpriced container), or
-    ", contents, N zorkmids";
+  - ", for sale, N zorkmids", ", contents for sale, N zorkmids", or
+    ", for sale, price not known". Every for-sale line says "for sale", so a
+    `MENUCOLOR` rule can colour them (checked: with `menucolors` and
+    `MENUCOLOR="for sale.*last seen"=yellow`, the lines come out yellow);
   - ", last seen T:n".
 - `finditem_level_ok()` searches the same levels as the level map viewer: not
   unreachable, not forgotten, not the main dungeon while in the endgame.
@@ -186,7 +214,7 @@ code:
 
 ### Checked
 
-- `finditem` scenario (wizard mode, 40 assertions, see Tests).
+- `finditem` scenario (wizard mode, 44 assertions, see Tests).
 - By hand in normal mode (2026-11-23): replay `basic` to Dlvl 2. Then
   `#finditem`, pick a result, `<`, Esc, `m #finditem` with a filter, a
   search, and six `s` plus `^R`. The screen is identical, `T:` and monsters
@@ -238,7 +266,10 @@ Mutation check: without the `cansee()` guard in `map_object()`, step 9 fails.
    mail.
 4. Wish for and read a scroll of light: `light` now finds "a scroll of light,
    in an unlocked large box", and "ELBIB" is gone.
-5. In the shop: `F` → "6 rocks, on the floor, for sale, 42 zorkmids". No box.
+5. Shop: rocks seen through the door before entering are "6 stones" under
+   "On the floor", not for sale. Inside, `F` → "6 rocks, for sale, 42
+   zorkmids", and the goods seen only from a distance say "for sale, price
+   not known". No box.
 6. From Dlvl 3: results under "level 1" and "level 3 <- You are here."
    Picking a Dlvl 1 item shows Dlvl 1's map, marked. Still T:24 (no time).
 7. Save/restore: the same results screen.

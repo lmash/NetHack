@@ -2894,6 +2894,7 @@ itemmem_record(
         im->obj = (struct obj *) alloc(sizeof *im->obj);
         im->oname = (char *) 0;
         im->price = 0L, im->price_contents = FALSE;
+        im->quoted = FALSE;
         im->next = (struct itemmem *) 0;
         for (tail = &mptr->itemmem; *tail; tail = &(*tail)->next)
             continue;
@@ -2914,10 +2915,15 @@ itemmem_record(
         im->oname = dupstr(ONAME(obj));
     im->cont_id = cont_id;
     im->seen = svm.moves;
+    /* shop goods: whether the hero knows that shows when it's listed */
+    im->shoproom = costly_spot(x, y)
+                       ? (schar) (*in_rooms(x, y, SHOPBASE) - ROOMOFFSET)
+                       : -1;
     if (in_shop) {
         int nochrg = 0;
         long price = get_cost_of_shop_item(obj, &nochrg);
 
+        im->quoted = TRUE;
         im->price = (price > 0L) ? price : 0L;
         im->price_contents = (price > 0L && nochrg > 0);
     }
@@ -3048,8 +3054,23 @@ finditem_level_ok(mapseen *mptr)
     return !(In_endgame(&u.uz) && !In_endgame(&mptr->lev));
 }
 
+/* is im listed as for sale: it was quoted a price, or it was a shop's goods
+   seen from outside the shop (no price quoted) and the hero has since been
+   in that shop, so knows it's one (as #overview does) */
+staticfn boolean
+finditem_for_sale(mapseen *mptr, struct itemmem *im)
+{
+    if (im->price > 0L)
+        return TRUE;
+    return (!im->quoted && im->shoproom >= 0
+            && im->shoproom < (int) SIZE(mptr->msrooms)
+            && mptr->msrooms[im->shoproom].seen
+            && !mptr->msrooms[im->shoproom].untended);
+}
+
 staticfn boolean
 finditem_match(
+    mapseen *mptr,
     struct itemmem *im,
     const char *text, /* case-insensitive part of the shown name, or "" */
     struct finditem_filter *f)
@@ -3067,7 +3088,7 @@ finditem_match(
         if (!strchr(f->buc, b))
             return FALSE;
     }
-    if (f->for_sale && (!im->price || im->price_contents))
+    if (f->for_sale && (!finditem_for_sale(mptr, im) || im->price_contents))
         return FALSE;
     if (f->contained && !im->cont_id)
         return FALSE;
@@ -3091,11 +3112,7 @@ finditem_container(mapseen *mptr, struct itemmem *im)
    comes from the line's section and indentation (contents are listed
    under their container) */
 staticfn char *
-finditem_describe(
-    mapseen *mptr,
-    struct itemmem *im,
-    boolean sale_section, /* listed under "For sale" */
-    char *buf)            /* BUFSZ */
+finditem_describe(mapseen *mptr, struct itemmem *im, char *buf) /* BUFSZ */
 {
     struct itemmem *c;
 
@@ -3114,12 +3131,14 @@ finditem_describe(
     /* contents whose container isn't remembered: say so */
     if (im->cont_id && !finditem_container(mptr, im))
         Snprintf(eos(buf), BUFSZ - strlen(buf), ", in a container");
+    /* every for-sale line says "for sale", for MENUCOLOR to match */
     if (im->price)
-        Snprintf(eos(buf), BUFSZ - strlen(buf), ", %s%ld %s",
-                 im->price_contents ? "contents, "
-                 : sale_section    ? ""
-                                   : "for sale, ",
+        Snprintf(eos(buf), BUFSZ - strlen(buf), ", %s, %ld %s",
+                 im->price_contents ? "contents for sale" : "for sale",
                  im->price, currency(im->price));
+    else if (finditem_for_sale(mptr, im))
+        Snprintf(eos(buf), BUFSZ - strlen(buf),
+                 ", for sale, price not known");
     Snprintf(eos(buf), BUFSZ - strlen(buf), ", last seen T:%ld", im->seen);
     return buf;
 }
@@ -3142,7 +3161,7 @@ finditem_shown(
 {
     struct itemmem *c;
 
-    if (finditem_match(im, text, f))
+    if (finditem_match(mptr, im, text, f))
         return TRUE;
     if (Is_container(im->obj))
         for (c = mptr->itemmem; c; c = c->next)
@@ -3161,7 +3180,6 @@ finditem_add(
     mapseen *mptr,
     struct itemmem *im,
     int depth, /* how deep inside containers: indentation */
-    boolean sale_section,
     const char *text,
     struct finditem_filter *f)
 {
@@ -3172,8 +3190,8 @@ finditem_add(
 
     if (!finditem_shown(mptr, im, text, f))
         return 0;
-    (void) finditem_describe(mptr, im, sale_section, buf);
-    if (finditem_match(im, text, f)) {
+    (void) finditem_describe(mptr, im, buf);
+    if (finditem_match(mptr, im, text, f)) {
         any.a_void = (genericptr_t) im;
         Snprintf(line, sizeof line, "%*s%s", 2 * depth, "", buf);
         ++count;
@@ -3188,8 +3206,7 @@ finditem_add(
         for (c = mptr->itemmem; c; c = c->next)
             if (c->cont_id == im->obj->o_id
                 && finditem_container(mptr, c) == im)
-                count += finditem_add(win, mptr, c, depth + 1, sale_section,
-                                      text, f);
+                count += finditem_add(win, mptr, c, depth + 1, text, f);
     return count;
 }
 
@@ -3316,7 +3333,7 @@ dofinditem(void)
 
             for (im = mptr->itemmem; im; im = im->next) {
                 if (finditem_is_inside(mptr, im)
-                    || (im->price > 0L) != (section == 1)
+                    || finditem_for_sale(mptr, im) != (section == 1)
                     || !finditem_shown(mptr, im, text, &filter))
                     continue;
                 if (!heading) {
@@ -3340,8 +3357,7 @@ dofinditem(void)
                                                   : " On the floor");
                     subheading = TRUE;
                 }
-                count += finditem_add(win, mptr, im, 0, section != 0, text,
-                                      &filter);
+                count += finditem_add(win, mptr, im, 0, text, &filter);
             }
         }
     }
@@ -3453,6 +3469,8 @@ save_mapseen(NHFILE *nhfp, mapseen *mptr)
         Sfo_long(nhfp, &im->price, "mapseen-itemmem-price");
         Sfo_boolean(nhfp, &im->price_contents,
                     "mapseen-itemmem-price_contents");
+        Sfo_boolean(nhfp, &im->quoted, "mapseen-itemmem-quoted");
+        Sfo_schar(nhfp, &im->shoproom, "mapseen-itemmem-shoproom");
     }
 }
 #endif /* !SFCTOOL */
@@ -3530,6 +3548,8 @@ load_mapseen(NHFILE *nhfp)
         Sfi_long(nhfp, &im->price, "mapseen-itemmem-price");
         Sfi_boolean(nhfp, &im->price_contents,
                     "mapseen-itemmem-price_contents");
+        Sfi_boolean(nhfp, &im->quoted, "mapseen-itemmem-quoted");
+        Sfi_schar(nhfp, &im->shoproom, "mapseen-itemmem-shoproom");
         im->next = (struct itemmem *) 0;
         *imtail = im;
         imtail = &im->next;

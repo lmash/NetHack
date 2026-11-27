@@ -71,6 +71,14 @@ n
 llllllllll
 ol
 ol
+// rocks seen through the door (too far to tell: "stones"), before
+// entering: the hero doesn't know it's a shop yet, so not for sale
+#finditem<ret>
+stone<ret>
+!screen-has  On the floor
+!screen-has a - 6 stones, last seen T:16
+!screen-lacks for sale
+<esc>
 lllll
 l
 l
@@ -79,7 +87,9 @@ m#finditem<ret>
 F<ret>
 <ret>
 !screen-has  For sale
-!screen-has a - 6 rocks, 42 zorkmids, last seen T:
+!screen-has a - 6 rocks, for sale, 42 zorkmids, last seen T:
+// goods seen only from a distance, once inside: for sale, no price yet
+!screen-has , for sale, price not known, last seen T:23
 !screen-lacks On the floor
 !screen-lacks large box
 <esc>

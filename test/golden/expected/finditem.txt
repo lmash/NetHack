@@ -1150,7 +1150,91 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:17
 [cursor 14,6]
 
-=== line 74: lllll
+=== line 76: #finditem<ret>
+Find which remembered items? [text, or Return for all]
+
+
+
+----------------
+|..(.(.........|      |
+|.............@-   -.*|
+|.........[.f..|      |
+-------.--------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:17
+[cursor 55,0]
+
+=== line 77: stone<ret>
+                        Remembered items like "stone" (pick one to see where):
+
+                        The Dungeons of Doom: level 1 <- You are here.
+                         On the floor
+----------------        a - 6 stones, last seen T:16
+|..(.(.........|      | (end)
+|.............@-   -.*|
+|.........[.f..|      |
+-------.--------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:17
+[cursor 30,5]
+[screen-has 'On the floor': ok]
+[screen-has 'a - 6 stones, last seen T:16': ok]
+[screen-lacks 'for sale': ok]
+
+=== line 81: <esc>
+
+
+
+
+----------------
+|..(.(.........|      |
+|.............@-   -.*|
+|.........[.f..|      |
+-------.--------
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
+Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:17
+[cursor 14,6]
+
+=== line 82: lllll
 "Velkommen, wizard!  Welcome to Annootok's general store!"
 
 
@@ -1177,7 +1261,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:22
 [cursor 19,6]
 
-=== line 75: l
+=== line 83: l
 
 
 
@@ -1204,7 +1288,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:23
 [cursor 20,6]
 
-=== line 76: l
+=== line 84: l
 There is a staircase up here.--More--
 
 
@@ -1231,7 +1315,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:23
 [cursor 37,0]
 
-=== line 77: <ret>
+=== line 85: <ret>
 You see here 6 rocks (for sale, 42 zorkmids).
 
 
@@ -1258,7 +1342,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 21,6]
 
-=== line 78: m#finditem<ret>
+=== line 86: m#finditem<ret>
                              Find which items? (pick filters, or none for all)
 
                              Item classes
@@ -1285,7 +1369,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 35,16]
 
-=== line 79: F<ret>
+=== line 87: F<ret>
 Find which remembered items? [text, or Return for all]
 
 
@@ -1312,38 +1396,23 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 55,0]
 
-=== line 80: <ret>
-                                Remembered items (pick one to see where):
+=== line 88: <ret>
+ Remembered items (pick one to see where):
 
-                                The Dungeons of Doom: level 1 <- You are here.
-                                 For sale
-----------------   ----         a - 6 rocks, 42 zorkmids, last seen T:23
-|..(.(.........|   |.?|         (end)
-|..............-###f@@|
-|.........[....|   |.*|
--------.--------   ----
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
-[cursor 38,5]
+ The Dungeons of Doom: level 1 <- You are here.
+  For sale
+ a - 6 rocks, for sale, 42 zorkmids, last seen T:23
+ b - a scroll labeled DAIYEN FOOELS, for sale, price not known, last seen T:23
+ c - a white gem, for sale, price not known, last seen T:23
+ (end)
+[cursor 7,7]
 [screen-has 'For sale': ok]
-[screen-has 'a - 6 rocks, 42 zorkmids, last seen T:': ok]
+[screen-has 'a - 6 rocks, for sale, 42 zorkmids, last seen T:': ok]
+[screen-has ', for sale, price not known, last seen T:23': ok]
 [screen-lacks 'On the floor': ok]
 [screen-lacks 'large box': ok]
 
-=== line 85: <esc>
+=== line 95: <esc>
 
 
 
@@ -1370,7 +1439,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 21,6]
 
-=== line 89: <C-v>
+=== line 99: <C-v>
 To what level do you want to teleport?
 
 
@@ -1397,7 +1466,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:1 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 39,0]
 
-=== line 90: 3<ret>
+=== line 100: 3<ret>
 You materialize on a different level!
 
                                              --------
@@ -1424,7 +1493,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 48,5]
 
-=== line 91: #finditem<ret>
+=== line 101: #finditem<ret>
 Find which remembered items? [text, or Return for all]
 
                                              --------
@@ -1451,32 +1520,22 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 55,0]
 
-=== line 92: <ret>
-                            Remembered items (pick one to see where):
+=== line 102: <ret>
+ Remembered items (pick one to see where):
 
-                            The Dungeons of Doom: level 1
-                             On the floor
-                            a - an unlocked large box, last seen T:4
-                            b -   a clear potion, last seen T:4
-                            c -   a scroll of light, last seen T:4
-                            d - a chest (contents unknown), last seen T:6
-                            e - a ring mail, last seen T:13
-                            f - a scroll labeled DAIYEN FOOELS, last seen T:23
-                            g - a white gem, last seen T:23
-                             For sale
-                            h - 6 rocks, 42 zorkmids, last seen T:24
-                            (end)
-
-
-
-
-
-
-
-
-Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
-[cursor 34,13]
+ The Dungeons of Doom: level 1
+  On the floor
+ a - an unlocked large box, last seen T:24
+ b -   a clear potion, last seen T:24
+ c -   a scroll of light, last seen T:24
+ d - a chest (contents unknown), last seen T:24
+ e - a ring mail, last seen T:13
+  For sale
+ f - 6 rocks, for sale, 42 zorkmids, last seen T:24
+ g - a scroll labeled DAIYEN FOOELS, for sale, price not known, last seen T:24
+ h - a white gem, for sale, price not known, last seen T:24
+ (end)
+[cursor 7,13]
 [screen-has 'The Dungeons of Doom: level 1': ok]
 [screen-has 'a - an unlocked large box, last seen T:': ok]
 [screen-has 'b -   a clear potion, last seen T:': ok]
@@ -1484,7 +1543,7 @@ Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [screen-has 'For sale': ok]
 [same-map results: recorded]
 
-=== line 99: a
+=== line 109: a
 The Dungeons of Doom, Level 1: A general store.  [item at cursor; <>, ESC]
 
 
@@ -1513,7 +1572,7 @@ Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [screen-has 'The Dungeons of Doom, Level 1:': ok]
 [screen-has 'item at cursor': ok]
 
-=== line 102: <esc>
+=== line 112: <esc>
 
 
                                              --------
@@ -1541,7 +1600,7 @@ Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 48,5]
 [screen-has 'T:24': ok]
 
-=== line 106: S
+=== line 116: S
 Really save? [yn] (n)
 
                                              --------
@@ -1568,12 +1627,12 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 22,0]
 
-=== line 107: y
+=== line 117: y
 Be seeing you...
 [cursor 0,1]
 [game exited]
 
-=== line 108: !restart
+=== line 118: !restart
 Velkommen wizard, the human Valkyrie, welcome back to NetHack!--More--
 
                                              --------
@@ -1600,7 +1659,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 70,0]
 
-=== line 109: <ret>
+=== line 119: <ret>
 Do you want to keep the save file? [yn] (n)
 
                                              --------
@@ -1627,7 +1686,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 44,0]
 
-=== line 111: n
+=== line 121: n
 Do you want to keep the save file? [yn] (n)
 
                                              --------
@@ -1654,7 +1713,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 48,5]
 
-=== line 112: #finditem<ret>
+=== line 122: #finditem<ret>
 Find which remembered items? [text, or Return for all]
 
                                              --------
@@ -1681,35 +1740,25 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 55,0]
 
-=== line 113: <ret>
-                            Remembered items (pick one to see where):
+=== line 123: <ret>
+ Remembered items (pick one to see where):
 
-                            The Dungeons of Doom: level 1
-                             On the floor
-                            a - an unlocked large box, last seen T:4
-                            b -   a clear potion, last seen T:4
-                            c -   a scroll of light, last seen T:4
-                            d - a chest (contents unknown), last seen T:6
-                            e - a ring mail, last seen T:13
-                            f - a scroll labeled DAIYEN FOOELS, last seen T:23
-                            g - a white gem, last seen T:23
-                             For sale
-                            h - 6 rocks, 42 zorkmids, last seen T:24
-                            (end)
-
-
-
-
-
-
-
-
-Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
-[cursor 34,13]
+ The Dungeons of Doom: level 1
+  On the floor
+ a - an unlocked large box, last seen T:24
+ b -   a clear potion, last seen T:24
+ c -   a scroll of light, last seen T:24
+ d - a chest (contents unknown), last seen T:24
+ e - a ring mail, last seen T:13
+  For sale
+ f - 6 rocks, for sale, 42 zorkmids, last seen T:24
+ g - a scroll labeled DAIYEN FOOELS, for sale, price not known, last seen T:24
+ h - a white gem, for sale, price not known, last seen T:24
+ (end)
+[cursor 7,13]
 [same-map results: same]
 
-=== line 115: <esc>
+=== line 125: <esc>
 
 
                                              --------
@@ -1736,7 +1785,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 48,5]
 
-=== line 118: <C-w>
+=== line 128: <C-w>
 For what do you wish?
 
                                              --------
@@ -1763,7 +1812,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 22,0]
 
-=== line 119: newt<sp>corpse<ret>
+=== line 129: newt<sp>corpse<ret>
 e - a newt corpse.
 
                                              --------
@@ -1791,7 +1840,7 @@ Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 48,5]
 [screen-has 'e - a newt corpse.': ok]
 
-=== line 121: <C-w>
+=== line 131: <C-w>
 For what do you wish?
 
                                              --------
@@ -1818,7 +1867,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 22,0]
 
-=== line 122: apple<ret>
+=== line 132: apple<ret>
 f - an apple.
 
                                              --------
@@ -1846,7 +1895,7 @@ Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:24
 [cursor 48,5]
 [screen-has 'f - an apple.': ok]
 
-=== line 124: de
+=== line 134: de
 You drop a newt corpse.
 
                                              --------
@@ -1873,7 +1922,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:25
 [cursor 48,5]
 
-=== line 125: df
+=== line 135: df
 You drop an apple.
 
                                              --------
@@ -1900,7 +1949,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 48,5]
 
-=== line 126: :
+=== line 136: :
                                          Things that are here:
                                          an apple
                                          a newt corpse
@@ -1929,7 +1978,7 @@ Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [screen-has 'newt corpse': ok]
 [screen-has 'apple': ok]
 
-=== line 129: <ret>
+=== line 139: <ret>
 
 
                                              --------
@@ -1956,16 +2005,16 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 48,5]
 
-=== line 130: #wizitemmem<ret>
+=== line 140: #wizitemmem<ret>
 The Dungeons of Doom, level 1:
- <4,4> T:4 #39 an unlocked large box
- <6,4> T:6 #48 a chest (contents unknown)
+ <4,4> T:24 #39 an unlocked large box
+ <6,4> T:24 #48 a chest (contents unknown)
  <11,6> T:13 #61 a ring mail
- <4,4> T:4   in #39: #46 a clear potion
- <4,4> T:4   in #39: #44 a scroll of light
+ <4,4> T:24   in #39: #46 a clear potion
+ <4,4> T:24   in #39: #44 a scroll of light
  <22,5> T:24 #74 6 rocks (for sale, 42 zm)
- <22,4> T:23 #73 a scroll labeled DAIYEN FOOELS
- <22,6> T:23 #75 a white gem
+ <22,4> T:24 #73 a scroll labeled DAIYEN FOOELS
+ <22,6> T:24 #75 a white gem
 The Dungeons of Doom, level 3:
  <49,4> T:26 #170 a newt corpse
  <49,4> T:26 #171 an apple
@@ -1984,7 +2033,7 @@ The Dungeons of Doom, level 3:
 [cursor 8,23]
 [screen-has 'newt corpse': ok]
 
-=== line 132: <esc>
+=== line 142: <esc>
 
 
                                              --------
@@ -2011,7 +2060,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 48,5]
 
-=== line 133: #finditem<ret>
+=== line 143: #finditem<ret>
 Find which remembered items? [text, or Return for all]
 
                                              --------
@@ -2038,7 +2087,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 55,0]
 
-=== line 134: corpse<ret>
+=== line 144: corpse<ret>
 You don't remember seeing anything like "corpse".
 
                                              --------
@@ -2066,7 +2115,7 @@ Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 48,5]
 [screen-has 'You don\'t remember seeing anything like "corpse".': ok]
 
-=== line 136: #finditem<ret>
+=== line 146: #finditem<ret>
 Find which remembered items? [text, or Return for all]
 
                                              --------
@@ -2093,37 +2142,30 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 55,0]
 
-=== line 137: <ret>
-                            Remembered items (pick one to see where):
+=== line 147: <ret>
+ Remembered items (pick one to see where):
 
-                            The Dungeons of Doom: level 1
-                             On the floor
-                            a - an unlocked large box, last seen T:4
-                            b -   a clear potion, last seen T:4
-                            c -   a scroll of light, last seen T:4
-                            d - a chest (contents unknown), last seen T:6
-                            e - a ring mail, last seen T:13
-                            f - a scroll labeled DAIYEN FOOELS, last seen T:23
-                            g - a white gem, last seen T:23
-                             For sale
-                            h - 6 rocks, 42 zorkmids, last seen T:24
-                            The Dungeons of Doom: level 3 <- You are here.
-                             On the floor
-                            i - an apple, last seen T:26
-                            (end)
-
-
-
-
-
-Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
-Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
-[cursor 34,16]
+ The Dungeons of Doom: level 1
+  On the floor
+ a - an unlocked large box, last seen T:24
+ b -   a clear potion, last seen T:24
+ c -   a scroll of light, last seen T:24
+ d - a chest (contents unknown), last seen T:24
+ e - a ring mail, last seen T:13
+  For sale
+ f - 6 rocks, for sale, 42 zorkmids, last seen T:24
+ g - a scroll labeled DAIYEN FOOELS, for sale, price not known, last seen T:24
+ h - a white gem, for sale, price not known, last seen T:24
+ The Dungeons of Doom: level 3 <- You are here.
+  On the floor
+ i - an apple, last seen T:26
+ (end)
+[cursor 7,16]
 [screen-has 'The Dungeons of Doom: level 3 <- You are here.': ok]
 [screen-has 'an apple, last seen T:': ok]
 [screen-lacks 'corpse': ok]
 
-=== line 141: <esc>
+=== line 151: <esc>
 
 
                                              --------
@@ -2150,7 +2192,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 48,5]
 
-=== line 142: m#finditem<ret>
+=== line 152: m#finditem<ret>
                              Find which items? (pick filters, or none for all)
 
                              Item classes
@@ -2177,7 +2219,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 35,17]
 
-=== line 143: %<ret>
+=== line 153: %<ret>
 Find which remembered items? [text, or Return for all]
 
                                              --------
@@ -2204,7 +2246,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 55,0]
 
-=== line 144: <ret>
+=== line 154: <ret>
                                 Remembered items (pick one to see where):
 
                                 The Dungeons of Doom: level 3 <- You are here.
@@ -2234,7 +2276,7 @@ Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [screen-lacks 'corpse': ok]
 [screen-lacks 'large box': ok]
 
-=== line 148: <esc>
+=== line 158: <esc>
 
 
                                              --------
@@ -2261,7 +2303,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 48,5]
 
-=== line 150: #quit<ret>
+=== line 160: #quit<ret>
 Really quit without saving? [yn] (n)
 
                                              --------
@@ -2288,7 +2330,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 37,0]
 
-=== line 151: y
+=== line 161: y
 Dump core? [ynq] (q)
 
                                              --------
@@ -2315,7 +2357,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 21,0]
 
-=== line 153: n
+=== line 163: n
 Do you want your possessions identified? [ynq] (n)
 
                                              --------
@@ -2342,7 +2384,7 @@ Wizard the Stripling           St:17 Dx:15 Co:16 In:7 Wi:10 Ch:10 Lawful
 Dlvl:3 $:0 HP:16(16) Pw:2(2) AC:6 Xp:1/0 T:26
 [cursor 51,0]
 
-=== line 155: q
+=== line 165: q
 
 
 Since you were in wizard mode, the score list will not be checked.

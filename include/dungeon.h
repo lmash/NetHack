@@ -263,6 +263,10 @@ struct itemmem {
     long seen;           /* turn it was last seen */
     long price;          /* shop price quoted when last seen, or 0 */
     boolean price_contents; /* price was for a container's contents */
+    boolean quoted;      /* seen from inside the shop, so price is the quote */
+    schar shoproom;      /* rooms[] index of the shop whose goods it was
+                          * (costly_spot()), or -1; shown as for sale only
+                          * once the hero has been in that room */
 };
 
 typedef struct mapseen {
